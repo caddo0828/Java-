@@ -1,0 +1,57 @@
+cookie 与 session 的区别
+1、cookie
+   （a） cookie是在服务器端创建的，保存在客户浏览器端的
+   （b） cookie的生命周期可以通过cookie.setMaxAge(int second) ; 秒为单位
+   （c） 如果不设置生命周期，该cookie的生命周期就当浏览器关闭时，就消亡
+   （d） cookie可以被多浏览器共享
+   （e） cookie中保存数据采用的是明文方式，因此要对保存时数据进行加密处理
+   （f） cookie中按道理直接存储中文数据会报错，但是对cookie中要保存的中文数据进行编码以后可以保存对应的数据
+         在取出对应cookie中的数据时，要对cookie中的数据进行解密
+		 // base64编码中的编码方式
+		 String names = java.net.URLEncoder.encode("name", "utf-8");
+		 // base64编码中的解码方式
+		 String pass = java.net.URLDecoder.decode("pass", "utf-8");
+		 
+		 
+2、 session
+   （a）session是保存在服务器端的内容，一个用户浏览器独享一个session域对象
+   （b）session属性的默认生命周期是30min, 可以通过setMaxInactiveInterval设置session的生命周期
+        设置时间为空闲时间也称为是发呆时间，若在此时间内没有访问该属性，属性就将失效，该时间以秒值计算
+   （c） 可以通过配置web.xml中配置对应的生命周期中超时的时间
+          <session-config>
+				<session-timeout> 30 </session-timeout>
+	      </session-config>
+   （d） session 与cookie之间紧密联系
+    
+	
+
+	
+3、cookie  VS   session
+（1）保存的位置： cookie存在与客户浏览器端的临时文件夹
+				  session存在服务器端的内存中，一个session域对象为一个用户浏览器服务
+
+				  
+（2）安全性：	  cookie是以明文方式存放在客户端的，安全性较差，可以通过加密后再存放（md5算法）
+				  session存放在服务器端，安全性较好
+
+				  
+（3）网络传输量：cookie会传递信息给服务器
+                  session中不会进行信息的传递
+				  
+				  
+（4）生命周期：	  cookie的生命周期是累计的，从创建开始计时，只要到达了超时时间就失效  setMaxAge(int second) 秒计算
+				  session的生命周期是间隔的，从创建开始如在20分钟内，没有访问过session就失效（含义是指无法取出session中的属性）   setMaxInactiveInterval(int second) 秒计算
+			      但是如果在19分钟的时候访问，那么session的生命周期就会重新开始生效
+			      a:  关闭tomcat
+				  b:  reload web 应用
+				  c： invalidate 方法的调用，是session中的属性全部失效
+				  d:  超时时间到了
+				  
+ （5）访问角度：  cookie为每个用户共享
+				  session为每个用户独享
+				 
+ （6）存储的数据：cookie中只能存放字符串类的数据
+				  session中不止能存字符串类数据，还能存放自定义对象
+				 
+ （7）使用原则：  因为session会占用服务器的内存，因此不要向session中存放过多过大的数据，会影响性能
+   

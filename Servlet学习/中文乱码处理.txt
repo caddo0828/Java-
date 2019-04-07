@@ -1,0 +1,74 @@
+一、发生中文乱码的三种情况
+	（1）表单form 
+		post
+				浏览器中使用的是utf-8，但是web服务器采用的是ISO-8859-1编码
+				因此要在接收方将编码修改  (具体情况具体更改编码)  
+				//因为提交的数据是被封装到reques对象中去的
+				request.setCharacterEncoding("utf-8");
+				
+				
+		get
+			//直接和post方式一样，通过设置request对象的解码方式可以设置中文（可能版本升级了吧）
+			request.setCharacterEncoding("utf-8");
+			
+			// 但是实际上应用的应该是以下的方式
+			String nm = new String(request.getParameter("username").getBytes("utf-8"),"utf-8");
+		
+			//最好使用工具类实现，优化代码
+					public class Tool {
+						public static String getString(String str) {
+							String newString = "";
+							try {
+								newString = new String(str.getBytes("utf-8"),"utf-8");
+							} catch (UnsupportedEncodingException e) {
+								e.printStackTrace();
+						}
+							return newString;
+						}
+					}
+					
+		String username = Tool.getString(request.getParameter("username"));
+		
+					
+		
+    （2）超链接
+		<a href="http://www.baidu.com?name=函数">测试</a>
+		该方法和get方法一致
+		
+		//可能是新特性，采用request.send
+		request.setCharacterEncoding("utf-8");
+		
+		
+	（3）sendRedirect() 发生乱码
+		response.sendRedirect( "servlet地址？uname=琪");
+		
+		当客户端是ie6或一下版本时，将编码全面换成gbk
+		在servlet中应该这么做？
+		String nm = new String(request.getParameter("username").getBytes("iso-8859-1"),"gbk");
+		需要对发送的中文进行URLEncoding
+		
+		//发送界面
+		String info = java.net.URLEncoder.encode("你好吗？","utf-8");
+		out.println("<a href='web应用名/url路径名?uname='+info>"测试</a>);
+		
+		
+		
+		如果还需要用到sendRedirect( ) 代码
+		String info = java.net.URLEncoder.encode(nm,"utf-8");
+		response.sendRedirect("web应用名/url路径名？nm"+info)
+		
+		
+		//接收方界面
+		String nm = new String(request.getParameter("username").getBytes("iso-8859-1"),"gbk");
+	
+
+
+二、解决方式
+1、发送方代码：
+		String info = java.net.URLEncoder.encode("你好ma","utf-8");
+		response.sendRedirect("/StudyServlet/Login?username="+info);
+		
+2、接收方
+String username = req.getParameter("username");
+String u = Tool.getString(username);
+out.print(u);	

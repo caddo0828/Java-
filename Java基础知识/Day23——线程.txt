@@ -1,0 +1,101 @@
+一、多线程（方式一）    jvm虚拟机是抢占式执行
+1、自定义类继承Thread类
+2、自定义类重写run方法
+3、创建对象
+4、启动进程
+
+注意事项：run () 方法是封装被线程执行的代码，直接调用是普通方法
+	start()首先启动了线程，然后用jvm去调用该线程的run( ) 方法
+
+二、线程的基本获取和设置线程姓名
+public final String getName( );
+public final void setName(String name);
+//相当于构造方法
+
+获取main方法的所在的线程名
+public static Thread currentThread( )   //获取当前正在执行的线程对象
+//Thread.currentThread( ) .getName( ) ;  //获取当前线程的名称
+
+三、获取和设置线程优先级：
+public final int  getPriority( ) //获取线程的优先级
+
+public final int  setPriority(int newPriority) //设置优先级 
+注意：
+	线程默认优先级是5
+	线程优先级的范围是：1-10
+	线程优先级仅仅表示线程获取CPU时间片的机滤高，但是要进行多次运行才能得到结果
+
+四、线程休眠:
+public static void sleep(long   millis); 在指定毫秒值内让线程休眠    写在run方法里面
+
+ 
+五、线程控制加入进程
+public static void join( ) ;等待此进程结束 ，
+必须在下一个进程的start( ) 之前
+
+六、进程礼让
+public static void yeild( ) ；暂停当前正在执行的线程对象，并执行其他线程
+可以使线程运行更和谐，但是不能保证一人一次       
+写在run方法里
+
+七、守护线程
+public final void setDaemon(boolean on) ;将该线程标记为守护线程或者是用户线程
+当正在运行的线程都是守护线程时，Java虚拟机退出，该方法必须在启动线程前使用
+
+
+八、多线程 （方式二）
+自定义的类实现接口Runable接口
+步骤；
+	1、自定义类实现接口Runable接口
+	2、重写run( ) 方法
+	3、创建自定义类对象
+	4、创建Thread 类的对象，并且把步骤3的对象 加入到Thread中作为参数进行传递
+	5、启动线程
+
+
+九、线程出现安全问题的原因？
+1、是否有多个线程环境
+2、是否有共享数据
+3、是否有多条语句操作共享数据
+
+解决方法：同步机制；同步代码块 (锁)
+格式：synchronized(对象) {
+	需要同步的代码；
+}
+
+
+A：对象是什么？ private Object obj = new Object( );  //定义为成员对象    随便那个对象
+B：需要同步的代码？多条语句操作共享数据部分
+
+注意：同步可以解决安全问题就在于那个对象上
+	多个线程必须是同一把锁
+
+同步方法：将关键字定义在方法上  
+	public synchronized  返回值类型  方法名（ ）{
+		多条语句操作共享数据代码；
+} 同步方法上没有对象，但是在类中默认有一个对象，，，用this 表示本类中的对象
+
+静态方法锁对象？
+	类的字节码文件对象
+
+
+
+十 、将线程不安全的集合变成线程安全的集合
+使用Collections 的静态方法
+public  static  List<T>  synchronized(List<T> list> ；返回值List
+同里可以对Set集合和Map集合操作
+
+
+
+十一、Lock锁
+public void lock( ) ;获取锁
+public void unlock( ) ；释放锁
+
+创建对象:   Lock  lock = new ReentrantLock()  ; 接口的实现类
+
+
+十二、同步的弊端：
+	A：效率低
+	B：容易产生死锁
+死锁：
+	两个或两个以上的线程在争夺资源的过程中，发生的一种进程等待的现象

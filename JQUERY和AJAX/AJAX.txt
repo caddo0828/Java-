@@ -1,0 +1,262 @@
+AJAX学习：
+一、AJAX定义
+	异步刷新技术，用来在当前页面内响应不同的请求内容
+
+二、Ajax使用原理
+需求：
+		有的时候我们需要将本次响应结果和前面的响应结果内容在同一个页面中展示给用户
+解决：
+		1、在后台服务器将多次响应内容重新拼接成一个jsp页面，响应
+		    但是这样会造成很多响应内容被重复的响应，造成资源浪费
+		2、使用Ajax技术
+		
+
+三、使用Ajax
+● 1、Ajax访问原理
+		向当前的页面封装一个ajax对象，当触发相应的事件就会造成相应的对象的创建
+		打开相应的服务器请求
+		发送请求实体
+		重写onreadystatechange方法，实现响应实体的获取
+		
+		
+● 2、Ajax基本使用流程  (ajax是浏览器端的对象，不同的浏览器使用的对象是不同类型的)
+		（1）创建对象
+			var ajax;
+			if(window.XMLHttpRequest) {
+				ajax = new XMLHttpRequest();
+			}else {
+				ajax = new ActiveXObject("Microsoft.XMLHttp");
+			}
+	
+	
+		（2） 重写onreadystatechange事件方法;
+					每当readyState改变时，就会触发此事件的执行
+					//判断ajax状态码，以及响应状态码
+						//获取响应内容   ajax.responseText  或者 ajax.responseXML
+						//处理响应内容
+					
+		
+		（3）打开服务端的连接
+				ajax.open(method, url , async );
+		
+		（4）发送请求实体
+				//get请求
+					  get实体直接拼接在URL后面 ， 用？隔开，键值对存储
+				
+				//post请求
+					有单独的请求实体
+				 
+					
+● 3、Ajax状态码
+		readyState值： （存有XMLHttpRequest的状态，从0到4变化）
+			0： 请求未初始化   			（表示XMLHttpReuqest对象已经建立，但未初始化，这时尚未调用open方法）
+			
+			1:  服务器连接已经建立    	（表示open方法已经调用，但未调用send方法（已经创建，但是未发送））
+			
+			2：	请求已接受				（表示send方法已经调用，其他数据未知）
+			
+			3： 请求处理中				（表示请求已经成功发送，正在接受数据）
+			
+			4： 请求已经完成，且响应已经就绪	（表示数据已经成功接收）
+		
+		
+		HTTP请求的响应状态码 status ：
+			200：  请求成功
+			404:   请求资源不存在
+			500：  内部服务器出错
+			405：  请求方式与后台处理方式不相同
+		
+		
+● 4、Ajax异步与同步
+		ajax.open(method, url , async , username ,password);      规定请求的类型、URL 以及是否异步处理请求。
+		
+		*参数：
+			method:  请求的方式
+			url:     请求的资源路径（普遍就是servlet的url路径）
+			asunc:	 设置同步代码执行还是异步代码执行
+					 true: 		代表异步  ，默认是异步
+					 false:     代表同步
+			
+			
+● 5、Ajax请求
+		（1） get 方式 ; 请求实体拼接在URL后面
+				* ajax.open("get" , "ajax?username=caddo&pwd=123",true);   (可以传实体判断值)
+				  ajax.send(null)
+				
+				注意：
+					  火狐浏览器，get请求时，使用send里面的请求体要标注null，ie标不标无所谓
+		
+		
+		（2）post 方式 ； 请求实体需要单独的发送
+				* ajax.open("post" , "url" , true);
+				  ajax.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+				  ajax.send("name=张三&pwd=123");
+
+				  
+			● 注意：
+				setRequestHeader(header,value) 向请求添加 HTTP 头。
+							header: 规定头的名称     Content-type
+							value: 规定头的值  		 application/x-www-form-urlencoded
+			
+			告知服务器以键值对的形式划分请求数据
+			
+			
+
+● 6、Ajax的响应数据类型
+			如需获得来自服务器的响应，请使用 XMLHttpRequest 对象的 responseText 或 responseXML 属性。
+
+			responseText 获得字符串形式的响应数据。 
+			
+			responseXML 获得 XML 形式的响应数据。 
+
+			*（1）普通字符串
+			 
+			 （2）json(重点)
+					其实就是讲述数据按照json的格式拼接好的字符串，方便使用eval()方法
+					将接受的字符串数据直接转换为js对象
+					
+					json格式;
+							var 对象名={
+								属性名：属性值，
+								属性名：属性值，
+								.......	
+							}
+						
+					Gson将Java对象转成json对象（有用于返回list集合）
+							new Gson().toJson(java对象，或者list集合); 
+							
+					
+			（3）xml格式：   将响应格式改成text.xml
+					<user>
+						<name>caddo</name>
+						<uid>123</uid>  
+					</user>
+					
+			注意事项：
+				json主要用于数据封装
+				xml主要用作配置
+				
+					
+● 7、Ajax的对象封装
+		User user = new User("caddo","123456");
+		
+		//响应ajax的请求  (将java的类普通对象,拼接成一个js对象)
+		//response.getWriter().write("var obj ={};obj.name="+user.getName()+";obj.pwd="+user.getPwd());
+		//将java对象，封装成一个JSON对象
+		response.getWriter().write("{name:'"+user.getName()+"',pwd:'"+user.getPwd()+"'}");
+		
+
+● 9、 ajax - get() 方法 : 发送get请求
+	* get() 方法通过远程 HTTP GET 请求载入信息，
+      优点：简单的 GET 请求功能以取代复杂 $.ajax 
+	
+	* 使用：
+		$.get(url,data,function,dataType)
+			参数：
+				url： 请求响应的servlet路径
+				date: {键名: 键值}，请求参数
+			    function(response,status,xhr) ： 可选 （回调函数）	
+												response - 包含来自请求的结果数据
+												status - 包含请求的状态
+												xhr - 包含 XMLHttpRequest 对象
+				dataType： 规定预计的服务器响应的数据类型。
+				           "xml" ， "html"，"text"，"script"，"json"，"jsonp"
+				
+		* 例如：
+			 $.get("ajax",{username:name},function(data) {} ,"json"）
+		
+	
+● 10、$.post() : 发送post请求
+	*语法
+		$.post(url,[data],[callback],[type])
+			*参数：
+				* url: 请求路径
+				* data: 请求参数
+				* callback： 回调函数
+				* type:    响应结果类型
+
+ 
+● 11、$.ajax(opiton)
+	* 语法：
+		$.ajax({
+			url: "ajax/ajax_selectPicType.aspx",
+			data:{Full:"fu"},
+			type: "POST",
+			dataType:'json',
+			success:CallBack,
+			error:function(er){
+			BackErr(er);}
+		});
+
+
+ 
+● 12、Ajax案例
+
+<style type="text/css">
+	#showDiv{
+		width: 200px;
+		height:200px;
+		border : solid 1px;
+		border-color:  blue;
+	}
+</style>
+
+<script type="text/javascript" src="static/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$("#btn").click(function() {
+			//创建ajax引擎对象
+			var ajax;
+			//赋值
+			if(window.XMLHttpRequest) { //火狐
+				ajax = new XMLHttpRequest();
+			}else if(window.ActiveXObject) { //ie浏览器
+				ajax = new ActiveXObject("Microsoft.XMLHttp");
+			}
+			
+			//复习方法
+			ajax.onreadystatechange= function() {
+				//判断ajax状态码, 以及http的请求状态码
+				if(ajax.readyState==4 && ajax.status==200) {
+					//获取响应内容  (返回的就是此次请求的结果)
+					var result = ajax.responseText;
+					//获取元素对象，并且设置对应的请求结果信息
+					$("#showDiv").html(result);	
+				}
+			
+			}
+			
+			//发送请求
+			//打开请求ajax.open("get", "ajax", async, username, password)
+			ajax.open("get", "ajax?name=caddo&pwd=123");
+			/*
+				method: 请求方式
+				url: servlet的url地址
+				async; true代表异步请求，false代表同步请求
+				username
+				password
+			*/
+			//get请求, send请求体中无数据
+			ajax.send(null); //火狐浏览器，get请求时，使用send里面的请求体要标注null，ie标不标无所谓
+			
+			/* 
+			//打开连接
+			ajax.open("post", "ajax", true);
+			//发送请求
+			//设置请求头，告知浏览器是键值对数据
+			ajax.setRequestHeader("Content-type", " application/x-www-form-urlencoded");
+			ajax.send("name=caddo&pwd=123"); */
+		})
+	
+	})
+</script>
+</head>
+<body> 
+		<input type="button" id="btn" value="AJAX交互技术" />
+		<br>
+		
+		<div id="showDiv">
+		</div>	  
+</body>
+</html>
+	

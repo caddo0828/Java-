@@ -1,0 +1,165 @@
+一、创建图片
+BufferedImage 子类描述具有可访问图像数据缓冲区的 Image
+
+
+构造方法：
+	
+		BufferedImage(int width, int height, int imageType) 
+           构造一个类型为预定义图像类型之一的 BufferedImage。
+		   指定图片的宽，高 ，图片的类型
+		   
+		  
+		 BufferedImage(int width, int height, int imageType, IndexColorModel cm) 
+          构造一个类型为预定义图像类型之一的 BufferedImage：TYPE_BYTE_BINARY 或 TYPE_BYTE_INDEXED。
+		  //TYPE_BYTE_BINARY  表示一个不透明的以字节打包的1、2或4位图像
+		  //TYPE_BYTE_INDEXED  表示带索引的字节图像
+		  
+		 
+		
+成员方法：
+1、创建一个Graphics2D对象，用于绘制图片
+Graphics2D createGraphics() 
+         
+		 创建一个 Graphics2D，可以将它绘制到此 BufferedImage 中。 
+		 
+		 
+2、返回一个Graphics对象，用于绘制图片
+Graphics getGraphics() 
+       
+		//通过BufferedImage对象得到为此图片绘制图形的绘制对象
+
+
+3、返回该BufferedImage对象的String表示形式
+ String toString() 
+          返回此 BufferedImage 对象及其值的 String 表示形式。 
+		  
+		 
+
+		
+二、绘制几何图形  Graphics 
+Graphics 类是所有图形上下文的抽象基类
+允许应用程序在组件（已经在各种设备上实现）以及闭屏图像上进行绘制。
+
+
+构造方法：
+ Graphics() 
+          
+		  构建一个新的 Graphics2D 对象。
+		  Graphics  g = new Graphics();
+		  
+
+成员方法：
+1、设置集合图形的背景颜色
+abstract  void setColor(Color c) 
+          
+		 // 将此图形上下文的当前颜色设置为指定颜色。 
+          g.setColor(Color.RED);
+ 
+ 
+ 2、清除设置了背景颜色的区域的指定的矩形
+ abstract  void clearRect(int x, int y, int width, int height) 
+          
+		// 通过使用当前绘图表面的背景色进行填充来清除指定的矩形。 
+          g.clearRect(10,10,10,10);
+           
+3、填充指定的矩形
+abstract  void fillRect(int x, int y, int width, int height) 
+          
+		// 填充指定的矩形。 
+			g.fillRect(0,0,10,10);
+			X：   	代表x坐标
+			y：  	代表y坐标
+			width： 代表宽
+			height： 代表高
+         
+		 表示从哪个坐标开始，填充宽为多少，高为多少的矩形框
+		 
+		
+		
+4、设置当前图形的上下文的字体‘
+abstract  void setFont(Font font) 
+          
+		//  将此图形上下文的字体设置为指定字体。 
+	    BOLD    粗体样式常量。
+		ITALIC  斜体样式常量。
+
+
+5、获取当前填充的颜色
+abstract  Color getColor() 
+          
+		//  获取此图形上下文的当前颜色。 
+	      Color c = g.getColor( );
+
+
+6、获取当前设置的字体
+abstract  Font getFont() 
+         
+		// 获取当前字体。 
+		Font f = g.getFont( );
+		
+
+7、基于此Graphics创建一个新的Graphics
+Graphics create(int x, int y, int width, int height) 
+          
+		//  基于此 Graphics 对象创建一个新的 Graphics 对象，但是使用新的转换和剪贴区域。 
+		g.create(int x,int y ,int width,int height);
+		
+
+8、释放此图片的资源
+abstract  void dispose() 
+          
+		  释放此图形的上下文以及它使用的所有系统资源。 
+
+		
+		
+7、在图形的坐标系中，使用当前颜色，绘制当前颜色在点 (x1, y1) 和 (x2, y2) 之间画一条线。
+abstract  void drawLine(int x1, int y1, int x2, int y2) 
+ 
+		  
+8、绘制指定矩形的边框
+void    drawRect(int x, int y, int width, int height) 
+       
+		  
+9、将上下文文本绘制到图形中
+abstract  void    drawString(String str, int x, int y) 
+          使用此图形上下文的当前字体和颜色绘制由指定 string 给定的文本。 
+
+
+		  
+三、颜色 Color
+构造方法：
+Color(int r, int g, int b, int a) 
+          创建具有指定红色、绿色、蓝色和 alpha 值的 sRGB 颜色，这些值都在 (0 - 255) 的范围内。
+		  
+
+Color(int r, int g, int b) 
+          创建具有指定红色、绿色和蓝色值的不透明的 sRGB 颜色，这些值都在 (0 - 255) 的范围内。
+		  
+		  
+
+四、字体  Font
+Font(String name, int style, int size) 
+          根据指定名称、样式和磅值大小，创建一个新 Font。		  
+		  
+		  name : Font的指定名称，可有可无 
+		  style：样式   Font.ITALIC 斜体
+		  size:  字体大小
+		  
+
+五、将内存图片加载到文件中  ImageIO
+1、将图片一某种格式 写入到OutputStream 中
+static boolean write(RenderedImage im, String formatName, OutputStream output) 
+          
+		  使用支持给定格式的任意 ImageWriter 将一个图像写入 OutputStream。 
+
+		  //使用形式：
+		  RenderedImage im ： 相当于通过BufferedImage创建出来的对象
+		  String formatName：  图片以什么格式写入；  一般有 jpg、png、jpeg
+		  OutputStream output：  输出流，将图片输出
+		  
+		 
+		 
+2、将图片以指定的格式，将图片写入到File问价中
+static boolean write(RenderedImage im , String formatName, File output) 
+         
+		 使用支持给定格式的任意 ImageWriter 将一个图像写入 File。 

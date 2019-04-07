@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>css样式学习</title>
+<!--	<link type="text/css" href="要引入的css样式" rel="stylesheet"-->
+	<style type="text/css">
+ 	  hr {
+	  	 	 width: 50%;
+	  		 height: 20px;
+	 	 	 background-color:red;
+	  	 }
+	</style>
+    <!--声明style样式-->
+    <!--标签选择器-->
+    <style> 
+    	table {
+			width: 300px; 
+			height: 200px;
+			border:solid 1px; 
+			background-color : gray;
+	 }
+	 #t1{
+		 background-color : gray;
+		 }
+	
+	
+	 . common {
+			 color: black ;
+			 background-color : blue;
+		 }	
+	 .common,table {
+		 background-color : blue;
+		 }
+	ul li{
+		color:red;
+		} 
+		
+	#p1 a{
+			color : yellow ;
+		}
+	
+	
+    </style>
+
+</head>
+
+<body>
+	<h3> css的选择器学习</h3>
+    <hr  style="height:50px; background-color:blue"/>
+     <hr />
+     <hr style="color:red;" />
+     
+     <table id="t1" class="common"> 
+        <tr> 
+        	<td> 1</td>
+        	<td> 1 </td>
+            <td> 1</td>
+        </tr>
+        
+     	 <tr> 
+        	<td>1 </td>
+        	<td>1 </td>
+            <td>1 </td>
+        </tr>
+        
+         <tr> 
+        	<td> 1</td>
+        	<td>1 </td>
+            <td>1 </td>
+        </tr>
+     </table>
+     
+      
+     <table "> 
+        <tr> 
+        	<td> </td>
+        	<td> </td>
+            <td> </td>
+        </tr>
+        
+        	<td> </td>
+     	 <tr> 
+        	<td> </td>
+            <td> </td>
+        </tr>
+        
+         <tr> 
+        	<td> </td>
+        	<td> </td>
+            <td> </td>
+        </tr>
+     </table>
+     
+    <!--有序列表-->
+    <ul> 
+    	<li>Java</li>
+        <li>Android</li>
+        <li>Javaweb</li>
+    </ul>
+     
+    <p id="p1">
+    	<a href = "" > 嘻嘻 </a>
+    </p>
+    
+    <p>
+    	<a href = "" > 哈哈 </a>
+    </p>
+    
+     <h4 class = "common"> css学习</h4>
+</body>
+</html>

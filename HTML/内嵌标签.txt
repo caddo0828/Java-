@@ -1,0 +1,50 @@
+一、内嵌标签
+	iframe :	
+		src ：要显示的网页资源（可以是本地资源，也可以是网络资源URL）
+			注意：
+				默认当前页面打开及加载src指向的资源
+		width：设置显示区域的宽度
+		height：设置显示区域的高度
+		name：设置内嵌区域的名字，结合超链接文本的target属性使用，点击超链接，是网页资源显示在要内嵌的位置
+
+	作用：
+		在当前网页中加载其他网页的资源，达到不同网页中不干扰，并且能在同一个页面中显示给用户
+
+
+<body>
+  <a href="http://www.taobao.com" target="_if"> 京东年货节</a>
+    <a href="http://www.taobao.com" target="_tt"> 淘宝</a><br />
+    <iframe src="" width="40%" height="400px" name="_if">  </iframe>
+    <iframe src="" width="40%" height="400px" name="_tt"> </iframe><br />
+
+
+</body>
+
+
+
+二、框架集标签 （框架之间相互联系）
+	frameset： （不需要body属性，删除）
+		rows : 按照行进行切分页面  （里面写的是切分每个框架的大小比例，* 代表剩下的页面全部大小）
+		cols : 按照列进行切分
+		子标签：
+			frame：代表划分的区域 ， 进行切分区域的占位，可以单独加载网页资源
+				属性：src : 资源路径  
+			         name : 区域名 ，结合超链接的target使用
+			        注意：frame中可以在此切分 ，可以变成frameset再次进行切分	 
+	注意：
+		第一步一定要删除body标签
+		
+例题
+    <frameset rows="10%,*,10%">
+    	<frame src="1.html" name="_top"/>
+      <frameset cols="30%,*">
+      	<frame src="3.html"/>
+        <frame src="描点样式.html" name="right"/>
+       </frameset>
+        <frame src="UntitledFrame-46"  />
+    </frameset>
+
+
+三、target  
+	top : 表示回到上一级网页 （整个页面的上一级页面）
+	_blank : 表示在新的网页中显示	

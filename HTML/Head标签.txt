@@ -1,0 +1,13 @@
+<head>   主要配置浏览器中的配置信息
+<title> 网页的标签名 </title>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> //网页解码格式
+<!--其他格式 -->
+<meta name="keywords" content="关键字内容">
+<meta name="description" content="描述的内容">
+<meta name="author" content="作者名">
+<meta http-equiv="refresh" content="5;  url=http://www.baidu.com"> // 代表5秒后自动刷新跳转到百度网页界面
+
+</head>
+
+
+

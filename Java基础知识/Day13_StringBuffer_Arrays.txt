@@ -1,0 +1,108 @@
+StringBuffer:
+	线程安全的可变字符串
+	
+一、StringBuffer 与String的区别？
+	a: 前者长度和内容可变，后者不可变
+	b:如果使用前者进行字符串的拼接，不会浪费太多的资源
+
+二、StringBuffer的构造方法：
+	public StringBuffer();   无参构造函数
+	public StringBuffer(int capacity)  指定容量的字符串缓冲区对象
+	public StringBuffer(String str)；指定字符串内容的字符串缓冲区对象
+
+StringBuffer的方法：
+	public  int capacity ();   返回当前容量   理论值 (默认初始值为16)
+	public  int length() :   返回长度（字符数），  实际值
+	
+StringBuffer的添加功能:
+	字符的设置和替换：
+	 setCharAt(int index,char ch)  ,将指定的字符放在index指出的位置
+	charAt(int index);获取指定位置的字符
+               
+    	字符的插入：（在指定的位置插入字符或者其他类型的数据）
+ 	insert(int offset,char ch)；  在offset位置插入字符ch
+	public StringBuffer  insert(int offset ,String str)
+
+                字符的添加：（默认连接到末尾）
+	public StringBuffer append(String str);
+
+
+StringBuffer的删除功能：
+	public StringBuffer    deleteCharAt(int index) ;   // 删除指定位置的字符
+
+	public StringBuffer    delete(int start ,int end)；删除指定位置开始指定位置结束的内容，并且返回本身
+	
+StringBuffer的替换功能：
+	public StringBuffer   replace(int start ,int end,String str)；//从start开始到end用str替换
+
+StringBuffer的反转功能：
+	public StringBuffer reverse();
+
+StringBuffer的截取功能：
+                (返回值类型不同，返回String类型的数据，将截取的数据放在String类型中，本身字符串不变)
+                public String substring(int start);
+	public String substring(int start,int end);
+
+
+面试题：
+	StringBuffer与数组的区别：
+		1、两者都可以当成容器。但是StringBuffer能够放不同类型的数据，最终形成字符串
+		     数组能放多个数据，但是只能放同种类型的数据
+
+
+String与StringBuffer作为参数类型返回：
+	1、基本类型
+	2、引用类型：必须创建相应的对象
+		注意：String类型的参数转变和基本类型是一样的
+		常量池的内容不变
+
+三、冒泡排序：
+       1、外层控制次数，内层控制排列
+        
+        for(int x = 0;x<arr.length-1;x++) {
+	for(int y =0;y<arr.length-1-x ; y++) {
+	 int temp = arr[y];
+	 arr[y] = arr[y+1];
+	arr[y+1]= temp;
+	}
+}
+syso();
+
+
+四、选择排序
+————****-————
+第一层循环的数据和第二层循环的数据进行比较
+————****————
+ for(int x=0;x<arr.length-1;x++) {
+       for(int y=x+1;y<arr.length;y++) {
+	if(arr[x]>arr[y]) {
+	     int temp = arr[x];
+	     arr[x] = arr[y];
+	     arr[y] = temp;
+	}
+      }
+ }
+      
+
+五、高级二分查找
+  
+  基本查找：从头找到尾  （一般是无序的）
+ *高级二分查找：对半找 （前提条件必须是有序的）
+ * 
+ * 思路：
+ * 	  A:定义最小索引min，最大索引max
+ * 	  B:计算出中间索引mid
+ * 	  C:拿中间索引的值与要查找的元素进行比较
+ *         相等 ，就直接返回当前的中间索引
+ *         不相等
+ *         		大了，往左边找
+ *         		小了，往右边找
+ *    D:重新获取最大索引值以及最小索引值    
+ *          	大了 ，往左边找
+ *          		max = mid-1;
+ *     			小了，往右边找
+ *     				min = mid+1;
+ * 	  E:重新回到B位置
+
+
+

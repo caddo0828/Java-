@@ -1,0 +1,81 @@
+一、Arrays工具类：针对数组进行操作
+	 public static String toString(int[ ] a )   把其他任意类型转换为字符串
+	
+	 publlic static  void sort(int[] a)   对任意类型的数组进行排序
+
+	 public static int binaySearch(int[] a , int key);   对任意类型的数组进行二分查找（数组必须是有序的）
+
+
+开发原则：只要是对象就要判断是不是为空
+
+
+二、基本类型包装类：为了对基本数据类型进行更多的操作 
+(基本类型)		（引用类型）
+byte         		Byte
+short		Short
+int 		Integer
+long		Long
+float		Float
+double		Double
+char		Char
+boolean		Boolean
+
+
+三、Integer的构造方法：
+	public Integer(int value);  将一个基本的int类型的数据变成integer包装类型数据
+	
+	public Interger(String s) ;;将一个string类型的数据变成integer
+	（条件是原始的string类型的数据必须只能是数字字符组成，不能是英文字符组成）
+
+注意：如果要将int类型或者是string类型的数据转换成integer的话
+          必须用构造方法，创建对象进行转换
+
+四、int 与 String 转换
+              * int -----String
+ * 	最佳用：String.valueOf(int i)
+ * 
+ *            String-----int
+ * 	Interger.parseInt(String s);
+
+
+五、Integer进制的转换
+	十进制转换为其他进制： (只能是0 -----26)
+	   public static String toString(int i,int radix);   //radix表示想要转换成的进制数
+
+	其他进制到十进制
+	  public static int parseInt(String s ,int radix)//将一个其他进制换成是十进制必须要是可以转变的
+
+
+六、自动装箱和拆箱：
+	自动装箱：把基本类型转换为包装类类型
+  		注意：对象不能为空，不然调用空指针报错，抛异常
+		Integer x = null 会抛异常，，每次判断对象，必须对对象进行是否为空判断
+                自动拆箱：把包装类类型转换为基本类型
+
+
+七、面试题
+	针对-128  到  127 的数据，有一个数据缓冲区，如果数据是在此范围内，每次并不创建新的空间
+	所以对于== 判断或者equals判断都为true
+例如：
+	Integer i =100;
+	Integer i2 = 100;
+	i = =12  ;   结果为真
+	i.equals(i2); 结果也为真
+
+
+八、character
+	构造方法：public character(char value)；
+
+	成员方法：
+		public   static   boolean   isUpperCase (char ch);//判断字符是不是大写
+		public   static   boolean   isLowerCase (char ch );//判断字符是不是小写
+		public   static   boolean    isDigit(char ch) ; //判断指定字符是不是数字 
+		public   static   char   toUpperCase(char ch);//把指定的字符转成大写
+		public   static   char   toLowerCase(char ch);//把指定的字符转成小写
+ 
+
+
+
+
+
+ 

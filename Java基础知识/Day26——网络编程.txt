@@ -1,0 +1,132 @@
+一、网络编程
+就是用来实现网络互连的不同计算机上运行的程序之间可以进行数据的交换
+
+二、InetAddress
+此类表示互联网协议 (IP) 地址
+注意：
+如果一个类没有构造方法：
+ 	1、成员全部都是静态的 (Math,Arrays,Clooections)
+	2、单列设计模式(Runtime)
+	3、类中有静态方法返回该类的对象
+
+成员方法：
+public static InetAddress getByName(String host ) : 根据主机或这IP地址的字符串获取ip地址的对象
+
+public String getHostName( ) ;     //获取主机的主机名
+
+
+public String getHostAddress( ) //获取主机的IP地址的字符串表示形式
+
+
+三、Socket编程：网络编程 ，套接字编程
+scoket包含了：IP地址和端口
+
+scoket原理机制：
+	通信的两端都要Scoket
+	网络通信起始就是Scoket之间的通信
+	数据在两个Scoket间通过IO传输
+
+
+四、UDP用户协议发送数据：
+A; 创建发送端Scoket对象
+B：创建数据，并将数据进行打包
+C：调用Scoket对象的发送方法发送数据包
+D：释放资源
+
+创建Socket对象 ：
+DatagramScoket
+
+
+创建数据包对象
+DatagramPacket(byte[] buf , int length , InetAddress address , int port) ;
+buf：代表发送的字节数组（也就是要发送的内容） //包数据
+length：数据包的长度    // 包长度
+address ：表示接收端的IP地址    //目的地址
+port：目的端口号
+
+//从此套接字发送数据报包
+public void send(DatagramPacket p)
+
+
+
+五、UDP协议接收数据  （DatagramSocket）
+A：创建结束端Scoket对象
+B：创建一个数据包（接收容器）
+C；调用Scoket对象的接收方法接收数据
+D：解析数据包，并显示在控制台
+E：释放资源
+
+
+ //创建Scoket对象，并且绑定在指定的端口
+DategramScoket(int port)  ;
+
+//创建一个数据包（接收容器）
+DategramPackage(byte[] buf , int length) 
+
+//调用Scoket对象接收方法接收数据
+public void receive( DatagramPacket p )
+
+//解析数据包，并且显示在控制台
+//获取对方的IP    (数据包的方法)
+public InetAddress getAddress( )
+
+
+//解析数据包，并且显示在控制台
+public byte[ ] getData( ) 获取数据缓冲区
+public int getLength( ) ；获取数据的实际长度
+
+注意：一定是要先执行发送端的程序'
+1、多次启动接收端，会抛异常，显示端口号被占用
+2、如果接收端是键盘录入的话，套一个while(true) { } 循环
+3、此时接收端因为要一直开着，所以不需要释放资源
+
+
+注意二、发送方代码改进
+1、封装键盘录入数据
+BufferedReader(new InputStream(System.in)) ； 键盘录入数据，进行读取
+String line = null;
+while ((line= br.readLine())!= null) {
+	byte[] bytes = line.getBytes( );
+	//创建数据包对象
+	//发送数据
+ } 
+
+
+六、TCP协议传输数据并且读取   (发送端Socket)
+TCP协议发送数据 : 
+A：创建Socket对象
+	Socket(InetAddress address, int port)    创建一个流套接字并将其连接到指定 IP 地址的指定端口号。
+	Socket(String address , int port) ; //通过连接套接字指向指定的IP地址的端口号
+	这一步如果成功，就说明连接已经成功了
+B：获取输出流，写数据
+	public    OutputStream getOutputStream()        //   返回此套接字的输出流。对象
+	 输出流对象.write( ) 
+C：释放资源
+注意事项 ；TCP协议发送数据是一定要先开服务器 ，
+
+
+Tcp协议接收数据
+A；创建接收端的Socket对象
+	//服务器端口
+	ServerSocket(int port) ;   //创建绑定端口的服务器套接字
+B ：监听客户端连接，返回一个对应的Socket对象
+	public Socket accpet( ) ; // 创建监听并接收此套接字，返返回一个套接字的对象
+C：获取输入流 ， 读数据
+	//用返回的套接字的对象，来调用输入流。读数据
+	public InputStream  getInputStream( ) ； 
+	输入流对象 . read( ) ；
+D：释放资源
+
+
+七、多个客户端上传到一个服务器
+1、如果在接收端的监听客户机外加上while（true） 可行，但是受网络带宽（每秒内传输的数据多少）的影响, 因此用多线程进行改进
+
+2、在服务器端加上线程，通过构造方法创建Socke对象
+
+3、核心代码
+ServerSocket server = new ServerSocket(8080）；
+
+while（ture） {
+	Socket s = new Socket( ) ;
+	new Thread(new 服务器端多线程对象(s) ) .   start( ) ； 
+}

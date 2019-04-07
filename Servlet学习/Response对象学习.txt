@@ -1,0 +1,147 @@
+一、Response对象
+	作用：
+		用来响应数据到浏览器的一个对象
+	使用：
+		设置响应头
+		设置响应实体
+		
+		
+二、响应处理结果
+	1、设置响应头   //name 代表键，value代表值
+		resp.setHeader(String name ,String value) ;
+	
+		resp.addHeader(String name , String value);
+		//区别：
+			setHeader， 在响应头中添加响应信息，但是同键会覆盖(当出现同键不同值设置时，会覆盖原先的数据)
+			addHeader,	在响应头中添加响应信息，可以重复添加对应键的不同值，不会覆盖
+	
+	2、设置响应状态码
+		//int 代表的是常见的服务器出错状态，如404，500  ，message 代表的是给出提示报错的信息
+		resp.sendError(int sc , String message);
+		//405  代表方法没用重写，父类直接打出405
+	
+	3、设置响应编码格式:
+		A：resp.setHeader("content-type" , "text/html;charset=utf-8");
+		B：resp.setContentType(String sc) ; 
+				resp.setContentType("text/html;charset=utf-8");		// html代表html格式
+				resp.setContentType("text/plain;charset=utf-8");   // plain 代表普通文本
+				
+	4、设置响应实体
+		public PrintWriter getWriter( ) //回送数据，文本数据，字符类型的数据
+			resp.getWriter( ) 
+			
+		public OutputStream getOutputStream( ) //回送数据，二进制数据，字节数据
+			resp.getOutputStream( ); //用于输出流的功能方法
+	
+
+
+四、HttpServletResponse的再说明
+成员方法 
+	public void setStatus(int sc)  ; 设置回答的状态
+	
+	//根据响应头的键设置值
+	public void setHeader(String name , String value);
+	public void setHeader("Location" , /web应用名/url路径名) ； 
+ 
+	//返回一个打印流，输出向客户端发送的信息  （回送的是一个文本，也就是回送字符数据）
+	public static PrintWriter  getWriter() ;   
+
+	//返回一个ServletOutputStream 的对象，用于写入信息到客户端  (回送的是二进制数据，可以写入字节数据，也可以写入字符数据)
+	//写入的信息是字节或者字节数组（就相当于用io流中的字节输出流一样）
+	public OutputStream getOutputStream( ) ；
+	
+	//获取响应头的信息
+	public void getHeader( ) ;
+
+	//以集合的形式返回所有的响应头的名字
+	public Collection<java.lang.String>  getHeaderNames( ) 
+
+
+	//返回给定响应头的键 的 值
+	public  java.lang.String  getHeader(String name) 
+	
+	//实现请求重定向（可以将数据带给下一个页面）
+	//请求重定向指的是：一个web资源收到客户端请求后，通知客户端去找另一个web资源
+	public void SendRedirect(String location )  ;  //location 代表你要转到哪个资源里去
+  
+
+四、注意事项（面试题）
+注意：getWriter  和	getOutputStream 如何选择 ？
+1、如果回送的数据是字符数据，则使用PrintWriter 对象 ，效率高
+2、如果我们是回送字节数据 ，则使用 OutputStream
+
+特别注意：
+	两种方法不能同时使用，否则会报 500 错误
+	OutputStream os = resp.getOutputStream();
+	os.write("hello".getBytes());
+	PrintWriter out = resp.getWriter( ) ;
+	out.println("abc") ;
+	会报以下错误： 
+	java .lang IllegalStateException : getOutputStream() has alredly been called for  this response;
+ 
+（重点，会考面试题）报错的原因：
+	1、首先根据浏览器的请求，服务器端会去找对应的response对象中的数据
+	2、读取相应的数据
+		A：把response中的信息，拆解成http响应信息，返回给浏览器
+		B：web服务器就会去检测response相关的流是否关闭，如果没用关闭，则关闭相应的流
+		     此次关闭的是整个response对象的流，这样的话，无法通过response对象再次打开流对象进行写操作
+	3、也可以看出：
+		当未关闭流时，也不会报错：
+			因为：当web服务器访问完response信息后，会主动检测是否关闭了流
+				如果没有关闭，web服务器主动帮你关闭 ， 但是最好自己关闭
+				
+				
+
+
+五、如何将数据从一个servlet回送到下一个servl?
+	1、使用静态变量 static 
+		//设置为静态的其他地方均可访问，并且值不变
+	    //静态变量属于对象,只有一个,值不能改变
+		
+	2、使用转向方法  sendRedirect( ) 
+		从一个页面跳到另外一个页面，通过该方法将信息传送到下一个页面，
+		sendRedirect(welcome?uname=caddo&password=123456);
+				注意点：
+					A：welcome 代表要跳转的页面的url路径
+					B：servlet url 名和 变量键名之间用 ？ 分隔
+					C：如果要传送给两个或两个以上的数据，之间用 & 号分隔
+					D：如果传送的是中文，会乱码，要进行格式解析
+		
+		重点：此时转向方法中的对应键的值就是用户进行输入的值，以新的键值对的方式，封装在request对象中
+			   根据request对象中，根据指定键找值，可以输出信息；
+			   
+		优点：传输信息的速度快
+		缺点：它只能传输字符串，不能传送对象。
+		
+		//第一个界面
+		格式：  （参数值是字符串，参数名应当使用英文命名）
+		response.sendRedirect("servlet的地址？参数名1=参数值1&参数名2=参数值2");
+			resp.sendRedirect("/StudyServlet/MainFrame?username="+username+"&pwd="+password);
+	
+		//第二个界面，接收数据的页面
+		String 参数 = request.getParameter("参数名");
+	
+	
+	3、使用 session 传递 
+		发送字符串数据：
+			//传送数据的界面   loginuser ：键   username ：要传递的数据
+				request.getSession().setAttribute("loginuser", username);
+		
+			//接收数据的界面
+			String username2 = (String) request.getSession().getAttribute("loginuser");
+	   
+	   传递对象：
+			//传送数据的界面
+			User user = new User(username ,password);
+			request.getSession().setAttribute("login", user);
+			
+			//接收数据的界面
+			User user = (User) request.getSession().getAttribute("login");
+			
+			
+	
+六、转向方法的本质
+response.setStatus(302);
+response.setHeader("Location" , "/web应用名/url路径");
+
+

@@ -1,0 +1,175 @@
+一、异常  Throwable 接口
+严重问题：Error  不处理，一般是很严重的问题,与写程序基本无关
+问题：Exception
+	编译期问题 :  不是RuntimeException的异常    必须进行处理的，如果不进行处理，编译就不能通过
+	运行期问题 : 是RuntimeException   不处理，这个问题的出现是代码不够严谨，需要修改代码
+
+
+把异常的信息显示在控制台，属于哪种异常问题，异常的名称以及异常出现的原因和名称
+但是会把会终止其他部分的操作
+
+
+
+二、处理异常的方案
+1、try  .....  catch..... finally
+2、throws 抛出异常
+
+三、try  ....  catch ...  finally 的处理方式
+1、格式：
+try{
+	可能出现问题的代码块;
+}  catch (异常处理的变量){
+	针对问题的处理;
+} finally {
+	释放资源;
+}
+ 
+2、变形的格式：
+try{
+	可能出现问题的代码；
+} catch （异常处理的变量）{
+	针对问题的处理;
+}
+
+
+3、注意：try 里面的代码越少越好，但是catch里面一定要有内容,  给出提示语句
+	一个try可以对应多个catch，一旦try里面出现问题，就把问题抛出去，就和catch里面的问题进行比较
+	一旦有匹配的就执行catch里的处理，然后结束try......catch 
+	继续运行其他的语句
+	也就是说当一个catch里的内容匹配到了，其他catch的内容就不会进行比较
+ 
+A ： 当不知道异常是哪种问题是可以用所有异常的父类Exception 进行匹配判断，但是尽量能明确就明确
+       因为用父类异常时，并不能知道具体出了什么问题
+B；平级关系的异常，谁前谁后没有关系，如果有子父关系，一定把子问题放在前面在找大的问题
+
+C ： 新特性
+try {
+	可能出现问题的代码
+} catch（异常类1  | 异常类2  ....   变量 ） {
+	针对问题的处理
+}
+
+注意：这种方式，虽然简洁，但是也不是很好
+	a : 处理方式的方法是一样的，也就是说这是针对同种类似问题的处理
+	b: 只能是同级关系的异常类 
+
+
+
+三、throwable 异常处理
+1、在try里面出现问题后，jvm会帮我们生成一个异常对象，然后将这个对象抛出，和catch里面的内容进行比较   
+     如果该对象是某这个类型的，就会执行catch里面的语句
+2、异常中要了解的方法：
+	public String getMessage()  返回异常的详细消息字符串
+	public String toString ( ) ； 返回异常的简单信息描述
+	此对象的类的name (全路径名)
+	":  " (冒号和一个空格)
+	调用此对象getLocalizedMessage( ) 方法的结果（默认返回的是getMessage( ) 方法的内容）
+	
+（重要并且常用的方法）printStackTrace( ) 	获取异常名和异常信息，以及异常出现的位置，返回值为void 
+    
+
+四、throws处理异常方案
+抛出：运用场景为，程序有问题但是是我们解决不了的问题，针对这类问题就进行另一种方案： 抛出
+格式：
+	throws  异常类名
+	注意： 这个格式必须在方法的后面
+       	           在方法上申明，是为了告诉调用者，方法存在问题
+
+注意：尽量不要在main方法上进行异常抛出
+        
+小结：
+         编译时期的问题调用时需要处理
+          运行期异常要进行处理
+
+五、throw :如果出现异常情况，我们可以把异常抛出，但此时抛出的应该是异常类的对象
+作用在方法内部抛出异常对象
+
+六、throws 和 throw 的区别
+ 1、throws ；
+	用在方法申明上，跟的是异常类名
+	可以跟多个异常类名，用逗号隔开
+	表示抛出异常，由方法的调用者来处理
+	throws表示出现异常的一种可能性，但是不一定会出现这个问题
+2、throw ：
+	使用在方法体内部的，此时抛出的异常类对象
+	只能抛出一个异常对象名
+	表示抛出异常，由方法体内的语句处理
+	
+七、到底使用哪种处理方式？
+区别：
+	如果后续程序需要继续运行就try ，一般在main方法中使用try
+	如果后续程序不需要运行就throws
+
+八、finally 的作用及用法
+特点：
+	被finally控制的语句一定会被执行
+注意：如果执行在finally之前jvm退出了，就不能执行finally里的语句
+作用 : 用于释放资源
+
+九、final 和 finally 和 finalize 的区别    (面试题)
+1、final ； 表示最终的意思
+	修饰类：表示类不能被继承
+	修饰方法 : 表示方法不能被重写
+	修饰变量：变量是常量
+2、finally ： 
+	是异常处理的一部分，一般被其控制的语句会被执行，除非在这之前虚拟机退出了
+3、finalize：是Object类的一个方法，用于进行垃圾回收，和System类的 gc( ) 方法（运行垃圾回收器）一起使用
+
+4、如果在catch里面有return语句，那么请问finally里面的的代码还会执行吗？
+     如果会，请问是在return前还是return后
+答 ： 会执行，并且在return前
+
+
+十、自定义的异常
+自定义的类要实现异常处理，必须继承Exception 或者RuntimeException
+
+注意事项：
+	A; 如果子类重写父类的方法时，子类方法必须抛出相同的异常或父类异常类的子类
+	B; 如果父类抛出了多个异常，子类重写父类时，只能抛出相同的异常或者父类异常类的子类，子类不能抛出父类没有的异常
+	C; 如果被重写的方法在父类中没有抛出异常，那么子类的方法绝对不可以抛出异常，如果子类方法中
+	    有异常出现只能try ... catch  ， 不能throws
+
+十一、IO 类的File
+File：文件和目录（文件夹）路径名的抽象表示
+构造方法：
+	File(String  pathname) ; 根据一个路径的到File对象
+	File(String parent , String child) 根据一个目录和子文件目录得到File对象
+	File(File parent ,String child ) 根据一个父File对象，和一个子文件/目录得到File对象
+
+成员方法：
+	1、创建功能 (注意在文件夹中创建文件，文件夹必须存在，否则出错) (A 和 B 中的上一级目录不存在，下一级就无法创建 )
+		A:  public boolean  creatsNewFile( ) ; 创建文件 , 如果存在就不创建了，返回false  （方法抛异常）
+		B：public boolean mkdir( ) ; 创建文件夹 ; 如果存在就不创建了，返回false  (方法不抛异常)
+		C：public  boolean  mkdirs( ) ; 创建多级文件夹 ， （之前的文件夹不存在也可以创建）
+	
+	2、删除功能：（如果创建文件或者文件夹忘了写盘符路径，那么，默认在项目路径下）
+		A：public  boolean delete ( ) 
+		注意：Java中的文件删除不走回收站
+		        如果要删掉文件夹，必须把其子文件夹或者文件删除
+	3、重命名功能;
+		A: public boolean renameTo(File dest) ; 要创建新的File对象
+		 注意：路径以盘符开始: 决定路径   c:\\a.txt
+		           路径不以盘符开始： 相对路径      (可以进行剪切和改名)
+	4、判断功能：
+		A：public boolean isDirectory( ) : 判断是否是目录
+		B：public boolean isFile( ) : 判断是否是文件
+		C：public boolean exists( ) ; 判断是否存在
+		D：public boolean canRead( ) ; 判断是否可读
+		E：public  boolean  canWrite( ) ; 判断是否可写
+		F：public  boolean  isHidden( ) : 判断是否隐藏
+	5、获取功能：
+		A：public String getAbsolutePath( ) ；获取绝对路径
+		B:   public String getPath( ) :获取相对路径
+		C：public String getName( ) :获取名称
+		D：public long length( ) ; 获取长度，字节数
+		E：public long lastModified( ) 获取最后一次修改时间的毫秒值 
+	6、高级获取功能：
+		A：public String[ ] list（）；获取指定目录下的文件或文件夹的名称数组
+		B：public Flie[ ] listFiles( ) ;  获取指定目录下所有文件或文件夹的File对象数组
+
+文件名称过滤器：是一个接口
+	public String[ ]  list(FilenameFilter filter)
+	public Flie[ ] listFiles( FilenameFilter filter) ;
+	需要的是接口实现的对象，并且接口实现类要进行方法的重写，所以在创建接口实现类对象时，可以采取匿名内部类	  
+		          		
+

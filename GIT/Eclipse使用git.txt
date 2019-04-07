@@ -1,0 +1,83 @@
+远程仓库克隆：
+1、修改配置文件： eclipse.ini 
+		添加以下数据：
+			-Dhttps.protocols=TLSv1.1,TLSv1.2
+2、重启eclipse
+
+3、创建远程仓库,并且复制远程仓库的地址
+	* 例如;
+		https://github.com/caddo0828/Shop.git
+
+4、打开eclipse中的git面板中的Git Repositories控制栏
+		(Windows - show view - other-git即可看到此选择)
+	
+5、点击clone a Git repository (克隆远程仓库)
+		URL:  远程仓库地址  https://github.com/caddo0828/Shop.git
+		Host: 远程仓库网站  github.com
+		Repository path : /caddo0828/Shop.git
+	
+	 * 如果仓库有东西可以正常显示，如果没有则为空
+	 
+
+
+二、从远程仓库克隆项目：
+● 1、克隆一个远程仓库 ，点击clone a Git repository
+
+● 2、填入远程仓库的地址
+
+● 3、选择本地仓库的地址
+
+● 4、点击克隆的远程仓库，右键 import project
+     选择 import existing Eclipse projects
+	
+● 5、成功导入项目
+
+● 6、当出现 ？号，以及 > 代表远程仓库和本地仓库信息的不同步，也就是有数据尚未提交或者已经被修改
+  
+● 7、提交新内容：
+	选中项目，右键 Team ————> commit ————> 选择提交的文件 ————> 最好选择 commit and push(提交到本地仓库的同时，推送到远程仓库)
+	
+● 8、fetch:  (下载头信息)
+	选中项目，右键 Team ————> Fetch from upstream(获取改变的头部信息，但是变更的代码没有下载)
+	
+	pull: (拉取代码) 
+	选中项目，右键 Team ————> Pull (获得修改的代码信息)
+	
+	
+● 9、创建新分支：
+	选中项目，右键 Team	 ————> switch to  ————> New Branch
+
+
+● 10、push新的分支，也可以commit
+   	选中项目，右键 Team	 ————> push branch 分支的名字
+	
+	
+● 11、合并分支：
+	* 首先切换成主干分支
+	* 选中项目，右键 Team	 ————> Merge  -----> 把分支推送上去
+	* push branch master  -----> 提交修改
+
+● 12、删除分支
+	* 首先删除本地分支
+	* 删除远程分支
+	
+	
+● 13、git冲突的解决
+发现冲突：   进入同步视图   右键------team-----synchronized.
+解决：
+			*  添加到本地暂存区： 			选中冲突的文件  右键------team-----Add to index  
+			*  提交到本地分支：   			commit
+			*  更新远程仓库的master(默认)分支到本地:	右键------team-----Repostory-----pull
+			*  修改 Merge Tool   
+			 (改完以后又是一个放在暂存区的普通文件)，
+			 直接在push branch master
+			
+			
+	
+三、实现团队协作
+● 找到github中创建的项目的settings 配置栏
+● 找到Collaborators 合作者栏 、 输入合作者的github用户名或者邮箱、添加
+● 发送邀请链接
+
+
+

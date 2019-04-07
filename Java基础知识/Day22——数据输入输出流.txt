@@ -1,0 +1,64 @@
+一、数据输入输出流 
+	可以进行基本数据类型的书写
+1、数据输出流 DataOutputStream :  
+	父类是FileOutputStream  爷爷是OutputStream 
+2、数据输入流 DataInputStream：
+                父类是FileInputStream    爷爷是InputStream
+
+特有的读取数据和写入数据的方法
+例如    writeInt(int v) 一次写入一个int类型的数据
+
+
+二、打印流  ;  只能进行写，不能进行读（只能进行输出，不能进行输入）
+ 字节打印流   PrintStream
+
+字符打印流    PrintWriter  
+		通过构造方法进行自动刷新
+1、可以操作任意类型的数据
+	print（）；打印任意数据类型的参数
+	println( ) 方法
+2、启动自动刷新
+	//通过构造方法实现自动刷新, 是要使用println( ) ,或者printf( )  或者format( )方法
+	PrintWriter(Writer out, boolean autoFlush) 
+	//不仅实现了数据的自动的刷新还实现了数据的换行	
+
+
+三、合并流  （只能进行读取）	 读取字节或者字节数组
+1、SequenceInputStream(InputStream s1, InputStream s2) 
+     SequenceInputStream（将按顺序读取这两个参数，先读取 s1，然后读取 s2）
+
+2、构造方法摘要 
+SequenceInputStream(Enumeration<? extends InputStream> e) 
+       该参数必须是生成运行时类型为 InputStream 对象的 Enumeration 型参数。 
+       由此可知，在集合Vector中用到了枚举，因此使用集合将 InputStream 对象存入到集合
+	
+
+四、序列化和反序列化
+1、序列化流：将对象按照一定的方式存入到文本文件中或者在网络中传输，对象------流数据
+ObjectOutputStream()
+
+2、反序列化：将文本文件中的流对象数据或者网络中的流对象数据还原成对象 ； 流数据-----对象
+ObjectInputStream()
+
+
+五、Properties   : 属性集合类  ，是一个可以和IO流结合使用的集合类
+Properties ： 可保存在流中或者从流中加载，属性列表中及其对应的值都是一个字符串
+//
+注意：是Hashtable的子类，也就是一个Map集合
+
+
+构造方法
+Properties （） 构造一个无参的属性集合
+
+成员方法
+Object setProperty(String key, String value)   //  调用 Hashtable 的方法 put。//添加元素
+public String getProperty(String key ） ；获取元素
+public Set<String> StringPropertyNames( ) ; 获取所有键的集合
+
+//和IO流的结合使用
+public void load(InputStream input) ;  // 从输入流中读取属性列表（键和元素对 )。
+public  void load(Reader reader) 
+       
+ 
+public  void store(OutputStream out, String comments)    以适合使用 load(InputStream) 方法加载到 Properties 表中的格式，将此 Properties 表中的属性列表（键和元素对）写入输出流。 
+

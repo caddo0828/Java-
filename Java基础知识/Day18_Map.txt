@@ -1,0 +1,154 @@
+一、Map<K , value>  接口
+特点：存储键值，获取元素, 无序
+将键映射到值的对象.一个映射不能包含重复的键；每个键最多只能映射一个值。
+注意：键值对应是一个Set集合(元素唯一性)，value对应的是一个List集合（元素可以重复） 
+
+二、  Map和Collection 集合的区别？
+	1、Map集合存储元素是成对存在的，键值不能重复，只能对应一个元素，元素可以重复 
+                     Collection集合：存储元素是单独出现的，元素可以重复（List）也可以不重复(Set )
+	2、Map集合数据结构是针对键值，跟值无关
+	     Collection集合数据结构是针对元素有效
+
+三、Map的功能概述
+1、添加功能：
+	 V put(K key, V value)  ;  添加元素
+	注意事项：当键是第一次存储就返回null ， 当键不是第一次存储就把第一次的元素进行替换(如果输出时是返回第一次的元素)
+2、删除功能
+	void clear( ); 移除所有的键值对元素
+
+	 V remove(Object key) ;  根据键值移除掉键值元素对，并返回 
+3、获取功能：(V代表泛型)
+	Set<Map.Entry<K,V>> entrySet()  ;  获取所有的键值和元素 
+
+	 V get(Object key)  ; 根据键值获取元素
+
+	 Set<K> keySet()  ; 获取集合元素中所有的键值 ,并且存储到集合中
+
+ 	Collection<V> values() : 获取集合中的所有元素 
+
+4、判断功能：（包含返回true）
+	 boolean containsKey(Object key) ; 判断集合是否包含特定的键值
+
+	 boolean containsValue(Object value)  ; 判断集合是否包含特定的元素值
+	
+	boolean isEmpty()  ; 判断集合是否为空
+5、长度功能
+	int size( ) ; 返回集合中的键值对长度
+
+四、Map集合的遍历：
+方式1：根据键找值
+	1、获取所有键的集合
+	2、根据键的集合获取每一个键值
+	3、根据键值输出元素值
+方式2：根据键值对对象找值
+	1、获取所有键值对象的集合
+	2、遍历键值对对象的集合，获取每一个键值对对象
+	3、根据键值对象找键和值
+	
+五、HashMap: 是基于哈希表的Map接口实现
+特性：哈希表用来保证元素的唯一性
+注意事项：HashMap对键进行的操作，具有唯一性，如果要进行键的添加put( ) 方法操作时则要依靠hashCode( ) 和equals( ) 方法
+	而如果键的数据类型是字符串类型，或其他包装类，可以直接操作，因为自动重写了那两个方法
+	但是如果是自定义类型的话，需要重写hashCode( ) 和equals( )方法
+ 
+六、LinkedHashMap : 是Map接口的哈希表和链表实现
+哈希表：保证元素是唯一的
+链表：保证键值是有序的(有序不代表排序);
+
+
+八、TreeMap: 键是红黑树，保证键是唯一的;
+1、自然排序：无参构造实现自然排序,键值所在类实现comparable接口 ,并且在类中重写compareTo() 方法
+2、比较器排序：创建集合有参构造默认实现比较器排序,需要创建接口的实现类对象,,接口实现类重写compare()方法，
+	        因为实际上需要的实现类对象，而操作方法的参数是接口的方法，
+	        可以通过创建匿名对象类创建对象，并重写方法
+
+九、集合嵌套集合
+1、HashMap嵌套HashMap集合
+2、HashMap嵌套ArrayList集合
+3、HashMap 嵌套 HashMap 再嵌套ArrayList集合
+
+十、面试题
+1、HashMap 和Hashtable 的区别：
+HashMap ：线程不安全，效率高，允许null键和null值
+Hashtable ：线性安全，效率低，不允许null键和null值
+
+2、List , Set , Map 等接口是否都继承Map接口?
+List , Set : 继承的是Collection 接口
+Map : 其本身就是一个顶层接口
+
+十一、Collections； 是针对集合进行操作的工具类，都是静态方法
+
+十一、Collection和Collections 的区别？
+Collection : 是单列的顶层集合接口，有子接口List和Set 
+Collections : 是对集合进行操作的工具类，有对集合进行排序和二分查找的方法
+
+十一、Collections 
+public static <T> void sort(List<T> list) ; 排序默认使用自然排序
+public static <T> int binarySearch(List<?> list ,T key  ) : 二分查找
+public static <T> T max (Collection<?>coll) ; 最大值
+public static void reverse(List<?> list) ;反转
+public static void shuffle(List<?> list) ;  随机置换
+
+
+十二、ArrayList存储自定义对象并且进行排序
+注意：ArrayListu元素是有序，指代的并不是元素的大小或其他格式的排序，而是存储和取出的顺序是相同的
+          因此称为是有序的，，要对其进行排序可以使用Collections集合操作类对集合进行排序，使用其静态方法sort( )
+          但是此操作类对集合进行排序操作时，是依靠Comparable接口的，所以自定义的类实现接口，还要重写接口的方法
+          重写compareTo( ) 方法
+
+
+十三、集合的特点，数据结构的总结
+1、集合分为两个体系：Collection （单列集合） 和Map（双列集合)
+Collection : 单列集合
+	List : 有序，可以重复
+		ArrayList  : 底层数据结构是数组，查询快，增删慢
+			线程不安全，效率高
+		Vector ： 底层数据结构是数据，查询快，增删慢
+			线程安全，效率低
+		LinkedList ： 底层数据结构，查询慢，增删快
+			 线程不安全， 效率高
+	Set : 无序，元素唯一
+		HashSet : 底层数据结构是哈希表
+			比较元素是否重复，保证元素唯一性 
+			哈希表依赖于两个方法进行判断hashCode( ) 和equals ( ) 方法
+			1、先比较哈希值hashCode( )
+·				相同，再接着比较地址值或equals( ) 方法
+					返回true； 代表元素重复，不添加
+					返回false :  代表元素可以进行添加操作
+				不同 ： 直接添加元素到集合中
+			注意：如果是自定义的类，需要重写以上两个方法，可以直接系统生成
+		TreeSet :  底层数据结构是一种二叉树（红黑树是一种自平衡的二叉树）
+			二叉树，进行排序操作 根据返回值是否为0 ，进行排序
+			自然排序：(对元素所在的类进行实现接口Comparable)
+				依赖于无参构造，实现接口Comparable，重写compareTo（）方法
+			比较器排序  (集合具备比较性，让集合接收一个comparator实现类对象)
+				依赖于有参构造，产生接口的实现类，重写接口的compare( ) 方法 
+				注意，最重要的是接口的实现类对象，所以直接使用匿名内部类进行操作，重写compare( ) 方法
+		
+		linkedHashSet : 底层数据结构是链表和哈希表
+			       特点： 由链表确定元素的有序性，有哈希表确认元素的唯一性
+
+Map： 双列集合    是对键值进行的操作，产生的是键值对 , 数据结构仅仅针对键有效，值无效
+	           一种键和值进行映射的关系，键值不允许重复，元素值可以是重复的，每个键值最多对应一个元素值
+	HashMap :   线程不安全，效率高，允许键为null，值为null
+		 键的数据结构是一种哈希表，保证键值唯一
+		对键进行添加操作是，使用put(T key , T value) ；方法中，依赖的是两个方法hashCode( ) 和equals（)
+		最终系统进行自动生成即可
+	linkedHashMap :   线程安全，效率低，不允许键值和元素为null
+		          键数据结构是一种，链表和哈希表
+	                           链表确认键值存取和取出顺序相同，哈希表确认键值唯一性
+		           和上述HashMap : 差不多用法
+	TreeMap : 键的数据结构是红黑树
+		自然排序：(对元素所在的类进行实现接口Comparable)
+			依赖于无参构造，实现接口Comparable，重写compareTo（）方法
+		比较器排序  (集合具备比较性，让集合接收一个comparator实现类对象)
+			依赖于有参构造，产生接口的实现类，重写接口的compare( ) 方法 
+			注意，最重要的是接口的实现类对象，所以直接使用匿名内部类进行操作，重写compare( ) 方法
+
+
+
+		
+	
+
+	
+

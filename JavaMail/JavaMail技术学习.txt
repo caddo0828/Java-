@@ -1,0 +1,436 @@
+﻿JavaMail技术
+
+一、RFC882文档编写简单邮件（纯文本邮件）
+分为邮件头和邮件体
+1、from字段  -----> 用于指名发件人
+2、to字段    -----> 用于指名收件人
+3、subject字段  --> 用于说明邮件主题
+4、cc字段    -----> 抄送，将邮件发送给收件人的同时抄送给另一个收件人
+5、bcc字段   -----> 密送，将邮件发送给收件人的同时将邮件秘密发送给另外一个收件人
+		       收件人无法看到邮件密送给了谁
+		
+				  
+二、MIME协议
+邮件可以包含图片，也可以包含附件，MIME协议是对RFC822文档的升级和补充，描述了如何产生一封复杂的邮件
+			
+三、JavaMail创建邮件和发送邮件 
+javaMail创建的邮件是基于MIME协议的，因此可以使用JavaMail创建出包含图片，包含附件的复杂图片
+			
+四、JavaMail技术相关API的简单介绍
+@@ MimeMessage 类表示整封邮件
+@@ MimeBodyPart类表示邮件的一个Mime消息
+@@ MimeMultipart类表示一个由多个MIME消息组成的MIME消息
+
+1、使用JavaMail API收发文件
+（按功能划分为三大类）
+●创建和解析邮件内容的API, Mesage类是创建和解析邮件的核心API，它的实例对象表示一封电子邮件
+●发送邮件的API， Transport类是发送邮件的核心API类，它的实例对象代表实现了某个邮件发送协议的邮件发送对象，例如SMTP协议
+●接收邮件的API， Store类是接收邮件的核心API类，它的实例对象代表实现了某个邮件接收协议的接收对象，例如POP3协议
+●Session类
+   ● Session类用于定义整个应用程序所需的环境信息，以及手机客户端与邮件服务器建立网络连接的会话信息
+     如邮件服务器的主机名，端口号、采用的邮件发送和接收协议等
+	 Session对象根据这些信息构建用于邮件收发的Transport和Store对象，以及为客户端创建Message对象时提供信息支持
+  
+
+2、使用JavaMail发送一封简单的邮件
+●创建包含邮件服务器的网络连接信息的session对象
+●创建代表邮件内容的Message对象
+●创建Transport对象，连接服务器，发送Message、关闭连接
+
+
+A：Session(邮件会话)
+     Session 对象利用Properties对象获得了邮件服务器，用户名，密码，信息，和整个应用程序都要用到的共享信息
+
+●创建配置文件
+	properties prop = new Properties();
+
+●通过配置文件获取当前会话级别的session对象
+	Session session = Session.getInstance(prop，null);
+●或者获取当前的默认的配置文件下的session对象                       //第二个参数代表当前的授权对象
+	Session session = Session.getDefaultInstancce(prop，null);
+
+●设置对应的配置文件的相关属性
+	prop.setProperty();
+
+	//定义服务器地址(发送时使用本机地址)
+	prop.setProperty("mail.host", "localhost");
+
+	//定义服务器协议
+	prop.setProperty("mail.transport.protocol", "smtp");
+
+	//定义用户权限,是否需要认证
+	prop.setProperty("mail.smtp.auth", "true");
+
+●开启session的debug模式
+	session.setDebug(true);     //可以在后台看出发送的主机名，发送的地址，接收的地址，以及发送的端口号
+
+
+B：Message对象
+       建立Session对象后，就可以构造发送的Message抽象类（邮件对象），建议使用MimeMessage子类对象
+该类使用的是MIME类型，MIME信息头的邮箱信息
+
+Message类的三种构造方式：
+	Message( );
+	Message(Folder folder , int messageNumbers) ;  文件夹
+	Message(Session) ;
+
+FROM地址（发件人地址）：
+	Address[ ] getFrom( );   		 //获取当前的邮件对象所使用的发件地址
+	void setFrom(Address address );	    //设置当前的发送地址
+	void addFrom(Address[ ]  address);	//添加放地址
+
+
+Reply-to地址（回复信息的地址）：   指示回复消息当发送到与发送消息不同的地址
+	Address[ ] getReplyTo( )  ;     		//获取到当前回复消息的地址
+	setReplyTo(Address[ ] address)    	// 设置回复消息的地址
+
+接收发地址：
+	消息的发送方一般存在于FROM：首部中，而消息的接收方却分为TO，CC , BCC三个字段
+	Message.RecipientType.TO        接收
+	Message.RecipientType.CC   	抄送
+	Message.RecipientType.BCC     密送
+
+设置接收方的地址：
+	message.setRecipient(String type ，Address  address) ；    type : 接收格式字段，address接收地址
+	//使用：
+		  message.setRecipient( Message.RecipientType.TO ,  new InternetAddress("tan_qi@sohu.com")  )  ;
+获取接收方的地址：
+	Address[ ]    getRecipients( Message.RecipientType    type)      	//获取指定格式的邮件的接收方地址
+            
+                Address[ ]     getAllRecipients( )       			 //获取所有的接收方的地址
+
+
+消息主题：
+	//邮件标题
+     	  message.setSubject(String subject);
+
+	//获取对应邮件的主题
+	String  getSubject( )
+
+消息日期：
+	//设置消息发送的日期
+	void   setSentDate(Date  date) ; 
+	
+	//获取发送的时间
+	Date   getSentDate( );
+	
+	//获取消息接收的时间
+	Date    getReceivedDate( ) ;
+
+消息内容格式：
+	message.setContent(文本，文本格式 ) ;
+
+
+将创建好的邮件写入Epan以文件的形式进行保存	
+	message.writeTo(new FileOutputStream("D:\\JAVA基础学习\\JavaMail\ImageEmail.eml"));
+	
+
+	
+	
+●通过session对象，创建对应的邮件对象
+	Message message = new MimeMessage(session)；
+
+●指名邮件的发送内容格式
+	message.setContent("发送简单文本文件邮件" ,  "text/plain")；  
+		 //text/plain： 普通文本文件      text/html  ： html文件      text/xml：xml文件
+
+●指名邮箱发送人地址
+	message.setFrom(new InternetAddress("tan_qi@sohu.com"));
+
+●指名邮件收件人（类型+地址）
+	message.setRecipient(Message.RecipientType.TO ，new InternetAddress("tan_qi@sohu.com")  ) ;
+
+●设置邮件的标题
+	message.setSubject(“确认订单”) ;
+
+ 
+
+C：Multipart  和   BodyPart
+	Message表示一个邮件，message.getContent( ) 返回的是一个Multipart对象，一个Mutipart对象包含一个或多个BodyPart对象
+	来组成邮件的正文部分（包括附件）
+
+Multipart：   （抽象类）
+	Multipart是一个容器它转载多个bodyPart(正文，附件或内嵌资源)。Part的getContent( ) 方法，就返回一个Multipart对象
+                MimeMultipart是Multipart的实现类，默认类别是mixed，其他类型为related，alternative
+
+ 	●multipart有三种类型：
+		multipart/mixed：附件  
+		multipart/related：  内嵌资源   (在对应的HTML文件中嵌入了对应的图片)
+		multipart/alternative：纯文本和超链接  （包含内嵌图片和复杂附件）
+
+
+BodyPart：    （文本内容）
+	BodyPart是一个邮件头对象（是一个抽象类）
+	
+	//创建BodyPart的实例
+	●BodyPart bodypart = new   MimeBodyPart( ) ;
+	
+  	//添加文本内容
+	void   addBodyPart(BodyPart part) ;  
+   
+ 	//添加具体索引对应的bodypart
+	void addBodyPart(BodyPart part , int index)    
+
+	//根据索引，获取BodyPart
+	BodyPart  getBodyPart(int index );
+	
+	//移除的对应的BodyPart
+	boolean   removeBodyPart(BodyPart   part)；
+	
+	//获取BodyPart数量
+	int  getCount( );
+	
+	●BodyPart   和  message 设置文本内容时区别？？？
+	《1》虽然都实现了part接口，但是BodyPart是包含在Multipart中的，它的parent是（Multipart）message.getContent( ) ;
+	 
+
+MimeBodyPart
+	//一个字节数组存放BodyPart内容的字节流
+	protected     byte[ ] 	   content
+
+	//若BodyPart的数据提供一个InputStream  contentStream是一种流的代表BodyPart的内容
+	protected	     InputStream  contentStream 
+
+	//代表BodyPart内容的DateHandler对象
+	
+     	●//构造方法
+	MimeBodyPart( )； 创建一个空的MimeBodyPart对象
+	MimeBodyPart(InputStream  in)    
+	MimeBodyPart(InternetHeaders headers , byte[ ]  content)；
+	
+	
+DataHandler：
+	●操作附件
+    
+		●：第一个部分：建立一个完整的邮件的各个邮件体的部分  ( 创建邮件体HTML部分 )
+		
+		●：第二个部分：具有DataHandler的附件     （创建邮件体img部分）
+			1、若文件作为附件发送建立FileDataSource类型的附件数据源对象
+			2、若URL作为附件发送建立URLDataSource类型的附件数据源对象
+		
+		
+	●  使用servlet实现发送带有附件的邮件注意提交的页面  form 中对编码类型设置应为Multipart/form-data
+		<form enctype="multipart/form-data" method="post"  action="/myServlet">
+			<input type="file" name="thefile" />
+			<input type="submit" value="upload" />
+		</form>
+	
+	
+	●将HTML中用到的图片作为邮件附件并使用特殊的 cid  URL作为图片的引用（Content-ID的引用）
+		通过设置图片附件的邮件体部分的header中Content-ID为一个特殊的字符串，
+		并在HTML中img的src标记中设置为该字符串来完成图片附件与HTML的关联
+		
+	
+				
+	//获取附件对象
+	DataHandle  getDataHandler( ) ;
+	
+	//为BodyPart设置一个DataHandler对象
+	void   setDataHandler(DataHandler dh )；
+	 
+	●操作附件名：
+	//设置了附件名称则会在邮件BodyPart头中增加一行表示附件的代码Content-Disposition: attachment; filename=xxx.xls
+	void  setFileName(String fileName)；
+
+	//获取设置的附件的名称
+	String   getFileName( ) ;
+		
+	●操作正文
+	void  setText(String text)
+	void  setText(String text , String charset)；
+	void  setText(String text ,String charset ,String subtype)；
+	  
+	//    以上三个方法都是设置MimeBodyPart的内容（文本内容）的，不同之处在于是否需要指定字符或指定的MIME类型
+
+	   
+	  
+Flag：    （邮件标记）
+		标记邮件就是把邮件标记为已读，删除等操作，需要使用Flags类，也可以根据用户自定义的标记设定特定的邮件
+		●设置邮件标记：
+			//设置标记时需要以读写权限打开收件箱
+			Folder.open(Folder.READ_WRITE);
+			
+			//设置标记
+			Message.setFalg（“标记”，true）;
+			message.saveChanges( );
+			
+	    ●清除邮件标记
+			//清除邮件标记是也需要以读写权限打开收件箱
+			Folder.open(Folder.READ_WRITE);
+			
+			//获取邮件标记
+			Flags flags = message.getFlags( );
+			if( flags.toString().equals("标记") ) {
+				//清除邮件标记
+				message.setFlag(Flags.Flag，false);
+			}
+			//保存邮件修改
+			message.saveChanges( );
+	    
+	
+
+
+D：Address地址：
+	建立了Session和Message对象后，使用邮件地址Address 抽象类，使用javax.mail.internet.InternetAddress这个子类
+	通过传入邮件地址的字符串
+
+ 	Address address = new InternetAddress(String address) ;    //传入邮箱地址
+
+
+	
+E：Authenticator授权者类
+	使用Authenticator授权者类必须实现getPasswordAuthenticaion( ) 方法  （用于存储认证时要用的的用户名，密码）
+	并且要在Session中进行注册，使Session能够了解认证哪个类
+	
+	//使用
+	Properties prop = new Properties( );
+	
+	//给配置对象添加属性
+	prop.setProperty("mail.host" , "localhost");
+	prop.setProperty("mail.transport.protocol" ，“smtp”) ；
+	prop.serProperty("mail.smtp.auth" ，“true”);
+
+	//授权对象
+     	 Authenticator auth = new Authenticator() {
+	         @Override
+	         protected PasswordAuthentication getPasswordAuthentication( ) {
+	                     //第一个参数代表授权者的邮箱地址，第二个参数代表邮箱密码
+		     return new PasswordAuthentication("XXXXXX","XXXxx");
+	        }
+	}; 
+
+	//通过配置文件以及授权对象获取会话连接对象Session 
+	Session session = Session.getDefaultInstance(prop , auth) ；
+	
+
+F：Transport
+	发送信息使用Transport抽象类（实现了SMTP）
+	//获取对象
+	Transport  transport  =  session.getTransport(  )；
+
+	//连接服务器
+	transport.connect(host, username , password);      
+		@ 参数：
+		        (1) host : 服务器地址:     mail.sohu.com
+		        (2) username ;    邮箱账号
+		        (3)password:      邮箱密码
+	
+	
+	//发送邮件给所有收件人
+	transport.sendMessage(message ,  message.getAllRecipients( ) )；
+	
+      	//关闭连接
+	transport.close( ) ;
+
+
+G：Store（存储邮件的服务器，接收邮件）和Folder （收件箱目录对象）
+	//存储邮件的服务器  采用“pop3协议”
+	Store store = session.getStore("pop3");  
+	
+  	//邮件服务器连接
+	store.connect(host，username，passworsd)；
+	
+	//目录对象
+	Folder folder = store.getFolder（“INBOX”)；
+
+	//以只读的方式打开目录对象中的数据
+	folder.open(Folder.READ_ONLY)；
+ 
+	//获取目录下的邮件信息
+	Message message[ ] = folder.getMessages( ) 
+
+	//邮件内容（不包含邮件头）
+	( (MimeMessage) meaasge).getConent( );
+	
+	//邮件内容（包含邮件头）
+	( (MimeMessage) meaasge) , writeTo( )；
+  
+	//若删除邮件及时更新Folder，关闭
+	folder.close(true )；
+	store.close( );
+
+
+
+六、读取邮件
+
+	public void main(String[]  args) {
+		● 配置服务器主机地址，协议。以及用户授权
+		Properties prop = new Properties();
+		
+		● 设置邮件的服务器
+		prop.setProperty("mail.host", "localhost");
+		
+		●设置邮件发送协议
+		prop.setProperty("mail.transport.protocol", "smtp");
+		
+		●设置邮件用户权限
+		prop.setProperty("mail.smtp.auth", "true");
+		
+		●获取服务器操作对象
+		Session session = Session.getDefaultInstance(prop);
+		
+		●设置session的Debug模式
+		session.setDebug(true);
+		
+		●获取存储邮件的服务器
+		Store store = session.getStore("pop3");
+		
+		●与收件箱服务器进行连接
+		store.connect("smtp.sohu.com" ，"xxxxx ",  "xxxxx");
+		
+		●获取收件箱目录对象
+		Folder folder = store.getFolder("INBOX");
+		
+		●设置收件箱目录权限为只读
+		folder.open(Folder.READ_ONLY);
+		
+		●获取所有的邮件
+		Message message[] = folder.getMessages();
+		
+		●遍历邮件，获取具体的邮件发件人地址，邮件的主题，邮件的内容
+		for(int i=0;i<message.length;i++) {
+			●解析邮件的发件人地址----->getFrom( )； 
+			System.out.println("发件人地址="+message[i].getFrom()[0].toString());
+			●解析邮件的主题
+			System.out.println("邮件主题="+message[i].getSubject());
+			●解析邮件的内容(文件内容可能出现多种形式)
+			System.out.println("邮件内容="+((MimeMessage)message[i]).getContent().toString());
+		}
+		
+		●释放连接
+		folder.close(true);
+		store.close();
+}
+	
+	
+
+
+七、发送包含图片的邮件信息
+●：第一部分：（内容）
+				BodyPart text = new MimeBodyPart();
+				text.setContent("包含图片的邮件<img src='cid : winter.jpg' >","text/html;charset=utf-8");
+				//text.setText("包含图片的邮件");
+				
+			●：第二部分   （文件附件）
+				BodyPart  image = new MimeBodyPart() ;
+				//DataSource source = new FileDataSource("file路径") ;
+				//image.setDataHandler(new DataHandler(source));
+				
+				DataHandler datahandler = new DataHandler(new FileDataSource("/WebContent/images/winter.jpg"));
+				image.setDataHandler( datahandler );
+				//将正文HTML与img附件进行关联
+				image.setHeader("Content-ID"， “winter.jpg” ) ；
+				
+				
+			●  装填正文内容和文件附件 (多媒体对象)
+				Multipart   multipart = new MimeMultipart( );
+				multipart.addBodyPart( text );  //装填第一部分(邮件内容)
+				multipart.addBodyPart( image )；//装填第二部分(附件部分)
+				((MimeMultipart）multipart) .setSubType("related");
+				
+		               ●  将数据加载入邮件对象中
+				message.setContent(multipart)；
+			
+			● 发送带有附件的文件邮件
+			    transport.sendMessage(message, message.getAllRecipien() );	
+	

@@ -1,0 +1,279 @@
+JSP语法
+一、指令元素 
+概念；用于从jsp发送一个信息到容器，比如设置全局变量，文字编码，引入包等
+
+1、page指令
+使用写法：	
+			<%@page  属性名=”属性值“   属性名=”属性值 。。。 %>
+			
+			//使用
+			<%@ page language="java" contentType="text/html; charset=utf-8"
+			pageEncoding="utf-8" import="java.util.*,java.net.*" errorPage="calculater.jsp"  session="true"  %>
+
+			language ： 声明jsp要被转译的语言
+			import： 声明要导入的java包 ，不同的包之间用逗号分隔     （包.类名）
+			contentType：  文本的格式
+			pageEncoding：  设置当前界面的编码格式， 以及数据响应解析的编码格式
+			session：  设置转译内容中是否支持session支持 ，  true 表示开启，false 表示关闭
+			errorPage：  "相对jsp页面"  当jsp页面出现错误时，自动跳转到指定jsp页面，要求使用相对路径
+						当以“/”开始时，表示当前web应用的根目录，如果不以“/”开头，则表示相对本jsp页面
+			
+			isErrorPage =[false | true]  :    isErrorPage=[false | true ] 指定该jsp页面是否专门用于作为error页面 ，默认为false ，
+						如果设为true ，则可以在该页面直接使用 exception 内置对象
+
+			extends ；   设置jsp转译的Java文件要继承的父类，  （包名+类名）
+	
+
+作用：
+		配置jsp文件的转译相关的文件
+	
+
+	
+2、include 指令
+<%@ include file="filename"%>      静态引入
+该指令用于引入一个文件（通常是jsp文件），jsp引擎会把两个jsp文件翻译成一个servlet文件，因此也称为静态引入
+被引入的jsp文件，只需保留page指令即可 ，<html><body>指令可以省略
+
+
+
+3、taglib指令--这个指令允许在jsp页面使用自定义标签
+<myTag : yourTag num1="123">
+
+
+ 
+二、脚本元素
+
+JSP局部代码块：<% java 代码 %>
+				特点：
+						局部代码跨中声明的java代码会被原样转译到jsp对应的servlet文件的_JspServixe方法中
+		  
+			    使用：	
+						<%   java代码块     %>
+			    开发中：
+						servlet 进行请求逻辑处理，使用jsp进行页面展示
+				 
+JSP的全局代码块：<%! 变量声明  %>       <%! 函数声明  %> 
+				特点:
+						声明的java代码作为全局代码块转译到对应的servlet类中
+			
+				使用：
+					    <%!   全局代码     % >
+					
+				注意：
+						全局代码块声明的代码，需要使用局部代码块调用
+						
+	
+JSP的脚本段： <%=java表达式 %>
+				特点：
+						快速获取变量或者方法的返回值，作为数据响应给浏览器
+						
+				使用 ：
+						<%= 变量名   或者是方法   %>
+
+
+面试题： 
+            1	<%! int i = 900;  %>
+            2	<% int i = 90; %>  局部变量
+            3   <%   out . println ( i ) ;  %> 
+问：此时在界面中输出的i的值为多少？
+答案： 90
+原因： 因为2 中的 i 属于局部变量， 2和3 式属于同一个service函数中，而1中的 i 为该jsp对应的servlet的成员变量
+重点： JSP的本质就是一个类			
+		
+		
+
+三、动作元素
+动作元素是使用xml语法写的，是jsp规定的一系列标准动作，在容器处理jsp时，当容器遇到动作元素时，
+就执行相应的操作
+1、<jsp : useBean>       创建一个javaBean实例
+2、<jsp : setProperty>   给一个javaBean实例设置初始值
+3、<jsp : param>           给一个jsp设置参数，常常与<jsp : include>  结合使用
+    
+		<jsp : include file = "info.jsp">  
+			<jsp : param  name="parameter1"  value = "value1"/>
+			<jsp : param  name="parameter2"  value = "value2"/>
+		< / jsp : include >
+		
+		注意：
+			以 ？ 的形式拼接在地址的后面（相当于重写URL地址）
+	
+		
+4、<jsp : getProperty>    取得一个javaBean实例的成员变量
+5、<jsp : include>           引入另外一个文件
+6、<jsp : plugin>            使用插件
+7、<jsp : forward  page="/Manager.jsp">          转发
+8、<jsp : fallback>          事务回滚
+
+
+重点知识：
+	在开发过程当中，为了避免信息的泄露而将大多数的jsp页面放在WEB-INF目录下
+	此时无法从外部通过地址直接访问，而是通过存放在webroot目录下的文件，来访问其他的jsp页面
+	通常入口文件代码如下 ；<jsp : forward page="/WEB-INF/Manager . jsp"> </jsp : forward>
+	
+
+	
+	
+四、jsp文件的注释
+		前端语言的注释：	 <!--  -->
+				会被转译，也会被发送，但是不会被编译器执行
+		
+		java语言注释：     //     /* */     /**   */
+				会被转译，但是不会被servlet执行
+		
+		jsp注释：         <%--    -->
+				不会被转译
+					
+	
+	
+
+五、动态引入和静态引入的区别？	
+静态引入：
+	    <% @ include file = "要引入文件的相对路径" %>  
+	
+		特点：
+			会将引入的jsp文件和当前jsp文件转译成一个java(servlet) 文件使用
+			在网页中也就显示了合并后的显示效果
+		
+		注意：
+			静态引入的jsp文件不会单独转译成java文件
+			当前的文件和静态引入的jsp文件中不能够使用java代码块声明同名变量
+			（只要同名就报错，与类型无关）
+		
+	
+	
+动态引入：   
+		<jsp : include  page = "要引入文件的相对路径"> </jsp : include>
+			
+		特点：
+			会将引入的jsp文件单独转译，在当前文件转译好的java文件中调用引入的jsp文件的转译文件
+			在网页中显示合并后的效果
+		
+		注意：
+			动态引入中允许文件中声明同名变量  
+	
+
+优点：
+		降低jsp代码的冗余，便于维护;
+		
+		
+相同点： 把一个文件引入到另外一个文件
+区别：   动态引入时，被引入的文件不用省略<body> ，<html> 部分，并且文件之间不会被合并，而是单独的资源形式
+         静态引入时， 文件之间会被合并成一个servlet
+
+
+		 
+		 
+六、JSP的转发标签
+forward
+			使用：
+				<jsp:forward page="要转发的相对路径"></jsp:forward> 		
+			
+			特点：
+				一次请求， 地址栏信息不改变
+				
+重要注意事项：
+		标签起始和标签结束之间不可以有"   空格  "   ，否则抛500异常
+		
+		//报错原因，如下：
+			  Expecting "jsp: param"  standard action  with  "name"  and  "value"  attributes
+			
+	     
+		在转发标签的两个标签中间除了写
+		     <jsp:param value="str" name="aaa"/> 子标签
+ 		 
+		
+		<!-- 转发forward -->
+		<jsp:forward page="calculater.jsp">
+				<jsp:param value="TQ" name="str"/>
+		</jsp:forward>		
+
+		
+		在转发的页面中可以获取之前存储在jsp动作元素内的属性值
+		//如下：calculater.jsp 界面
+			
+			<b>转发页面----forward----<%=request.getParameter("str") %></b>
+	
+
+	
+			
+
+七、注意事项：
+      JAVA代码块：
+			<%    %>  在JSP中会用来作为一些元素的开头与结尾符号，如果要在JSP界面中输出 <%   符号或者  %>fh，
+			不能直接写下来 < %  或  %> ，以免转译的时候被误为某个元素的起始或者结尾符号
+
+			例如：    （以下程序会抛错）
+				<%
+					out.println("JSP中JAVA语法结束符号%>   ");
+				%>
+   
+			结果： 直接报 ； 输出语句中不能出现标签结束符
+			
+			解决方式：
+					<%  ：  可以用  &lt;%; 代替
+					%>	：  可以用  %&gt;  或者 %\>  代替
+		    
+	
+
+八、JSP文件路径的原因
+（1）同一文件夹路径下 （同级目录下），直接写文件名  .jsp
+	
+（2）不同文件夹路径下： 用" ../ "  , 跳出当前的文件夹 	
+		例如：
+				a
+					b
+						b.jsp
+						
+				a.jsp
+				
+				pro.jsp
+			
+	    从b.jsp中写超链接访问  pro.jsp 
+				<a href="../../pro.jsp"  > pro.jsp </a>
+	
+		从a.jsp中写超链接访问  pro.jsp
+				<a href="../pro.jsp"   > pro.jsp </a>
+
+
+（3）在JSP界面中资源路径可以使用相对路径完成跳转，但是？
+		问题一：  资源的位置不可以随意改变
+		问题二：  需要使用  ../  进行文件夹的跳出，使用比较麻烦
+		
+使用绝对路径：	
+			/  代表服务器根目录  ，相当于  localhost:8080
+			/虚拟路径名/资源名    
+			
+			
+	注意：
+			也可以使用：
+				String  path = request.getContextPath() ;
+				String basePath = request.getScheme()+"://" + request.getServertName() + ":" +request.getServerPort() + path +"/";
+				
+				
+				此时在 <a > </a>  链接中只需要写以下路径
+					<a href=" <%=basePath%>login.jsp"> 跳转界面  </a>
+	
+
+	
+九、JSP动作元素
+<jsp : param name="str" value=" TQ "  />
+	
+		name :  属性为附带数据的键名
+		value:  为附带的数据内容
+	
+注意： 
+		会将数据以  ？ 的形式拼接在转发路径的后面
+		
+		
+		
+<jsp:include page=""></jsp:include>
+当前页面包含其他界面的内容，  此时可以向本界面中输出对应的标准流
+
+
+<jsp:forward page="" ></jsp:forward>
+当前界面直接转向到另外的资源，此时无法在当前界面中使用输出的对应的标准流
+
+	
+		
+		
+			

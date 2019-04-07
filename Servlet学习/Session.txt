@@ -1,0 +1,199 @@
+一、session 技术
+	属于服务端技术，服务器在运行时可以为每一个用户的浏览器创建一个其独享的session对象
+由于session为用户浏览器独享，所以用户在访问浏览器的web资源时，可以把各自的数据放在各自
+的session中，当用户再去访问服务器中的其他web资源时，其他web资源再从用户各自的session中取出数据为用户服务
+
+		
+
+二、session的工作原理
+******可以将session想成是一个集合，包含键 和 值
+		session对象（域对象 / 集合）
+name (String)   value  (object) 
+		//此处说明 值可以保存字符串，也可以保存对象
+		//一行表示一个属性
+
+
+
+三、创建以及使用方法
+1、通过request方法创建session  ,  返回当前与request关联的session，当发现没有时主动创建一个session 
+HttpSession  setSession( ) ;
+		//HttpSession 为接口
+		HttpSession  session = request.getSession();  
+	
+HttpSession getSession(boolean create)
+		返回与当前request对象相关联的session对象
+		如果此对象不存在，并且为创建模式下。就返回新创建的session对象
+
+		
+2、设置session的生命周期    
+ void   setMaxInactiveInterval(int interval)    以秒计算
+
+		  代表的是session的空闲时间，也就是指发呆时间，当快到结束时间时，如果重新访问的话，session自动重新计算时间
+          session . setMaxInactiveInterval(int interval) ;
+		  
+		  
+		  
+3、设置session存储的 键 和 值
+ void  setAttribute(java.lang.String name, java.lang.Object value) 
+ 
+			request.getSession().setAttribute(String name , Object value);
+			
+
+4、通过request对象获取与request相关联的session，，注意： 如果不存在session时，就会返回null
+   可以根据是否为空判断是否存在session对象
+ HttpSession   getSession() ;
+ 
+		HttpSession  session = request.getSession();  
+		//返回与当前request对象相关连的session，如果不存在就创建一个
+
+		
+ HttpSession  getSession(boolean create) 
+        返回与当前request对象相关联的session对象
+		如果此对象不存在，并且为创建模式下。就返回新创建的session对象
+	
+	
+5、获取session对象中的值   （通过对应的键获取相应的值 ， 返回一个object对象）
+Object   getAttribute(java.lang.String name) 
+			
+		//当session对象为空，或者通过指定键名没取到数据的话，返回null
+		//通过具体的键获取值
+        request.getSession . getAttribute(String name);
+		
+	
+6、获取session对象的所有名字枚举
+Enumeration<String>   getAttributeNames() ;
+
+		Enumeration<String>  enumeration = request.getSession.getAttributeNames();
+		//判断枚举集合是否为空，不为空。
+		遍历枚举集合，找到对应的名字与所要查找到session的键名一致的
+		然后此名字去找存储的对应的值
+		
+         HttpSession session = request.getSession();
+		 //获取session中保存的所有的键名枚举集合
+		 Enumeration<String> enumeration =session.getAttributeNames();
+		 boolean flag = false; 
+		 while(enumeration.hasMoreElements()) {
+			 String name = enumeration.nextElement();
+			 if(name.equals("kkk")) {
+				 response.getWriter().write((String)session.getAttribute(name));
+			     flag = true;
+				 break;
+			 }
+		 }
+		 
+	
+7、 根据特定的键名删除对应session的属性值
+void    removeAttribute(String name) 
+          Removes the object bound with the specified name from this session.
+     
+	      request.getSession.removeAttribute(String name);
+		  //删除对应键所保存的属性值，也就是相当于再集合中删除了一个属性
+
+		  
+8、获取session的生命周期
+ int getMaxInactiveInterval() ；   
+	
+			返回以秒计算的值
+			request.getSession.getMaxInactiveInterval();
+			//返回int类型
+	
+
+9、解除相应的session的绑定，立马让session失效 ，  让session中所有属性都失效
+void  invalidate() 
+          Invalidates this session then unbinds any objects bound to it.	
+
+		  
+10、返回与当前request相关联的session的 id  
+ java.lang.String  getId() 		  
+		  
+		  request.getSession().getId();
+		  //此时每一个id号属性都是默认保存在cookie当中的
+		  当一个用户访问web的其他资源时cookie中就是携带此时的session对象的id，并且告诉其他的web资源
+		  此时的session已经存在，不需要重新创建
+		  
+		  //如果是第一次访问则cookie中不会携带任何的session 的id信息
+		  因此此时通过request.getSession();获取session时。服务器就会创建一个新的
+		  
+
+		  
+11、获取session创建的时间  以毫秒的形式返回
+long getCreationTime() 		
+
+           
+  
+	
+	
+四、注意事项
+注意：
+		（1）当用户浏览器访问时已经存在session对象时，不再创建，直接将新的用户信息保存在之前创建的session对象中
+		
+		（2）session对象是放在服务器的内存中的
+		
+		（3）一个用户浏览器独享一个session对象
+		
+		（4）session的生命周期默认是根据配置信息中的session-timeout 中的值来判断，也可以通过自己设置
+		
+		（5）当session中保存相同键名的值时，会替换掉之前的值
+	
+		（6）在单个web应用下修改session的生命周期配置
+
+			<session-config>
+				<session-timeout>20</session-timeout>
+			</session-config>
+           自己配置的生命周期级别更高，因此优先级更高
+		  
+		    自己配置的session的生命周期以分钟计算  ，cookie的生命周期以秒计算精确
+		    通过调用方法配置的生命周期表示是空闲发呆时间，以秒计算
+		
+
+五、session  和  cookie 的生命周期比较  
+1、session
+		A：session的生命周期指的是发呆时间，如果我们设置的session是10s;
+		   指的是在10s内，没有访问过session，session的属性失效（代表的是session中存储的所有属性都失效）
+		   如果在9秒的时候，你在访问session，则重新开始计时，重新生效
+		
+		B：如果重启服务器或者reloading了web应用，或者关机了，session也会失效
+	
+		C:	也可以使用函数强制让session失效，，，，，此方法经常被用在  
+		    invalidate()
+	        该方法通常用于安全退出，，，让session中所有属性都失效
+			
+			
+			使用的时候会让所有的session属性都失效
+			request.getSession().invalidate( );
+	
+2、cookie
+		cookie的生命周期，指的是累计时间，不管用户是否中途访问过该cookie
+		超过了时间，就自动销毁，并且cookie是保存在浏览器端的
+		
+		
+		
+六、注意事项    （forward   和 return 语句  结合使用）
+在使用forward转向时，如果要回到其他界面，并且保证不走其他的代码块区域，必须加入    return 
+使得界面直接跳转，不走其他的代码区
+
+//因为forward进行界面跳转的时候比较延缓，如果不加return语句，可能会导致走完了其他地方的语句才进行跳转
+可能在某些技术上就没有达到防止非法登录的效果
+
+
+七、为什么浏览器知道同一个用户创建的session呢？或者说为什么同一个用户服务器端只会创建一个session呢
+	因为在访问过程中，服务器端根据浏览器访问web资源是cookie中是否携带session的id 进行判断
+如果没有携带id就创建一个新的，如果有id就会携带此id进行资源的访问，此时服务器也就知道session已经创建，不需要再次创建了
+
+
+  
+		用户名：<input type="text" name="username" value=<%=name%> /> <br />
+		       <span id="unameTip"></span>
+		密     码：<input type="password" name="password" value=<%=pwd%> /><br/>
+		       <span id="pwdTip"></span>
+		验证码：<input type="text" name="RandomNumber" /> 
+				<img alt="" src="/Manager/ImageServlet"/>
+				<a href="http://localhost:8080/Manager/Login.jsp" >看不清，换一张 </a> <br />
+			
+		保存用户信息：<input type="checkbox" name="statue" value="keep"/><br />
+		不保存用户信息：<input type="checkbox" name="statue" value="nokeep"/>不保存用户信息<br />
+		<input type="submit"  value="Login" onclick="return ckLogin()"/>
+		<input type="button" value="Register" onclick="window.location.href='DoRegister.jsp'">
+
+ 
+ 

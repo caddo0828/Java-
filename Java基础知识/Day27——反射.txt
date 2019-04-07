@@ -1,0 +1,112 @@
+一、反射
+      	在运行状态内，对于一个任意一个类，能知道类的所有属性和方法，
+	对于任意一个对象，能够调用任意一个方法和属性
+	( 这种动态获取的信息以及调用动态调用对象的方法的功能称为Java语言的反射机制 )
+
+A、类加载器 ：负责将class文件加载在内存中，并且为之生成对应的Class对象
+B、拓展类加载器
+C、系统内加载器
+
+反射：就是通过class文件对象，去使用该文件中的成员变量，构造方法，成员方法
+1、要想这样使用，必须得到class文件 对象 ，也就是都得到class类的对象
+
+class类：
+	成员变量：Filed
+	构造方法：Constructor
+	成员方法：Method
+
+二、获取class文件对象
+A: object类中 getClass( ) 方法
+	例如： person p  = new person( );
+	           class   c1 = p.getClass( ）；
+
+B：数据类型的静态属性class
+	例如 :   class c = person . class;
+
+C：class类中的静态方法
+	public static  Class forName(String  className);
+	className：必须是全路径   （包括包名，就算同一个包名下也要写包名）
+
+注意：开发中经常用到的是第三种
+	因为写入的是一个字符串，而不是一个具体明确的类名，这样可以将一个字符串写入到配置文件
+
+
+三、通过反射获取构造方法并使用
+public Constructor[ ]  getConstructors( ) ; 获取的是公共（public）的构造方法
+
+public Constructor[ ]   getDeclaredConstructors( ) ;  所有的构造方法
+
+//获取单个公共的构造方法 
+public Constructor<>    getConstructor(class<>...     parameterTypes ) ;
+参数表示的是：你要获取的构造方法的参数的个数以及数据类型的class字节码文件对象 (String . class , int . class)
+//返回一个Constructor对象 ,  实际上是一个构造方法的对象
+
+//构造方法对象的实例化s
+newInstance(Object... initargs ) ;  
+//Object... initargs代表带参构造中的实例初始化内容
+Object obj = Constructor对象 . newInstance( ) ;
+
+四、获取有参构造
+getDeclaredConstruct(class<>...     parameterTypes )  ; 获取指定参数，及类型的所有构造方法
+ void setAccessible(boolean flag)      将此对象的 accessible 标志设置为指示的布尔值。 
+//值为 true 则指示反射的对象在使用时应该取消 Java 语言访问检查 （也就是不管是公有还是私有都能访问）
+
+
+
+五、通过反射获取成员变量
+ Field[] getDeclaredFields() 
+          返回 Field 对象的一个数组，这些对象反映此 Class 对象所表示的类或接口所声明的所有字段。 
+
+//配套使用    只能是公共的
+Field getField(String name) 
+          返回一个 Field 对象，它反映此 Class 对象所表示的类或接口的指定公共成员字段。 
+void set(Object obj , Object value) 
+          将指定对象变量上此 Field 对象表示的字段设置为指定的新值。 
+
+
+//获取所有的成员变量 (配套使用)     (可以取出私有的方法)
+Field getDeclaredFiled( String name)
+void SetAccessible(boolean flag ) ; 取消权限
+void set(Object obj , Object value) 
+
+
+六、通过反射获取成员方法
+1、获取所有的方法
+getMethods
+
+getDeclaredMethods
+
+2、获取单个方法
+getMethod(String name , Class<?>...    parameteTypes) //第一个参数代表方法名称，第二个代表方法中参数的类型
+
+getDeclaredMethod
+
+// 用方法的对象对 方法的对象和参数进行显示 
+public object invoke(Object obj , Object... args )
+//返回值是Object接收，第一个参数表示对象是谁，第二个参数表示该方法的实际参数
+
+
+3、暴力访问
+method . setAccessible(true ) 
+
+
+
+七、通过反射运行配置文件内容
+Properties集合
+
+
+
+八、面试题
+//给定ArrayList<Integer>的一个对象，在集合中想添加字符串元素如何实现
+//创建一个集合对象
+		ArrayList<Integer> array = new ArrayList<Integer>();
+		
+		//获取array对象的字节码对象
+		Class c = array.getClass();
+		
+		//通过字节码对象获取方法对象
+		Method m = c.getMethod("add", Object.class);
+		//设置方法中对象的参数值
+		m.invoke(array, "hello");
+		System.out.println(array);
+

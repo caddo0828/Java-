@@ -1,0 +1,141 @@
+一、过滤器
+定义以及使用的原理：
+	Filter被称为过滤器或者拦截器，其实现的原理是实现javax.servlet.Filter接口
+	
+作用：
+	对服务器接受的请求资源和响应给浏览器的资源进行管理
+	保护Servlet
+	
+	
+二、使用
+1、创建一个实现了Filter接口的普通Java类  （实现接口Filter）
+2、在web.xml文件中配置Filter
+  <filter>
+    <filter-name>MyFilter</filter-name>
+    <filter-class>Filter.FilterServlet</filter-class>
+   </filter>
+   <filter-mapping>
+     <filter-name>MyFilter</filter-name>
+     <url-pattern>/MyServlet</url-pattern>
+   </filter-mapping>
+  
+  
+3、Filter映射拦截
+  （1）使用通配符“ * ” ，拦截用户的所有请求    (范围最广的拦截)
+        <url-pattern>/*</url-pattern>
+		
+	
+  （2）使用  “ *.do ” 结尾的时候  ，拦截所有以 。do 结尾的请求资源   （只针对一系列）
+        <url-pattern>*.do</url-pattern>
+		
+  
+  （3）使用 每一个Servlet 特定的URL 作为 Filter 的URL , 拦截特定的请求   （只针对特定的请求）
+        <url-pattern>/ts.do</url-pattern>    针对某个servlet，直接配和此servlet一样的url路径
+
+		
+  （4）拦截不同方式的访问请求
+		通过<filter-mapping>中的子元素<dispatcher>的配置实现，其中该元素有四个属性值
+		
+	   A、 REQUEST
+		  如果目标资源是通过RequestDispatcher的include( ) 或forward（）方法进行访问时，过滤器将会被调用
+		
+	   B、 INCLUDE
+	      如果目标资源是通过RequestDispatcher的include( )方法访问时，过滤器将会被调用
+		 
+	   C、 FORWARD
+	      如果目标资源是通过RequestDispatcher的forward（）方法访问时，过滤器将会被调用‘
+		 
+	   D、 ERROR
+		 如果目标资源是通过声明异常处理机制调用时，过滤器将会被调用
+		 
+	  配置如下：
+		  <filter=mapping>
+		    <filter-name>MyFilter</filter-name>
+			<url-pattern>/MyFilter</url-pattern>
+			<dispatcher>FORWARD</dispatcher>
+		  </filter-mapping>
+		
+注意事项：
+      过滤器的拦截顺序与在web.xml中配置的顺序是一致的，那个在前，那个过滤器就先被执行
+	  
+		
+  
+三、成员方法
+1、init()
+   初始化一个Filter过滤器, 只有在web应用程序加载的时候被使用
+
+2、doFilter(ServletRequest request, ServletResponse , FilterChain chain)
+   对传递过来的请求以及回送的请求的处理
+   
+   拦截请求的方法，在此方法中可以实现对服务器请求资源的管理
+   
+   ****需要手动对请求进行放行
+      chain.doFilter(request ,response) ;
+	
+ 3、destory()
+     销毁Filter，当web服务器被关闭前调用 (关闭的同时) ,只会调用一次
+	
+ 4、生命周期
+    服务器的启动，到服务器的关闭
+
+
+注意事项： 
+		如果过滤器中没有执行放行语句的话，服务器端的资源将不会被返回给客户端浏览器，但是可以执行输出过滤器中的内容
+
+
+执行总过程：
+		浏览器发起请求到服务器，服务器接收到请求后，根据URL信息在web.xml中找到对一个的
+		过滤器执行doFilter方法，该方法对此次请求进行处理后如果符合要求则放行，执行后
+		如果还有符合要求的过滤器则将继续执行过滤，直到执行对应的Servlet请求处理，servlet对
+		请求处理完毕后，也就是对应的service方法结束了，还需要继续返回相应的doFilter方法继续执行
+		
+
+案例：
+	统一编码格式
+	管理sesssion 
+	统一水印，和谐文字信息
+	
+
+	
+四、FilterChain（Filter链对象）
+    作用原理： 当浏览器要请求web服务器的资源时	需要经过多个过滤器，此时就需要通过FilterChain对象的doFiter(request,response)方法
+	           将请求传递到下一级的过滤器或者目标资源；同时在web服务器进行响应的时候，也会被过滤器拦截，与之前的拦截顺序正好相反
+			   
+			   
+	
+	
+
+	
+五、作用效果
+   1、在过滤器中统一编码格式
+    request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html;charset=utf-8");
+
+	2、实现对session的管理
+	  A： 首先要对request对象和response对象进行强制转换
+	  HttpServletRequest req = (HttpServletRequest)request;
+   
+    HttpSession  session =  ((HttpServletRequest)request).getSession();
+	//session管理
+	if(session.getAttribute("user")==null) {
+	//如果session中的属性失效，重新返回到登录界面，重新登录,避免空指针异常
+		((HttpServletResponse)response).sendRedirect("/StudyServlet/Login.jsp");
+	}else {
+		//放行
+		chain.doFilter(request, response);
+	}
+	
+
+
+六、FilterConfig接口
+	该接口封装了Filter程序在web.xml中的所有注册信息
+	
+ 成员方法：
+	String getFilterName() ; 获取配置的Filter的名称
+	
+	ServletContext getServletContext()  ;   返回FilterConfig对象所包装的ServletContext对象的引用
+	
+	String  getInitParameter(String name) ;    返回在web.xml中为Filter所配置的某个名称的初始化参数
+	
+	Enumeration getInitParameterNames()  ;      返回在web.xml中为Filter所配置的所有参数的名称集合
+	

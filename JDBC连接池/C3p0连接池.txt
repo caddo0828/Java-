@@ -1,0 +1,73 @@
+一、通过C3p0对象创建DataSource数据源对象
+1、数据源对象用于访问配置文件的资源
+//默认访问的是src根目录下的配置文件
+DataSource datasource = new ComboPooledDataSource( ) ;
+
+2、通过dataSource来创建连接
+Connection conn = datasource . getConnection( ) ;
+
+注意：以上操作都是在静态代码块中执行，随着类的加载自动加载
+
+二、c3p0-config . xml 配置文件
+1、必须是放在src根目录下，成为资源路径文件
+2、配置文件的名字必须是c3p0-config . xml 
+3、配置文件内容
+<c3p0-config>
+	<!--默认配置，如果没有指名则使用这个配置-->
+	<default-config>
+		<property name=“driverClass”>com.mysql.jdbc.Driver </property>
+		<property name="jdbcUrl“>
+		  jdbc:mysql://localhost:3306/数据库名
+		</property>
+		<property name="user" > root </property>
+		<property name= "password" >root </property>
+		//初始化池的大小
+		<property name = "initialPoolSize" > 2 </property>
+		//最大空闲时间
+		<property name = "maxIdleTime"> 30 </property>
+		//最多有多少个连接
+		<property name = "maxPoolSize">10  </property>
+		//最少有多少 个连接
+		<property name = "minPoolSize" > 2 </property>
+		//每次最多可以执行多少个批量语句
+		<property name = "maxStatements" > 50 </property>
+	</default-config>
+
+	<!--命名的配置-->
+	<named-config name = "demo" >
+		<property name=“driverClass”>com.mysql.jdbc.Driver </property>
+		<property name="jdbcUrl“>
+		  jdbc:mysql://localhost:3306/数据库名
+		</property>
+		<property name="user" > root </property>
+		<property name= "password" >root </property>
+		//初始化池的大小
+		<property name = "initialPoolSize" > 2 </property>
+		//如果池中数据连接不够时，每次自动增长多少
+		<property name = "acquireIncrement" > 5 </property>
+		//最大空闲时间
+		<property name = "maxIdleTime"> 30 </property>
+		//最多有多少个连接
+		<property name = "maxPoolSize">10  </property>
+		//最少有多少 个连接
+		<property name = "minPoolSize" > 2 </property>
+		//每次最多可以执行多少个批量语句
+		<property name = "maxStatements" > 50 </property>	
+	</named-config>
+
+		
+
+</c3p0-config>
+
+
+注意、
+	//空参，自动到classpath目录下面加载“c3p0-config.xml”配置文件---配置文件的存储位置和名称必须是这样，且使用“默认配置”
+	 ComboPooledDataSource pool = new ComboPooledDataSource();
+	//加载“c3p0-config.xml”文件中定义的“demo”这个配置元素
+	 ComboPooledDataSource pool = new ComboPooledDataSource("demo");
+
+	//加载驱动的键值名
+	驱动的键名为：driverClass 
+	url路径的键名必须是jdbcUrl
+	(如果驱动的键名发生改变则会抛异常，抛 “没有合适的驱动”)
+	(并且url路径的键值名，也不能修改，否则说无法为url路径创建驱动)

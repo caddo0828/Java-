@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>css定位</title>
+	<style type="text/css">
+		#div01{
+		 border:solid 2px orange;
+		 width:800px;
+		 height:200px;
+		 margin-bottom : 10px;
+		 margin-top:50px;
+		 position:relative; /*设置相对定位，成为子元素的绝对定位的参照*/
+		}
+		/*给showdiv添加样式*/
+		#showdiv{
+			border:solid 3px;
+			height:100px;
+			width:100px;
+			position:absolute; /*完全定位*/
+			top:10px;
+		}
+		
+		/*dashed 表示虚线*/
+		#div02{
+			 border:dashed 2px red;
+			 width:800px;
+			 height:200px;
+			 margin-bottom:10px;
+			 position:relative; /*设置相对定位，相对的距离是自己原理的位置*/
+		 	 left:50px;
+			 top:100px;
+			 background-color:red;
+			 z-index:2px; /*设置优先级别*/
+		}
+		
+		#div03{
+		 border:solid 2px blue;
+		 width:800px;
+		 height:200px;
+		 position:relative; 
+		 background-color:blue;
+		 z-index:1; /*设置优先级*/
+		}
+		#div04{
+			border:solid 3px;
+			width:100px;
+			height:100px;
+			position:fixed;
+			top:20px;
+			right:10px;
+		}
+	
+	 </style>
+</head>
+
+<body>
+	<div id="div01" > 
+    	<div id="showdiv"> </div>
+    </div>
+    
+	<div id="div02" >
+     div02
+     </div>
+     
+	<div id="div03" > </div>
+    <div id="div04"> </div>
+    <br />
+    <br />
+    <br />
+    <br /><br /><br /><br />
+</body>
+
+</html>

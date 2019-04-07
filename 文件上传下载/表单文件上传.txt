@@ -1,0 +1,151 @@
+﻿文件上传对表单的要求：
+1、表单的请求提交方式必须是POST
+2、表单中应指定所提交的请求为multipart请求，通过在<form/>标签中添加enctype属性
+    其值为multipart/form-data
+3、表单中要有file表单元素
+
+一、手工接收上传的文件信息
+	//获取输入流对对象，接收请求体的信息
+	ServletInputStream is = request.getInputStream();
+	//获取输出流对象，将数据写回浏览器端
+	PrintWriter out = response.getWriter();
+	int len = -1;
+	byte[] buffer = new byte[1024];
+	while((len = is.read(buffer))!=-1) {
+		String str = new String(buffer,0,len);
+		out.println(str);
+	}
+	//关闭流对象
+	is.close();
+	
+	
+
+	
+二、使用第三方工具实现文件上传
+
+DiskFileItemFactory类：
+	用于创建一个FileItem工厂
+
+构造方法：
+		DiskFileItemFactory factory = new DiskFileItemFactory();v
+
+		● public DiskFileItemFactory();  
+		  采用默认临界值和系统临时文件夹构造文件项工厂对象。
+
+成员方法：
+		● public DiskFileItemFactory(int sizeThreshold,File repository)
+         采用参数指定临界值和系统临时文件夹构造文件项工厂对象。
+
+		● factory.setSizeThreshold(1024 * 1024 * 1);
+		  设置使用临时文件的边界值，大于该值，上传文件先保存在临时文件中，否则上传文件直接写入内存
+		
+		● factory.setRepository(new File(this.getServletContext().getRealPath("/temp")))
+		  设置临时文件, 文件上传的大小超过临界值时，将上传的文件保存在临时文件夹中
+		 
+		● File getRespository() 
+		  获取对应的临时文件
+		  
+		  
+
+ServletFileUpload类常用方法： 
+	用于创建文件上传核心组件、负责处理上传的文件数据,并将表单中每个输入项封装成一个FileItem对象中.
+
+构造方法： （通过fileitem工厂获取组件）
+		ServletFileUpload upload = new ServletFileUpload(factory);
+
+
+成员方法：
+		● boolean isMultipartContent(HttpServletRequest req);
+		  用于判断请求消息中的内容是否是“multipart/form-data”类型，是则返回true
+			
+		● void setFileSizeMax(long fileSizeMax)
+		  设置单独的文件上传大小的限制
+		
+		● void setSizeMax(long sizeMax)
+		  设置所有上传文件总的大小不能超过多少
+		  
+		● void setHeaderEncoding(String str)
+		  设置每一个item的头部编码，可以防止文件名的中文乱码
+	
+		● List<FileItem> parseRequest(javax.servlet.http.HttpServletRequest req)
+		  获取到所有的item（每一个部分,包括文件和text属性）
+	
+		● getFileItemFactory() 、 setFileItemFactory(FileItemFactory)
+          方法继承自FileUpload类，用于设置和读取fileItemFactory属性。
+	
+
+	
+FileItem类的常用方法：
+		获取表单中提交的类型数据
+
+成员方法：
+		● boolean isFormField()
+		  判断表单提交的数据是否为普通的字段，该方法判断是否为普通表单域，还是文件上传表单域
+		
+		● String getFieldName()
+          用于返回表单标签name属性的值
+		
+		● String getString()
+		  获取表单项值
+		 
+		● String getString(String encoding)
+		  以指定的编码获取表单项值
+		
+		● String  getName();
+		  用于获得文件上传字段中的文件名。
+	
+	   	 ● void write(File file)
+		  将字段写入文本中
+		  
+		● String getContentType()
+		  用于获得上传文件的类型，即表单字段元素描述头属性“Content-Type”的值
+	
+		● InputStream getInputStream()
+        		  以流的形式读取上传文件的数据内容。
+		
+		● long getSize()
+     		     返回该上传文件的大小（以字节为单位）。
+	
+	 	   ● void delete()
+		  用来清空FileItem类对象中存放的主体内容，如果主体内容被保存在临时文件中，delete方法将删除该临时文件
+	
+	
+注意事项：
+		● 文件上传的过程中，如果出现了同名的文件，原文件被覆盖（一般采用当前文件名+当前保存时间做总文件名）
+		● 一般目录中保存的文件数量有限，一般采用多级目录（采用calender日历类获取到当前的年月日）
+		  Calendar.getInstance() ;  获取当前的时间，，
+	      instance.get(Calendar.YEAR); 获取年
+	
+	
+	
+三、超链接方式的文件下载
+	    ● 打散: 按当前的字符编码进行打散
+		  byte[] by = fileName.getBytes("utf-8");
+
+	    ● 组装 ：按目标字符编码进行组装
+		  fileName = new String(by, "ISO-8859-1");
+	
+		● 文件上传以附件形式上传，修好响应的头部属性content-disposition的值为attachment
+		  response.setHeader("content-disposition", "attachment;filename=" + fileName);
+		
+	    ● 获取连接服务端的资源文件的输入流
+		  InputStream is = this.getServletContext().getResourceAsStream("/resources/image.jpg");	
+		
+	    ● 获取输出流
+		  ServletOutputStream out = response.getOutputStream();
+		
+	    ● 将输入流的数据写入到输出流中
+		  int len = -1;
+		  byte[] bytes = new byte[1024];
+		  while ((len = is.read(bytes)) != -1) {
+			 out.write(bytes, 0, len);
+		  }
+		
+		
+注意事项;
+        ● 为了避免浏览器直接读取图片信息，所以设置请求头中以附件的形式进行文件的下载，
+		  并且指定下载文件的文件名：
+		 
+
+		 
+		

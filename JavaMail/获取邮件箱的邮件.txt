@@ -1,0 +1,56 @@
+package plain;
+
+import java.io.IOException;
+import java.util.Properties;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.internet.MimeMessage;
+/**读取收件箱中的所有邮件
+ * @author 老腰
+ */
+
+public class GetEmail {
+	public static void main(String[] args) throws MessagingException, IOException {
+		//配置服务器主机地址，协议。以及用户授权
+		Properties prop = new Properties();
+		//设置邮件的服务器
+		prop.setProperty("mail.host", "localhost");
+		//设置邮件发送协议
+		prop.setProperty("mail.transport.protocol", "smtp");
+		//色设置邮件用户权限
+		prop.setProperty("mail.smtp.auth", "true");
+		//获取服务器操作对象
+		Session session = Session.getDefaultInstance(prop);
+		//设置session的Debug模式
+		session.setDebug(true);
+		//获取存储邮件的服务器
+		Store store = session.getStore("pop3");
+		//与收件箱服务器进行连接
+		store.connect("smtp.sohu.com", "tan_qi@sohu.com", "tq6020162483");
+		//获取收件箱目录对象
+		Folder folder = store.getFolder("INBOX");
+		//设置收件箱目录权限为只读
+		folder.open(Folder.READ_ONLY);
+		//获取所有的邮件
+		Message message[] = folder.getMessages();
+		
+		//Message mess = folder.getMessage(1);
+		//System.out.println("date="+mess.getSubject()+mess.getSentDate().toString());
+		//遍历邮件，获取具体的邮件发件人地址，邮件的主题，邮件的内容
+		for(int i=0;i<message.length;i++) {
+			//解析邮件的发件人地址----->getFrom( )； 
+			System.out.println("发件人地址="+message[i].getFrom()[0].toString());
+			//解析邮件的主题
+			System.out.println("邮件主题="+message[i].getSubject());
+			//解析邮件的内容(文件内容可能出现多种形式)
+			System.out.println("邮件内容="+((MimeMessage)message[i]).getContent().toString());
+		}
+		
+		//释放连接
+		folder.close(true);
+		store.close();
+	}
+}

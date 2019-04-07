@@ -1,0 +1,78 @@
+<html>
+<head>
+<meta charset="utf-8" content="text/html"/>
+<script>
+    function fun() {
+//        var form = document.fm;
+//        form.submit();
+         var form = document.fm;
+         form.action="http://www.baidu.com/s";
+    }
+
+    function reset() {
+        var form = document.fm;
+        form.reset();
+    }
+
+   function check(){
+        //获取全选框的对象
+       var all = document.getElementById("all");
+       if(all.checked) {
+           //获取多选框
+           var fav = document.getElementsByName("fav");
+           for(var i=0;i<fav.length;i++) {
+               fav[i].checked=true;
+           }
+       }else {
+           var fav = document.getElementsByName("fav");
+           for(var i=0;i<fav.length;i++) {
+               fav[i].checked=false;
+           }
+       }
+   }
+
+    function testSel(){
+        var se = document.getElementById("address");
+//           alert(se.value);
+        var os = se.options;
+        for(var i=0;i<os.length;i++) {
+            //判断是否被选中
+            if(os[i].selected) {
+                alert(os[i].value);
+            }
+        }
+    }
+
+</script>
+</head>
+<body>
+
+<input type="button" value="form表单submit提交方法" onclick="fun()"/>
+<input type="button" value="重置" onclick="reset()">
+<input type="button" value="操作多选框" onclick="check()">
+
+<form action="#" method="get" name="fm">
+    用户名： <input type="text" name="name" value="" readonly="readonly"/>
+    密码：<input type="password" name="pwd" disabled="disabled"/><br/>
+
+    全选<input type="checkbox" id="all" onclick="check()"><br/>
+
+    爱好： only love <input type="checkbox" name="fav" value="only love"/><br/>
+           see you again <input type="checkbox" name="fav" value="see you again"/><br/>
+           lemon tree<input type="checkbox" name="fav" value="lemon tree"/><br/>
+           down slowly <input type="checkbox" name="fav" value="let down slowly"/><br/>
+
+    城市：<select name="city" id="address" onchange="testSel()">
+            <option value="4">--请选择---</option>
+           <option value="北京">北京</option>
+            <option value="深圳">深圳</option>
+            <option value="上海">上海</option>
+            <option value="广州">广州</option>
+            </select><br/>
+     <input type="submit" value="提交"/>
+</form>
+
+
+</body>
+</html>
+

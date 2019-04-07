@@ -1,0 +1,87 @@
+package photo;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+/**生成一封邮件正文带图片的邮件
+ * @author 老腰
+ */
+public class sendPhoto {
+	public static void main(String[] args) throws IOException, AddressException, MessagingException {
+		sendImg();
+	}
+	
+
+	public static void sendImg() throws IOException, AddressException, MessagingException {
+		//1、创建配置文件对象
+		Properties prop = new Properties();
+		
+		//读取对应的配置文件数据，加载进入配置对象
+		InputStream in = sendPhoto.class.getClassLoader().getResourceAsStream("db.properties");
+		prop.load(in);
+		
+		//2、创建session对象
+		Session session = Session.getDefaultInstance(prop);
+		//开启session的Debug模式
+		session.setDebug(true);
+		
+		//3、创建邮件对象
+		Message message = new MimeMessage(session);
+		//设置邮件的发件人
+		message.setFrom(new InternetAddress("发件人地址"));
+		//设置邮件收件人
+		message.setRecipient(Message.RecipientType.TO, new InternetAddress("收件人的地址"));
+		//设置邮件标题
+		message.setSubject("图片附件邮件");
+		
+		//4、创建正文对象
+		//第一部分：HTML部分
+		BodyPart text = new MimeBodyPart();
+		text.setContent("包含图片附件的邮件<img src='cid:winter.jpg'>", "text/html;charset=utf-8");
+		//第二部分：img部分
+		BodyPart image = new MimeBodyPart();
+		//加载附件对象
+		DataHandler dataHandler = new DataHandler(new FileDataSource("WebContent/images/winter.jpg"));
+		image.setDataHandler(dataHandler);
+		image.setHeader("Content-ID", "winter.jpg");
+		
+		//5、将正文对象加载入多媒体对象中
+		Multipart multipart = new MimeMultipart();
+		multipart.addBodyPart(text); //装载正文
+		multipart.addBodyPart(image); //装载图片内容
+		//邮件包含内嵌资源
+	    	((MimeMultipart)multipart).setSubType("related");
+		
+		//将多媒体对象加载入message对象中,设置邮件内容
+		message.setContent(multipart);
+	   	 message.saveChanges();//保存邮件修改
+	    	message.writeTo(new FileOutputStream("D:\\JAVA基础学习\\JavaMail\\imageEmail.eml"));
+	    
+		
+		//6、创建transport发送对象
+		Transport transport = session.getTransport();
+		//打开对应的连接
+		transport.connect("smtp.sohu.com", "邮箱账号", "邮箱密码");
+		//发送邮件
+		transport.sendMessage(message, message.getAllRecipients());
+		//关闭连接
+		transport.close();
+	}
+
+	
+}

@@ -1,0 +1,413 @@
+﻿一、属性方法 
+● 1、val()				
+				设置或返回匹配元素的值。  (只能获取表单元素中的属性值，只能获取元素样式中存在的value属性)
+
+    val(value)
+				设置匹配元素的值为value
+	
+		* 使用：
+				$("#name").val("Caddo")；    将id="name" 的元素value属性值改成caddo
+
+注意事项：
+	* val() 获取表单元素的value属性的值，这个元素可以是文本框以及下拉列表等
+	  
+	* val(值) ;  可以用来设置下拉框的默认选中值
+		
+		
+●  2、html()
+				设置或返回匹配的元素集合中的 HTML 内容。  （设置html内容，只能设置一个下拉框的内容）
+	 * 使用：
+			alert($("#a").html());     获取id='a'的元素的html代码（不解析html标签, 也就是包括页面中的html代码）
+		
+			<a href="#" va="va.jpg" id="a"><b>a链接</b></a> 
+			
+	* 输出结果为：
+			<b>a链接</b>
+     
+	● html("值");
+		*	$("#a").html("<a href='#'>html设置元素的html内容</a>")
+
+			
+		* 结果为：
+			<a href="#"> html设置元素的html内容 (这其实是一个超链接) </a>      html解析了标签后的结果
+			
+			
+  3、text()
+				设置或返回匹配的元素的 文本内容
+			
+	 * 使用：
+			alert($("#a").text());    获取id='a'的元素的html代码（只输出文本内容，解析htmln内容中的html标签）
+	  
+	  
+	 * 如上输出结果为：
+			a链接
+			
+			
+	● text("值");
+		*	$("#a").text("<a href='#'>text设置元素的html内容</a>")
+
+			
+		* 结果为：
+			<a href="#">  <a href='#'>text设置元素的html内容</a>  </a>     未解析html标签，原样输出
+		  
+  
+● 4、attr()
+				设置或返回匹配元素的属性和值。
+				
+		* 使用
+			$("#img").attr("src")；					返回id="img"的src属性的属性值
+			
+		* 设置属性值
+			* 格式
+				$("选择器指定的元素").attr(属性名 ， 属性值) ;
+		
+			$("#img").sttr("src","static/images/winter.jpg");       设置id="img"的src属性值为"static/images/winter.jpg"
+			
+	    * 获取多选框属性
+			$("#cb").attr("checked")；        选中状态为true，未选中状态为false
+			
+			$("#cb").attr("checked",true);    设置多选框为选中状态
+			
+		
+● 5、jQuery.trim(str)   或者  $.trim(str)  
+			去掉字符串起始和结束的空格
+		
+
+● 6、prop() 
+			获取/设置元素的属性
+			
+  7、removeProp() 
+			删除属性
+			
+
+				
+  注意：
+		attr() 和 prop() 的区别？
+			1、如果操作的是元素的固有属性，则建议使用prop
+			2、如果操作的是元素自定义的属性，则建议使用attr
+			
+
+● 8、jquery的遍历方式：
+	* jquery对象 . each(callback)
+			callback ; 代表一个function函数, 代表要执行的方法操作
+	
+	* $. each(object , [callback] );
+	
+	* for.. of ;
+			
+	
+
+	
+二、文档操作
+● 1、内部插入
+		* append();			
+				向匹配元素集合中的每个元素结尾插入由参数指定的内容。 (内部的后置插入)
+				
+		使用：
+				$("#div1").append("内部的后置插入")       向div盒子的内部的后面添加内容
+				
+		特殊使用：
+				$("#sel").append("<option>北京</option>");       给下拉框赋值，可以是多个
+				$("#sel").append("<option>深圳</option>");
+		
+		* appendTo();
+				
+		使用：											(后置追加)
+				$("#u").appendTo($("#div"));             将id="u"的元素内容，添加到id="div"的元素对象中的后面
+		
+		
+		
+		* prepend();
+				向匹配元素集合中的每个元素开头插入由参数指定的内容。  （内部的前置插入）
+		
+		使用：
+				$("#div1").prepend("内部的前置插入")     向div盒子的内部的前面添加内容
+			
+		
+		* prependTo();
+		
+		使用：										 （前置追加）
+				$("#u").prependTo($("#div"));  		将id="u"的元素内容，添加到id="div"的元素对象中的前面
+
+			
+
+● 2、外部插入
+		* before();
+				在每个匹配的元素外部的前面插入内容。   （外部的前置插入）
+				
+		使用：
+				$("#div1")。before("外部的前置插入");    向div盒子的外部的前面添加内容
+			
+			
+		* after();
+				在每个匹配的元素外部的后面插入内容     （外部的后置插入）
+				
+		使用：
+				$("#div1").after("外部的后置插入");		向div盒子的外部的后面插入内容
+				
+				
+			
+● 3、删除
+	* empty() ;
+				删除匹配元素的所有子节点，保留当前的父节点元素
+			
+		使用：
+				$("#div1").remove();   					移除id为div1的这个元素的所有子节点，也包括自己
+			
+			
+    * remove();
+				移除所有匹配的元素 （移除所有的子节点以及当前的父节点）
+			
+		使用：
+				$("#div2").empty();	   					清空id为div2的这个元素的所有内容，但是这个元素本身会被保留
+				
+
+
+三、操作css样式
+● 1、css()
+				设置或返回匹配元素的样式属性。
+
+	* 使用：
+				$("#div1").css("样式名" , "样式值");     增加样式
+				
+				$("#div1").css("样式名");                获取对应样式名的样式属性
+
+				
+● 2、width(参数宽度值)
+				设置或返回匹配元素的宽度。
+
+
+		
+● 3、height(参数高度值)
+				设置或返回匹配元素的高度.
+
+
+	
+● 4、addClass()
+				向匹配的元素添加指定的类名（就是class属性值）   （进行追加操作的）
+				
+		
+	    * 使用
+			<div id="div1"> div盒子模型 </div>
+			
+			$("#div1").addClass("div1");		  给id="div1"的div盒子添加一个class属性值为div1，就可以使用div1相应的css样式或其他js操作
+		
+		
+● 6、removeClass()
+				从所有匹配的元素中移除指定的属性  (就是清除class属性，以及对应的属性值)
+				
+		* 使用
+			<div id="div1" class="div1"> div盒子模型 </div>
+			
+			$("#div1").removeClass("div1")			移除id=“div1”的div盒子的class属性值为div的属性（可能存在其他class属性，其他class属性被保留）
+	
+	
+● 7、hasClass()
+			  检查匹配的元素是否拥有指定的类。
+			 
+		* 使用
+			$("#div1").hasClass("div2");			检查id为div1的元素的class属性值是否为指定的，有则返回true,否则false
+			
+  
+● 8、toggleClass()
+			  从匹配的元素中添加或删除一个类。		给id="div1"的div盒子添加一个class属性值为div1
+			  
+	    * 使用
+			$("#div1).toggleClass("div1");			
+  	
+	
+	
+				
+四、事件   （主要的查看API文档）
+● 1、click()
+				触发、或将函数绑定到指定元素的 click 事件  （单击事件）
+				
+	* 使用
+				//为id为btn的元素绑定一个事件，当点击这个元素后触发click方法中参数的匿名方法，匿名方法为事件的处理方法法
+				$("#btn").click(function() {
+					//$("#form1").submit();   //触发表单的提交行为
+					$("#sub").click();      //触发提交按钮的点击行为，实现表单提交
+				});
+		
+		
+● 2、submit()
+				触发、或将函数绑定到指定元素的 submit 事件  （提交事件）
+				
+	* 使用：
+				可以触发表单的提交
+				
+
+● 3、bind("事件类型" , function() {}  ) 
+				向匹配元素附加一个或更多事件处理器 （绑定事件）
+				
+	* 使用：
+				/*
+				获取id="lj"的对象，并且为该对象绑定事件，
+				参数代表： 参数1 ， 事件名称 ；   参数二，一个匿名的回调方法，当绑定事件的jquery对象触发了相应的事件后调用该方法
+				*/
+				$("#lj").bind("click",function() {
+					//$(this) 表示触发当前事件的jquery对象（谁触发就是谁）
+					//获取a链接对象的href属性值
+					var v_href = $(this).attr("href");
+					//如果href属性值不是百度地址，则阻止转向
+					if(v_href!="http://www.baidu.com") {
+						alert("地址失效");
+						//阻止浏览器的默认行为以及事件的起泡
+						return false;
+					}
+				});
+				
+
+● 4、hover( over, out )
+				模仿鼠标的悬停事件（鼠标移动到一个对象上面以及移除这个对象）的方法，这是一个自定义的方法
+				它为频繁使用的任务提供了一种“保持在其中”的状态
+				当鼠标移动到匹配元素上时，会触发第一个函数，当鼠标移除这个元素，会触发第二个函数
+	
+	* 格式：
+				hover( function() {} , function() {] );
+			
+	* 使用：
+				<img alt="" src="static/images/car.jpg" id="img" class="img1">
+				
+				<style type="text/css">
+					.img1{
+						width :50px;
+						height: 50px;
+						border: solid;
+						border-color: pink;
+						 
+					}
+					.img2{
+						width :70px;
+						height: 70px;
+						border: solid;
+						border-color: blue;
+					}
+				</style>
+				
+				//hover( over , out )
+				//模仿鼠标的悬停事件
+				//参数1，鼠标移入后触发的方法； 参数2，鼠标移除触发的方法
+				$("#img").hover(function() {
+					$(this).removeClass("img1");
+					$(this).addClass("img2");
+				} , function() {
+					$(tthis).removeClass("img2");
+					$(this).addClass("img1");
+				});
+		
+
+
+● 5、toggle( fn , fm )
+				每次点击后依此调用函数， （绑定两个或多个事件处理器函数，当发生轮流的 click 事件时执行。） 
+				如果点击了一个匹配的元素，则触发指定的第一个函数，再次点击同一元素，则触发指定的第二个函数
+				如果有更多函数，则再次触发，直到最后一个，随后的每次点击都重复对这几个函数轮番调用
+				
+				
+	* 格式：
+				toggle( function() {} , function() {} . function() ......);   （多次点击循环使用）
+			
+
+● 6、unbind() 
+				为匹配元素解绑事件
+			
+● 7、load()
+				页面加载
+				
+			
+● 8、页面载入事件
+				$(document).ready(function() {} )            可以执行多次，window.onload()只能加载一次
+				
+				
+				
+				
+五、Jquery的动画
+
+●  默认显示和隐藏
+	 1、hide( [speed],[easing],[fn] );
+			隐藏对应的元素
+		
+		* 使用;
+			$("#div").hide();					隐藏对应的id="div"的元素
+			
+			$("#div").hide(3000);               三秒里慢慢隐藏元素
+		
+		* 参数：
+			（1） speed: 动画的速度，三个预定义值（“slow“ ， " normal" , "fast" ）或者表示动画时长的毫秒数值（如：1000）
+		    （2） easing: 用来指定切换效果，默认是"swing" , 可用参数”linear“
+					* swing:   动画执行时效果是 先慢，中间快，最后最慢
+					* linear:  动画执行时速度是匀速
+			（3） fn :    在动画完成时执行的函数，每个元素执行一次，
+			
+
+	 2、show([speed],[easing],[fn] )
+			显示对应的元素
+		
+		*使用
+			$("#div").show();					显示对应的id="div"的元素
+			
+			$("#div").show(3000);               三秒里慢慢显示元素
+	
+		* 一般用于hide() 后使用				
+		
+	3、toggle([speed],[easing],[fn])
+			切换（点击显示，点击隐藏）
+
+
+● 滑动显示和隐藏
+	1、sildeDown( [speed],[easing],[fn])
+				向下滑动
+	
+	2、slideUp( [speed],[easing],[fn])
+			向上滑动
+	
+	3、slideToggle( [speed],[easing],[fn])
+	
+	
+● 淡入淡出显示和隐藏方式
+	1、fadeIn( [speed],[easing],[fn])
+	
+	2、fadeOut( [speed],[easing],[fn])
+	
+	3、fadeToggle( [speed],[easing],[fn])
+	
+	
+	
+六、JQUERY插件
+●  1、实现方式：
+		$.fn.extend(object)
+			* 增强通过jquery获取的对象的功能  $("#id")
+		
+		* 使用格式  $.fn.extend({ 方法名： function() {}, 方法名2： function () {}   })
+		
+			// 定义jquery对象插件
+			$.fn.extend( {
+				//定义了一个check方法，所有的jquery对象都可以调用该方法
+				check: function() {
+					alert(123);
+				}
+			} ) ;
+	
+		* 外部调用
+				$("#tbn").check();
+			
+		
+● 2、全局实现
+		$.extend(object)
+			* 增强jquery对象自身的功能     $/jQuery
+			
+			
+			* 使用：
+					$.extend( {
+						max: function(a,b) {
+							return a>=b ? a : b
+						},
+						min: function(a,b) {
+							return a<=b ? a : b
+						},
+
+					})
+			
+			* 全局调用：	
+				 var max = $.max(4,3) ;
+				 

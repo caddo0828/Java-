@@ -1,0 +1,121 @@
+一、Http协议
+A：http协议是建立在TCP/IP协议基础上的
+B：http协议全称 超文本传输协议
+C：http协议1.0  ， 1.1 版本，目前通用的是1.1版本
+	http1.0称为短连接
+	http1.1称为长连接
+	所谓长和短指的是持续时间的长短
+D：http结构
+	 （request）请求行
+	  (response)消息头：  格式：消息名：内容    （特别说明，并不是每一次的消息头内容都是一样的）
+	                 空行：发送的内容     格式【内容的名字=内容体】
+	
+二、请求行
+1、Referer :  防止盗链   告诉服务器是从哪个页面链接过来的  
+	    如果没有就为  null   (没有也就是直接通过访问当前的servlet的方式进行访问的)  
+	request.getHeader("Referer");
+2、Accept:   请求的格式	
+	text/html ,image/*
+3、Accept-Charset:  请求的编码
+ 
+4、Accept-Language : 请求的语言
+
+5、Host : 获取提出请求的主机名  
+
+6、If-Moddified-Since:  请求是否刷新
+
+7、User-Agent:  Mozilla/4.0  (MISE 5.5 )  发出请求用的是哪种浏览器
+
+8、Cookie 
+
+9、Connection : close / Keep-Alive  (请求连接是持续还是关闭)
+
+10、Date  : 请求的时间 （打出为Date类型）
+
+
+
+
+三、响应头	
+E：发送图片到浏览器   （告诉浏览器有文件下载）   Content-Disposition : attachment; filename=文件名加后缀
+	  例如：  resp.setHeader("Content-Disposition", "attachment; filename=car.jpg");
+	（1）首先把图片读入到内存中
+	（2）把文件发送给浏览器
+
+F：Content-Type：text/html；charset=GB2312  (内容格式为text/html ; 编码为gb2312)
+
+G：Last-Modified：Tue,11 Jul 2000  18:23:22 （告诉浏览器该资源上传更新的时间）
+
+H：Refresh：1；url=http://www.baidu.com   （过多久时间自动刷新到http://www.baidu.com）
+
+G： Transfer-Encoding：chunked （传输的编码对网络传输内容进行校验合）
+
+H：Set-Cookie：
+
+I：Expires：-1   告诉浏览器如何缓存页面
+
+J：Cache-Control：no-cache   （告诉浏览器如何缓冲页面）  固定写法
+
+K：Pragms：no-cache    告诉浏览器如何缓存页面
+
+L：Connection：close / Keep Alive      
+
+M：Location 将资源定位到其他地方
+
+
+//演示下载文件
+resp.setHeader("Content-Disposition", "attachment; filename=car.jpg");
+		
+//说明web站点下载文件的原理
+//1、获取文件的全路径
+String path = this.getServletContext().getRealPath("/images/car.jpg");
+System.out.println("path="+path);
+//创建文件输入流读取文件信息
+FileInputStream fis = new FileInputStream(path);
+//做一个缓冲字节数组
+byte[] buff = new byte[1024];
+int len=0 ;
+OutputStream os = resp.getOutputStream();
+while((len=fis.read(buff))>0) {
+	os.write(buff, 0, len);
+}
+	
+os.close();
+fis.close();
+
+
+
+当页面不缓存的时候，浏览器自动去服务器获取信息，可以及时刷新页面信息
+（有些网站的及时性要求很高，因此要求我们不缓存）
+//指定该页面不缓存setDateHeader设置页面缓冲的时间，-1表示不缓冲
+response.setDateHeader("Expires", -1);
+//为了保证兼容性
+//Cache-Control  no-cache 
+//设置浏览器显示为html格式显示
+response.setContentType("text/html;charset=utf-8");
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Pragma", "no-cache");
+response.getWriter().write("servlet中http协议请求头学习"+new Date().toString());
+
+（有些网站需要一定时间的缓存, 如缓存一天）
+// 获取当前时间的毫秒中    System.currentTimeMillis
+response.setDateHeader("Expires", System.currentTimeMillis()+(60*60*1000*24));
+
+
+
+
+四、状态出错的集中常见代表什么
+200 ： 就是整个请求和响应过程没有发生错误，这个问题很常见
+
+302 ： 表示当你请求一个资源时侯，服务器返回302 ， 让浏览器转向另外一个资源
+	（页面中看不到错误，但是会在抓包后返回两次请求 ， 告诉浏览器转到另一个界面去获取资源）
+	比如：  resp .  sendRedirect (/web应用名 也就是web项目的名字/ servlet路径名)
+
+404 ：代表找不到资源
+
+500 ：服务器端发生错误
+
+	
+五、注意界面跳转中sendRedirect 
+      其实使用的基本方法是   
+	resp. setStatus (302) ; 
+	resp.setHeader ("Location" , "/web应用名/ servlet的url路径")		 	

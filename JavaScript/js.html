@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>标记</title>
+ 	<style type="text/css">
+ 		#divo1{
+			width :200px;
+			height: 200px;
+			border: solid 1px orange;
+
+ 		}
+
+
+ 	</style>
+
+	<script type="text/javascript">
+		//获取元素内容
+		//修改元素内容
+		function getContext() {
+			//获取元素对象
+			var div = document.getElementById("divo1");
+			// alert(div.innerHTML);
+			// alert(div.innerText);
+
+			div.innerHTML = "caddo"；
+			alert(div.innerText);
+			//div.innerHTML="你猜？";
+		}
+
+	</script>
+	
+</head>
+<body> 
+	<h3>操作HTML内容</h3>
+	<input type="button" value="测试获取元素内容" onclick="getContext()">
+	<hr/>
+	<div id="divo1">
+		    龟儿子
+			<b id="b">鬼儿子</b>
+		
+	</div>
+	
+  
+</body>
+</html>	

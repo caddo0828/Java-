@@ -1,0 +1,49 @@
+一、ServletConfig
+问题：
+	如何获取在web.xml中给每个servlet单独配置的数据呢？
+
+解决：
+	使用ServletConfig对象
+	
+使用：
+	获取ServletConfig对象
+	获取web.xml中的配置数据
+
+
+二、成员方法
+     1、获取ServletConfig对象
+	   ServletConfig config = this.getServletConfig();
+	   
+	 2、获取ServletContext对象
+	    ServleContext  getServletontext()
+		
+	 3、获取web.xml中局部的配置的数据
+	    String getInitParameter(String name);
+		
+	 4、获取所有配置的键值的枚举集合
+		Enumeration<java.lang.String>  getInitParameterNames()
+
+     5、获取到当前Servlet的名称
+		String  getServletName() 
+	 
+ 
+三、局部配置在servlet里的和全局配置的区别
+1、局部配置
+	 <servlet>
+		<servlet-name>dh2</servlet-name>
+		<servlet-class>dh1.ServletDh1</servlet-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dh2</servlet-name>
+		<url-pattern>/dh2</url-pattern>
+	</servlet-mapping>
+
+2、全局配置
+<context-param>
+    <param-name>name</param-name>
+    <param-value>Context</param-value>
+  </context-param>	

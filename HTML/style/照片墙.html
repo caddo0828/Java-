@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>照片墙</title>
+	<style type="text/css">
+	body{
+		text-align : center; /*设置内容居中*/
+		background-color: gray;  /*设置背景颜色*/
+	}
+	img{
+		width: 12%; /*设置图片宽度*/
+		padding: 10px; /*设置图片内边距*/
+		background-color:white;		/*设置图片背景颜色*/	
+		transform : rotate(-10deg) ; /*设置图片旋转，（-10deg表示逆时针旋转多少度）*/
+		margin : 20px; /*设置图片外边距*/
+	}
+	/*使用伪类给标签添加展示*/
+	img:hover{ 
+		/*当鼠标点击图片出现样式*/
+		transform: rotate(0deg) scale(1.5); /*设置旋转角度和缩放比例*/
+		z-index:1; /*设置显示级别*/
+		transition:1.5s; /*设置显示时间*/
+	}
+	
+   </style>
+    
+
+</head>
+
+<body>
+		<img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> <br />
+        <img src="bizhi.png" />
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        
+        
+</body>
+</html>

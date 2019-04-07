@@ -1,0 +1,19 @@
+一、HttpServlet（类）
+特点：继承GenericServlet ， 并且实现了Servlet接口
+
+二、 get和post的区别
+(1) 从安全性看，get<post , 因为get会把提交的信息显示在地址栏
+(2）从提交的内容来看 get < post  get 一般不要大于2k ，post从理论上来看无限制，但是在开发中最好不要大于64k
+(3) 从服务器响应的速度来看，get  > post  ， get 要求服务器立即响应 ，而post请求肯会形成一个队列请求
+(4) 在继承了HttpServlet时 ，get 方法会在网页中输出信息，而post方法不会
+(5) 在service方法中会在网页上显示内容
+
+
+三、request 和  response 对象的区别
+request：代表请求  （获取客户机提交过来的数据）
+response：代表响应   （向客户端输出数据）
+
+
+
+
+

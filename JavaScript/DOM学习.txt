@@ -1,0 +1,347 @@
+一、DOM学习:
+● 功能：控制html文档的内容
+
+● 代码：获取页面标签（元素）对象Element
+    * document.getElementById("id值")；  通过元素的id获取元素对象
+	
+	* 操作Element对象：
+		* 修改属性值：
+			明确对象是哪一个?
+			查看API文档找其中有哪些属性可以设置
+		* 修改标签体内容
+			* 属性 innerHTML 
+					获取元素对象
+					使用innerHTML属性修改标签体内容
+	
+
+	
+● 核心对象
+	● Document ： 浏览器提供的支持JS的用来操作HTML文档的一个对象，次对象封存HTML的所有信息
+	
+		1、 创建（获取） ： 在HTML中可以使用window对象获取
+			window.document;
+			document
+			
+		2、 方法：
+				（1）直接获取Element对象：
+					getElementById( ) ;     根据id属性值获取元素对象，id属性值一般唯一
+					
+					getElementsByTagName(“input”);  根据元素名称获取元素对象们 , 返回值是一个数组
+													  * 返回所有的input标记对象的数组
+					
+					getElementsByClassName()  根据class属性值获取元素对象，返回一个数组
+					
+					getElementsByName();       根据name属性获取元素对象们 ，返回一个数组
+					
+				
+				(2) 间接获取元素对象 (父子关系，子父关系，兄弟关系)
+					document.form。username；
+												* form 代表form表单的id，，，，username 代表inout框的id
+												
+					
+					document.getElementById("id").childNodes;   返回所有的子标记对象
+					
+					document.getElementById("id").parentNode;   返回所有的父标记对象
+					
+					document.getElementById("id").previousSibling;  返回该标记的前一个标记对象
+					
+					document.getElementById("id").nextSibling;     返回该标记的下一个标记对象
+					
+				    
+					
+	
+				（3）操作元素对象属性：
+						* 操作Element对象：
+							* 修改属性值：
+								明确对象是哪一个?
+								查看API文档找其中有哪些属性可以设置
+						* 修改标签体内容
+							* 属性 innerHTML 
+								获取元素对象
+								使用innerHTML属性修改标签体内容
+					
+						* 获取元素对象属性：
+							元素对象名.属性名    // 返回当前属性的属性值
+							
+						* 修改元素对象属性值：
+							元素对象名。属性名 = 属性值        // 尽量不修改元素的id值和name值
+							
+															
+						* 获取自定义属性的值
+							元素对象.getAttribute("自定义属性名")
+
+						* 设置自定义属性值
+							元素对象.setAttribute("自定义属性名" , "新的属性值")；
+
+	
+	
+				（4）操作内容和样式：
+						* 获取元素标签内容：
+							元素对象. innerHTML ;     获取标签体内容,返回当前元素对象的内容，包括HTML元素标签
+	
+							元素对象. innerText ;     返回当前元素对象的文本内容
+						
+						
+						* 修改元素标签内容：
+							元素对象 . innerHTML = "修改的数据" ;  
+						
+						
+					* 操作元素样式：
+						document.getElementById("div01").style.backgroundColor = "red";    修改div盒子的样式背景为红色
+
+						* 获取元素对象
+						* 元素对象名。style .样式名 =“样式值” ;   //   添加或者修改样式
+						  元素对象名。style .样式名 =“”           //   删除样式
+						  
+						注意：
+							以上操作，就是通过作用style属性声明来操作css样式
+							
+							
+							
+				
+				    *  通过类选择器：   className属性
+						* 元素对象名. className = "类选择器名称";      //添加或者修改类选择器样式样式
+						* 元素对象名. className = "";  				   //删除类选择器样式
+						   
+						   var cas = document.getElementById("id名") ;
+						   cas.className = "类选择器的名字" ;           
+						   cas.calssName = "" ；               
+						   
+						
+				
+				（5）操作元素的文档结构：
+						* 通过父节点删除子节点（removeChild）
+				
+						* 通过父节点追加子节点（appendChild）
+						
+						*  通过父节点创建子节点（createElement(参数)）  参数代表元素对象，例如input,form
+
+						
+						获取元素对象
+								var div = document.getElementById("div01");
+								//创建一个输入框，为文件上传标记
+								var inp = document.createElement("input");
+								inp.type="file";
+								//创建一个按钮标记
+								var btn = document.createElement("input");
+								btn.type = "button";
+								btn.value="删除";
+								btn.onclick = function () {
+									div.removeChild(inp);
+									div.removeChild(btn);
+									div.removeChild(br);
+								}
+								//创建一个换行标记
+								var br = document.createElement("br");
+	
+								 //将创建的对象添加到div对象中
+								div.appendChild(inp);
+								div.appendChild(btn);
+								div.appendChild(br);
+						
+
+
+					（6）操作form表单
+							* 获取form 表单对象
+								使用id: var form = document.getElementById("form");
+								使用name: var fm = document.frm ;
+							
+							
+							* 获取表单元素的对象集合
+									fm.elements
+								
+					
+							* form表单的常用方法
+								提交   表单对象.submit();         使得普通按钮进行提交（进行判断，走js校验，在进行提交）;
+								   
+								    
+								重置   表单对象.reset();           对表单中输入的元素进行清除
+								
+								
+								提交处理的地址  
+										表单对象. action = "新的值" ;    动态的改变数据的提交路径
+										
+										表单对象.method ="新的值"；      动态改变数据的提交方式
+								
+								
+							* 表单的属性
+								●  只读模式：
+										readonly= "readonly" ;         不可以更改，但是可以提交数据	
+										
+								●   关闭模式：
+										disabled = "disabled" ;         不可以进行任何的操作，数据不会提交，不可以进行过任何的操作
+		
+								●   单选框和多选框： checked
+									*  js操作多选框，单选框
+											选中状态在js中的checked属性值为true , 未选中状态为false ;
+								
+								  
+								       //得到多选框对象
+									   var fav = document.getElementsByName("fav");
+									   
+									   //遍历所有的多选框，得到每一个多选框对象
+									   for(var i=0;i<fav.length;i++) {
+									       if(fav[i].checked) {
+												//如果当前的多选框被选中，则弹出属性值
+												alert(fav[i].value)
+										   }
+									   }
+									  
+									* 全选；	
+											就是获取所有的多选框对象，遍历每一个对象，然后将每一个对象的check属性设置为true
+										
+									 
+									 
+								● 下拉框 ； selected属性   
+									* selected属性被选中，返回值就是true
+									
+									* select下拉框中属性用于监测值改变事件  onchange= "方法"；
+									           当selecct标记对象的属性发生改变时，触发对应的事件机制
+									
+									* 获取下拉框对象中的option集合
+											下拉框对象 . options ;     返回下拉框数组
+											
+											
+											
+								
+								
+								
+								
+	 
+二、 事件的基本学习：
+● 功能：某些组件被执行了某些属性操作后，触发某些代码的执行
+● 如何绑定事件：
+	*  直接在HTML标签中，指定事件的属性，属性值就是js代码
+		* 事件：onClick();
+		* 使用：
+				onclick(fun());
+		
+		
+	* 通过js获取元素对象，指定事件属性，设置一个函数
+		* document.getElementById("id值")。onclick = function() {
+			代码块；
+		}
+		
+		
+● 事件机制类型
+	1、单击事件
+		* 单击 ： onclick()             当鼠标单击时触发
+		* 双击 ： ondblclick()          当鼠标双击的时候触发
+		
+	2、鼠标事件：	
+		* onmouseover                   当鼠标停在某个HTML元素上的时候触发
+		* onmousemove                   当鼠标在某个HTML元素上移动的时候触发
+		* onmouseout					当鼠标在某个HTML元素上移出的时候触发
+		
+	3、键盘事件：
+		* onkeyup                       当键盘在某个元素上弹起的时候触发
+		* onkeydown                     当键盘在某个元素上下压的时候触发
+		
+	4、焦点事件：
+		* onfocus                       当鼠标在此处获得焦点时触发
+		* onblur                        当次HTML元素失去焦点时触发
+	
+	5、页面加载事件：
+		* onload                        进行页面刷新
+		
+	
+● 注意：
+		* js中添加事件的第一种方式： 在HTML中直接使用事件属性进行添加，属性值为所监听执行的方法
+		* js事件只有在当前HTML元素上有效
+		* 一个HTML元素可以添加不同的事件，每个事件之间用分号隔开
+		* 多个事件之间不能有相同的触发条件，否则会被阻塞， 如： 单击和双击
+		
+		* 事件的阻断：
+			当事件执行方法将返回值给事件时，
+			   false:    则会阻断当前事件所在HTML的标签的功能
+			   true:     则会继续执行当前事件所在HTML标签的功能
+			   
+	    * 超链接调用js函数
+			<a href="javascript:方法名（）">调用js</a>
+			
+
+
+		
+		
+三、操作多选框的全选和反选
+ function check(){
+        //获取全选框的对象
+       var all = document.getElementById("all");
+       if(all.checked) {
+           //获取多选框
+           var fav = document.getElementsByName("fav");
+           for(var i=0;i<fav.length;i++) {
+               fav[i].checked=true;
+           }
+       }else {
+           var fav = document.getElementsByName("fav");
+           for(var i=0;i<fav.length;i++) {
+               fav[i].checked=false;
+           }
+       }
+   }
+
+		
+
+四、操作表格
+1、删除行：
+	行对象. rowIndex      //返回该行对象的角标
+	表格对象 . deleteaRow(要删除的行对象的角标)；
+
+
+
+● 通过id获取表格对象
+● 通过子节点，获取当前的父节点
+● 使用table对象的deleteRow(参数)方法
+		ta.deleteRow(tr.rowIndex);
+		
+		* tr代表行对象，  rowIndex代表删除的对应的行的索引
+
+		
+●代码 		
+		function dele(btn) {
+			//获取table对象
+            var ta = document.getElementById("ta");
+
+            //通过子节点btn，获取到父节点tr
+            var tr = btn.parentNode.parentNode;
+            ta.deleteRow(tr.rowIndex);
+        }
+		
+
+2、修改单元格内容
+		● //修改操作
+        function updateRow() {
+            //获取到修改的数量对象
+            var td = document.getElementById("cell");
+            //将标签体内容变成一个input框
+            td.innerHTML="<input type='text' name='number' id='number' onblur='save(this)' value='"+td.innerHTML+"'>"
+        }
+
+        function save() {
+            var td = document.getElementById("cell");
+            var inp = document.getElementById("number");
+            td.innerHTML= inp.value;
+        }
+		
+		<td id="cell">3</td>
+        <td>
+            <input type="button" name="" id="" value="修改数量" onclick="updateRow()"/>
+            <input type="button" name="" id="" value="删除" onclick="delRow(this)"/>
+        </td>
+		
+	
+	
+3、插入行
+		●  表格对象 . insertRow(表格对象.rows.length)
+		
+		获取到要复制添加的行对象  ,ta.rows.length  代表表格中行对象的长度
+        var tr = ta.insertRow(ta.rows.length);
+		
+		●  表格对象 . rows(角标)   获取当前叫角标的行对象
+		
+		
+4、添加单元格
+	   ●  行对象 . insertCell(角标) ;    代表的是添加行对象的哪一个单元格
+	   
+	   ●  单元格角标从0开始。当前一个单元格不存在时，下一个或多个单元格无法插入

@@ -1,0 +1,13 @@
+eclipse
+快捷键：alt键 +/  (内容辅助线)
+	main +alt键 +/
+	syso+alt键 +/
+	提示作用
+1、格式化 ：ctrl+shift+f
+2、导入包 ctrl + shift +o
+
+3、get  和set 方法的自动生成： 右键source————getters  and  setters
+
+
+4、无参构造——右键source——Generate Construcors form Superclass
+     有参构造——右键source——Generate Construcors  using field。。。。-finish

@@ -1,0 +1,135 @@
+一、css样式使用
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>css样式的使用及照片墙</title>
+ <style type="text/css"> 
+ 	body{
+		background-image:url(bizhi.png) ;/*设置 表格的背景图片*/
+		background-size: cover ; /*设置背景图片平铺在表格背景中*/
+		background-repeat:no-repeat ;/*设置图片不能重复*/
+		}
+ 	table{
+			border : solid 0px;	/*设置表格外边框*/
+			border-radius: 10px; /*设置表格的外边框为圆角样式*/
+			
+	}
+		/*设置table行高*/
+ 	tr{
+		height : 40px ;
+	}
+	/*设置单元格*/
+ 	td{
+		width : 40px;
+		border:solid 1px gray; /*设置单元格的边框（相当于表格的内边框）*/
+		border-radius: 10px; /*设置单元格边框的样式为有圆角的*/
+		background-color: orange ; /*当表格中有图片背景时这次不能写，否则图片背景被覆盖*/
+		text-align:center ;
+		color: red; /*字体颜色*/
+		font-weight : bold ; /*字体加粗*/
+		letter-spacing:10px; /*每个字体之间的间距*/	
+	}	
+ 	
+	ul {
+	background-color : gray ; /*设置ul的背景颜色，但是此时ul已经没有大小了，所有自动设置高度*/
+	height:20px;
+		
+	}
+	
+ 	li{
+		 
+		list-style-type : none ;  /*清除每一个li的前面原点*/
+		display: inline; /*水平展示*/
+		float:left;  /*设置左悬浮显示*/
+	}
+	li a {
+		color : black ;
+		text-decoration: none;
+		font-weight : bold ; /*字体加粗*/
+		font-size:20px;
+		margin-left : 20px
+	}
+ </style>
+ 
+
+</head>
+
+<body>
+	<h3> css样式使用</h3>
+    <hr />
+    <table>
+    	<tr> 
+        	<td> Java </td>
+        	<td>Android </td>
+            <td>Javaweb </td>
+         </tr>
+         
+        <tr> 
+        	<td>张三 </td>
+        	<td> 李四</td>
+            <td> 王五</td>
+         </tr>
+         
+         <tr> 
+        	<td> 可乐</td>
+        	<td> 水星记</td>
+            <td> Caddo</td>
+         </tr>
+    </table>
+	<hr />
+    <ul> 
+    	<li><a href="" > 首页</a> </li>
+        <li><a href="" >Java </a> </li>
+        <li> <a href="" > 安卓</a></li>
+         <li> <a href="" > javaweb</a></li>
+    </ul>
+</body>
+</html>
+
+
+
+二、照片墙
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>照片墙</title>
+	<style type="text/css">
+	body{
+		text-align : center; /*设置内容居中*/
+		background-color: gray;  /*设置背景颜色*/
+	}
+	img{
+		width: 12%; /*设置图片宽度*/
+		padding: 10px; /*设置图片内边距*/
+		background-color:white;		/*设置图片背景颜色*/	
+		transform : rotate(-10deg) ; /*设置图片旋转，（-10deg表示逆时针旋转多少度）*/
+		margin : 20px; /*设置图片外边距*/
+	}
+	/*使用伪类给标签添加展示*/
+	img:hover{ 
+		/*当鼠标点击图片出现样式*/
+		transform: rotate(0deg) scale(1.5); /*设置旋转角度和缩放比例*/
+		z-index:1; /*设置显示级别*/
+		transition:1.5s; /*设置显示时间*/
+	}
+	
+   </style>
+    
+
+</head>
+
+<body>
+		<img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> <br />
+        <img src="bizhi.png" />
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        <img src="bizhi.png" /> 
+        
+        
+</body>
+</html>

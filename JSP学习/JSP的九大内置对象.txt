@@ -1,0 +1,82 @@
+一、JSP的九大内置对象   
+特点：
+		 内置对象是声明在jsp_service方法中 ， 只能在局部代码块中使用，不能在全局代码块中使用
+
+
+（1）Out //向客户端输出数据字节流        JspWriter     （对应实现了  java.io.write），继承了此类的功能
+				out.println(" ");
+		 
+		 
+（2）request  // 接收客户端的http请求 -->servlet中的HttpServletRequest
+			getParameter(String name)     //name 表示表单中的参数名
+			getParameterValues(String name)    //获取参数名为name的多个对应值，结果为String[ ] 数组
+			setAttribute(String name , Object obj)  //设置参数名name的值为obj 
+			getAttribute(String name)    //返回由name指定的属性值，类型为object类，如果不存在则返回null
+			getCookies( );   //返回当前的cookie数组
+			getDispacther("资源路径url") . forward(request，response) ； 转发实现界面跳转，此时不需要写web应用名
+	
+	
+（3）response   //封装jsp的产生的回应
+			addCookie(Cookie cookie）;    添加cookie在资源中
+			sendRedirect("web应用/资源路径url") ；   跳转界面
+	
+	
+（4）session  // 用于保存用户信息，跟踪用户属行为
+			setAttribute(String name,Object obj) ;  此处可以存储对象信息
+			getAttribute(String name)    // 取出指定的参数名所对应的信息
+	
+	
+（5）application    //多个用户共享该对象，可以用于做计数器---ServletContext
+
+
+（6）pageContext  //代表jsp页面的上下文，也是一个与对象，可以setAttribute( ) 作用范围只是本页面
+					存储的数据只在当前页面中有效
+					
+
+（7）exception      //代表运行时的一个异常
+				getMessage( );   // 输出异常发生的原因
+	
+	
+（8）page    //代表JSP这个实例本身，使用比较少
+
+
+
+（9）config    //代表jsp对应的servlet配置，可以得到web.xml 中的参数-----ServletConfig
+
+
+
+注意事项：
+	放置在pageContext中的信息，只能在本页面中使用
+	page相当于this  ，代表jsp页面本身的实例
+     	exception 相当于一个抛异常对象
+
+pageContext (存放的数据只能在当前的页面中有效)
+request（存放的数据只在一次request请求有效）
+session（存放的数据在一次会话中有效）
+application（存放的数据在整个web应用时有效）
+
+
+
+
+二、项目验证
+1、首先使用javaScript在客户端进行验证
+2、servlet/jsp ，对于比较严格的代码，要求在服务器端进行二次验证,Java正则表达式regex，
+
+
+
+
+三、模式model2（MVC）
+servlet当控制器，调用service类，对数据进行验证，并且传递相应的数据
+
+web技术（servlet , jsp）
+model层：java
+		1、业务层  
+		2、dao层  : 数据访问对象，专门对数据库进行操作的类，一般说dao不包含业务逻辑，相当于sqlHelper
+		3、数据持久层
+控制层：servlet
+
+M（模型层model）: 主要是由java类来做，也可以是javaBean,ejb等
+V（视图层view）：主要由jsp操作
+C（控制层controller）: 主要由servlet来做
+
+

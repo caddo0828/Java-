@@ -1,0 +1,80 @@
+form表单标签
+	作用：收集并提交用户数据给指定服务器
+
+	属性：
+		action：收集数据的提交地址，也就是URL
+		method：收集的数据的提交方式
+			get ：适当小量的数据，表单数据以？隔开拼接在URL后面，不同的键值对之间使用&符号隔开，不安全
+			post：适当大量的数据,安全 ，隐式提交
+	注意1：
+		表单数据的提交，要提交的表单项必须有name属性值，否则不会提交
+		提交的表单数据为键值对，键为name属性的值，值为用户书写的数据
+
+	注意2：form标签会收集其标签的内部数据
+	
+	注意3：form表单数据的提交目前依赖于submit提交按钮
+		
+form表单域标签的使用：
+	作用：给用户提供可以进行数据书写或者选择的标签
+	使用：		
+		文本框：input
+		        属性：
+			type：
+			    text ：收集少量的文本数据，用户可见
+			    password：密码，用户不可见
+		       	name：数据提交的键，也会被 js使用
+			value：默认值（就是框或者文本的内容是默认的）
+			
+		单选框：input
+			属性：
+			   type：radio
+			   name：name属性值相同的单选框只能选一样	
+			   value：要提交的数据
+			   checked：checked使用此属性的单选框默认是选择状态
+			注意：表单数据提交的是value值	
+
+		多选框：input
+			type : checkbox
+			name：一个多选组使用相同的name属性值
+			value：要提交的数据
+			checked：checked默认是选择状态
+
+		单选下拉框：select
+			属性：name：数据提交的键名必须申明（下拉框键值在select中申明同一个）
+			子标签：option （一个option代表一个下拉选项）
+			value：要提交的数据
+			selected : selected 默认被选上
+		文本域：textarea
+		            声明一个可以书写大量文字的文本区域
+			name：要提交的键值
+			rows：声明文本域的行数
+			clos：声明文本域的列数
+
+		普通按钮：input
+			属性 : type
+			      button
+			      value ：要提交的数据
+			      name；一般不写，因为普通按钮不提交数据
+
+
+		注意：表单域要提交的数据是value属性的值，name表示键值一定要申明，否则不提交
+			
+		
+form表单标签：
+	在点击数据提交时，form标签会将其内部所有form表单域标签中用户书写的数据安装method方法
+	中指定的提交方式提交给action属性所指明的提交地址
+
+	
+例题：
+<body>
+	<h3> form表单学习</h3>
+    <hr />
+    <!--#代表的是提交到当前服务器-->
+    <form action="#" method="get">
+    	用户名：<input type="text"  name="uname"/><br />
+        密码：<input type="password" name="upwd"/><br />
+       性别：男 <input type="radio" name="sex" value="1"/> 女<input type="radio" name="sex" value="0"
+       /><br />
+        <input type="submit"  value="登录"/>
+    </form>
+</body>

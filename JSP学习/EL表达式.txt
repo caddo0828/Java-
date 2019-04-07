@@ -1,0 +1,278 @@
+EL表达式：
+用于界面输出数据，只能从四大作用域中获取数据
+四大域获取值顺序： pageContext , request  ,  session    ,application
+
+注意：
+		若访问的对象为null, 并且访问该对象的属性时，不会报空指针异常，只是不显示而已
+	
+	
+访问顺序：
+		EL表达式，只能从四大域对象中获取数据，其查找额数据顺序是，
+		依此按照从小到大的范围从四大域中查找指定名称的属性值
+		
+		使用：
+			request.setAttribute("username", username);
+			${username}
+	
+	
+一、EL表达式获取值
+	
+（1）使用EL内置对象获取值
+		从指定域中获取数据 （借助EL的四个域属性空间相关的内置对象）
+	    序号：
+			1  pageScope          从page范围域属性空间中查找指定的key
+			2  requestScope       从request范围域属性空间中查找指定的key
+			3  sessionScope       从session范围域属性空间中查找指定的key
+		    4  application 		  从application 范围域属性空间中查找指定的key
+       
+	   使用：
+			User user = new User("张三",21);
+	 		request.setAttribute("user", user);
+			username = ${requestScope.user.name}
+			
+			// username = ${requestScope.user['name'] } <br>
+	           userAge = ${requestScope.user['age']}<br>
+	   
+			
+	
+	
+（2） EL访问Bean属性
+			属性：代表的是get 和 set 方法去掉 get 和 set 以后剩下来的东西首字母小写才是属性
+			变量：String name  叫做类的变量
+			
+			User user = new User("张三"，22，new Address("江西省", "萍乡市" , "安源区"));
+			request.setAttribute("user" , user);
+			
+			取值：  
+					${requestScope.user.address.town}
+					
+	
+	
+（3）EL访问数组
+		   String[ ]  names = {"张三", "李四" , "王老五"};
+		   pageContext.setAttribute("names" , names);
+		   
+		   取值：
+				name[0]  = ${pageContextScope.names[0]};
+				name[5]  = ${pageContextScope.names[5]};     //数组小标越界
+ 		 
+		   注意事项：
+				若访问的数组元素下标超出数组下标的上限，EL表达式中不会抛出越界异常，输出为空
+				
+		   访问自定义数组：
+				User[] schools = new User[3];
+				schools[0] = new User("张三",20,new Address("江西省", "萍乡市" , "安源区"));
+				request.setAttribute("schools", schools);
+		
+			
+			取值：
+			    schools = ${requestScope.schools[2].name}
+			
+		
+
+（4）EL表达式访问List集合
+	 		ArrayList<String> list = new ArrayList<>();
+	 		list.add("形容");
+	 		pageContext.setAttribute("list", list);
+		 
+		    取值：
+				 list[1] = ${list[1]}
+				 
+				
+			注意; 
+				可以通过索引访问List ，但是无法访问set，因为set中没有索引的概念
+				
+
+（5）EL表达式访问map集合
+			通过map集合的键去找到对应的值
+				
+			Map<String,Object> map = new HashMap<>();
+	 		map.put("tq","女");
+	 		map.put("user",new User("caddo",22,new Address("北京市", "丰台区" , "云岗南区")));
+	 		pageContext.setAttribute("map", map);
+
+			取值：
+					 map.sex = ${map.tq}<br>
+					 map.name = ${map.user.address.city}
+				
+			
+			注意事项：
+					map集合中如果设置map集合的键名称有空格或者 . 点字符时，采用以下方式取值
+						map.put("user name" , "cater");
+						request.setAttribute("login",map);
+						
+						${login["user name"]}
+					
+					
+					 
+二、EL表达式的运算符
+（1）算术运算符    + 、- 、*、/、%
+（2）关系运算符    == 、 ！= 、 > 、>= 、<=
+（3）逻辑运算符    ！  &&  ||  not   and   or
+（4）条件运算符    ? : (三目运算符)
+（5）取值运算符    [ ]  点号 .
+
+除上述运算符外，还有一个运算符empty， 使用为 ${empty 变量} ， 结果为布尔值
+● 若变量未定义，则返回值为null
+● 若变量为String类型，且其值为空串，则返回true
+● 若变量为引用类型，且其值为null,则返回值为true
+● 若变量为集合类型，且其不包含任何元素，则返回值为true
+
+使用：
+	   《！--    empty对于没有定义的变量的运算结果为： true————》	
+	    request.setAttribute("name", "");	
+		name = ${empty name}                            -------->  true
+
+		 request.setAttribute("user" , new User());
+		 user = ${user}                               ---------->  false
+		 EL表达式无法判别对象是否为空，因为对象属性会有默认的值，不认为是空
+		 
+		 
+			
+	 
+					
+三、EL表达式的内置对象   （在EL中的11个内置对象中除了pageContext对象以外，其他的类型均为MAP类型）
+（1）pageContext  :
+获取当前的项目资源的根路径
+${pageContext.request.contentPath}
+		
+实例使用：
+			<form action="${pageContext.request.contextPath}/Register" method="post"> 
+			
+注意事项：
+			pageContext本身就是一个JavaBean，只要是getXXX()方法，就可以用${pageContext.XXX}来获取
+			
+			
+（2）param 
+获取请求中的指定参数值，其底层调用的是 ：
+request. getParameter(键名);
+
+使用：
+			 name = ${param.name}
+		
+		
+（3）paramValues
+获取请求参数中的多个值，返回的是一个数组,其底层四线  
+
+
+（4）initParam
+初始参数隐式对象，获取web.xml中配置的servletContext初始化参数，也就是在<context-param>中配置的初始参数
+底层调用的是： 
+			servletContext.getInitParameter("");
+
+web.xml中配置：
+	 <context-param>
+		<param-name>encoding</param-name>
+		<param-value>utf-8</param-value>
+	</context-param>
+
+使用：
+		${initParam.encoding}   ;  结果为utf-8
+	
+
+
+（5）cookie
+用于获取用户存储在cookie中的设置值，，例如在cookie中设置了username属性，则可以使用
+
+使用：
+		${cookie}       		 ---------> 获取所有cookie对象的map集合     
+											{JSESSIONID=javax.servlet.http.Cookie@7f8ba22e} 
+		${cookie.JSESSIONID}	 --------->获取cookie对象的地址值（也就是每一次的request请求的set-cookie请求头带过去的数据）
+											javax.servlet.http.Cookie@18ac3d10 
+		
+		${cookie.键名.值}  		 ---------> 获取对应请求头中的cookie的值
+											872306A0269C4D7AEE79375E06B645B7
+		
+	
+	
+（6）Header标头相关的隐式对象
+如果要获取用户请求头中的表头数据，则可以使用header 或者  headerValues 隐式对象
+原理就是：
+		request.getHeader("User-Agent");
+		request.getHeaderValues("User-Agent");    //获取的是多值
+
+
+使用：
+		${header["User-Agent"]}
+		${headerValues["User-Agent"][0]}     // 如果不写下标返回一个数组
+
+
+四、自定义EL表达式
+创建步骤：
+			（1）必须编写一个公共类，必须是公开的 （自定义函数）
+			
+			（2）并且类的方法必须是静态的且公开的  
+			
+			（3）此类及其函数，需要在一个拓展名为 . tld 的 xml文件中进行注册
+		         xml文件是需要约束的，既需要配置文件头部，这个头部约束可以从以下文件中获取
+				 在tomcat安装目录下E:\users\tomcat\webapps\examples\WEB-INF\jsp2 的jsp2-example-taglib文件中获取头部配置信息
+			 
+			（4）这个.tld 的xml文件，需要定义在当前的web项目的web-inf目录下
+			
+				  <short-name>ELFunction</short-name>
+                  <uri>/WEB-INF/ELFunction.tld</uri>   
+				  
+				注意事项：
+					<short-name> 最好与当前的类名相同
+				
+			（5）注册配置解析：
+					<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+						xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+						version="2.0">
+    
+						 <!-- 定义标签库学习 -->
+						 <tlib-version>1.0</tlib-version>
+						 <short-name>ELFunction</short-name>    ●前缀
+						 <uri>/WEB-INF/ELFunction.tld</uri>     ●直接在jsp中alt+? 就可以导出 ， 写当前的配置文件的路径
+    
+						<!-- 注册函数 -->
+							<function>
+								<name>lowerToUpper</name>           ●方法名
+								<function-class>service.ELFunction</function-class>   ●自定义的类的路径
+								<function-signature>java.lang.String lowerToUpper(java.lang.String)</function-signature>
+								●签名：  返回类型 方法名（参数类型）
+							
+							</function>
+							
+							 <function>
+								<name>add</name>
+								<function-class>service.ELFunction</function-class>
+								<function-signature>java.lang.Integer add(java.lang.Integer , java.lang.Integer)</function-signature>
+						     </function>
+							
+					</taglib>   
+		
+		    （6）引用自定义EL函数的JSP界面的使用
+					<%@ taglib uri="/WEB-INF/ELFunction.tld" prefix="ELFunction" %>
+					
+					uri:      对应注册的uri ， 与配置文件所存放的路径要一致
+					prefix:   对应 <short-name> 的名字
+					
+					
+			（7）使用步骤：
+					${ELFunction :lowerToUpper("abc") }<br>
+					${ELFunction:add(5,8)}
+				
+			（8）注意事项：
+					 <%
+						String username = "tom";
+						pageContext.setAttribute("username", username);
+					 %>
+					   
+					   ${ELFunction:lowerToUpper(username) }<br>
+					   
+			    就算是自定义的EL函数也只能从四大域中获取数据
+
+
+
+五、EL总结
+●：EL表达式不能出现在java代码块中，表达式块等jsp的动态代码部分
+●：EL只能从pageContext , request , session ,application 四大域对象的属性空间获取数据
+●：EL不会抛出空指针异常，若访问一个null对象的属性，则什么也不会显示
+●：EL不会抛出数组访问越界异常，若访问一个数组中不存在的元素或者出现数组小标越界，将什么都不会显示
+●：EL不具有对字符串进行处理的能力，就连简单的字符串拼接都不行
+
+		
+					
+					

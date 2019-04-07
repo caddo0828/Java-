@@ -1,0 +1,113 @@
+一、递归：方法定义中调用方法本身的现象
+注意事项：A：递归一定要有出口，否则就是死递归
+	B：递归的次数不能太多，否则内存溢出
+	C：构造方法中不能递归使用
+
+二、递归的思想以及解决问题的思路
+分解法
+合并法
+
+三、解决条件
+1、递归必须要有方法
+2、要找到递归的出口
+3、找到递归的循环条件
+
+四、例题
+1、不死神兔
+2、递归获取指定目录下文件后缀为 " . Java" 的文件  ,   输出满足条件的所有文件的绝对路径
+3、递归删除带内容的目录(和取文件差不多)
+
+五、IO流：用于进行设备间的数据传输问题(上传或者下载)
+1、按流向分类
+	输入流：读取数据  
+	输出流：写出数据
+2、数据类型
+	字节流
+		字节输入流   读取数据     InputStream 基类 是一个抽象类
+		字节输出流   写出数据	     OutputStream
+	字符流：
+		字符输入流    读取数据    Reader
+		字符输出流    写出数据    Writer	
+		为了方便操作文本数据，Java提供给了字节流
+如何判断使用哪种类型的流？
+-----如果要进行操作的数据是文本类型，就使用字符流
+       把你要进行操作的文件用记事本打开，如果是可以读懂的数据就用字符流，否则用字节流
+-----如果你什么都不知道就用字节流
+
+
+六、字节输出流：OutputStream是一个抽象类，要找到其实现类FileOutputStream
+ FileOutputStream:
+	构造方法：
+		 FileOutputStream（File  file）;
+		 //第二种方式相当于调用系统功能自动创建了文件，创建指向于这个文件的对象
+		 FileOutputStream(String name);
+		//追加写入内容
+		FileOutputStream(File file , boolean append) ; 第一个参数可以是上面构造方法的任意参数
+						    第二个参数代表是否在第一次的末尾进行追加写入
+	成员方法
+		 //将字符串变成字节数组 String类的功能
+		public byte[ ]  getBytes()	
+		
+		//写入数据
+		public void write(byte[ ]  bytes) ; 将字节数组写入到文件中
+		public void write(int b) ;  将字节写入到文件中 （写入的是字节）
+		public void write(byte[ ] b , int off ,int len ) ; 将字节数组的一部分写入到文件
+		//关闭功能
+		close ( ) ; 关闭流操作 , 释放资源
+		       作用：让流对象变成垃圾，这样就可以被垃圾回收器回收
+			通知系统 释放该文件资源
+		
+字节输出流步骤：1、创建字节输出流对象    2、写入数据    3、释放资源
+
+如何实现数据换行呢？
+	写入换行符号即可
+	不同的系统换行的识别方式不同  
+	Windows：\r\n
+	Linux :   \n
+	Mac : \r
+如何实现数据的追加写入？
+	构造方法
+	FileOutputStream(File file , boolean append) ; 第二个参数为true代表允许追加，否则不允许追加
+
+
+七、字节输入流：读取数据并输出在控制台
+FileInputStream:
+	构造方法：  创建对象指向文件进行读取 ， 一般使用第一种形式 , 前提条件此时文件必须先存在，否则抛异常
+		FileInputStream(String name );
+		FileInputStream(File file); 
+	成员方法：
+		//读取数据
+		int read()  ；  读取出的是int类型     (一次读取一个字节)
+		                     如果此时返回的是-1 代表读到了末尾没有数据可读了
+ 		int read(byte[] b)  一次读取一个字节数组 
+		int read(byte[] b, int off, int len)  一次读取字节数组的一部分
+
+字节输入流步骤：1、创建字节输入流对象    2、读取数据    3、释放资源
+
+一次读取一个字节  int read( );
+int by = 0 ;  
+//表示有数据可以读
+while((by=输入流对象. read()) !=-1） {
+	System.out.print(by);
+}
+
+
+一次读取一个字节数组   int read(byte[ ] b) ; 返回的实际读取字节的长度（最后还剩几个打出来可能就是几个）
+//数组的长度一般是1024或者是1024的整数倍，，，1024代表1k个字节
+byte[ ]  bytes = new byte[1024];
+int len = 0; 
+//代表有数据可以读取, 返回的是字节的实际长度
+while((len = 输入流对象. read(bytes))!= -1) {
+	//使用String类的构造方法，将byte类型的数组的一部分，或者byte数组转化为 String 类型输出
+	System.out.print(new String(bytes, 0 , len));
+}
+
+
+
+八、字节缓冲流 ; 出现原因，读取字节数组比读取字节更快，所有java提供了高效缓冲区
+1、字节缓冲输出流 ； 写入数据
+	BufferedOutputStream   （其构造方法可以指定大小，但是一般用不上）
+		构造方法 ：BufferedOutputStream(OutputStream out) //这里可以使用FileOutputStream对象, 相当于OutputStream的匿名对象
+2、字节缓冲输入流：读取数据
+	BufferedInputStream 
+		构造方法：BufferedInputStream（OutputStream out）//创建匿名的对象(FileInputStream)

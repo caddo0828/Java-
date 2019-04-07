@@ -1,0 +1,313 @@
+对象数组：
+	1、数组可以存储基本数据类型，也可以存储引用类型，它存储引用类型的时候的数组就是一个对象数组
+	2、用数组存储5个学生对象，并遍历数组
+	class Student {
+	private String name;
+	private int age;
+	//无参构造
+	Student() {}
+	//有参构造
+	Student(String name,int age) {
+		this.name = name;
+		this.age = age;
+	}
+	//省略getXXX和setxxx()方法
+
+	//重写toString() 方法
+	public void toString() {
+		//override
+	}
+
+}
+
+public static void main(String[] args) {
+	//创建学生类
+	//创建集合对象   Collection集合为接口，由具体的子类的实现类去调用方法实现
+	Collection c = new ArrayList();
+	//创建学生对象
+	Student s1 = new Student("lili",19);
+	Student s2 = new Student("mmmm",21);
+	//将学生对象存储在集合中
+	c.add(s1);
+	c.add(s2);
+
+	//遍历集合输出
+	//将集合转换成数组，遍历数组输出 (此时的集合默认是Object类的对象)
+	Object[] obj = c.toArray();
+	for(int i=0;i<obj.length;i++) {
+		Student s = (Student) obj[i];  //将Object类的数组强制转换为Student类的对象用于输出，其方法实质是多态
+		System.out.println(s);
+	}
+	
+}	
+		
+
+
+二、collection功能概述; 
+功能:
+1、添加功能
+boolean add(Object obj) //在集合中添加一个元素
+boolean addAll(Collection c) //在一个集合中添加另一个集合的所有元素
+2、移除功能
+void clear() //清除集合中的所有元素
+boolean. remove(Object obj) //清除集合中的一个元素
+Boolean. removeAll(Collection c )// 清除集合中的所有元素 (只有当所以元素被清除时才返回true)
+3、长度功能
+int size() //用于显示集合的长度
+5、判断功能
+boolean contains(Object obj)//判断集合中是否包含了目标元素，包含一个就返回true
+boolean containsALL(Collection c) 集合只有包含了另一个集合的所有元素才能返回true
+boolean isEmpty() 判断集合是否为空
+6、把集合转换为数组
+Object[] toArray()
+4、迭代功能(遍历)
+Iterator iterator()
+用boolean hasNext()方法 判断是否有元素可以进行迭代
+用Object next()方法获取每一个元素，并且自动移到下一个位置
+注意:
+用集合对象去创建迭代对象
+迭代器对象是依赖于集合存在而存在的
+
+
+（了解）
+交集
+boolean retain(Collection c) //调用此方法的集合是否含有形参集合的元素，，只要含有一个就会返回true
+集合转换为数组
+Object[ ]  toArray( ) ;;将一个集合转换为数组  
+
+
+三、collection 集合的遍历
+a:把集合转换为数组
+Object[] toArray()
+b:迭代器
+Iterator iterator();//collection集合下的迭代器方式
+
+四、遍历案例
+1、存储字符串并遍历
+public static void main(String[] args) {
+	//创建集合对象
+	Collection c = new ArrayList();
+	//创建字符串对象
+	String s1 = "hello";
+	String s2 = "java";
+	//将字符串对象添加到集合中
+	c.add(s1);
+	c.add(s2);
+	//用迭代器遍历集合
+	//创建迭代器对象（迭代器是一个接口，依赖于集合而存在，所以通过集合对象来创建迭代器对象，调用方法进行实现集合遍历）
+	Iterator it = c.iterator();
+	//迭代器输出时，容易抛越界异常 ，因此要进行判断集合中是否还有元素可以取出（因为元素为多个，因此用循环判断输出）
+	while(it.hasNext()) {
+		String s = (String) it.next(); // 强转为字符串类型输出
+		System.out.println(s)
+	}
+
+        /*
+	 //for循环遍历输出元素 (初始化对象，判断语句，第三个语句可以不写)
+	for(Iterator it = c.iterator();it.hasNext();) {
+		String s = (String) it.next(); // 强转为字符串类型输出
+		System.out.println(s)
+	}	
+        */
+}
+
+
+2、自定义对象遍历
+//创建学生类
+class Student {
+	private String name;
+	private int age;
+	//无参构造
+	Student() {}
+	//有参构造
+	Student(String name,int age) {
+		this.name = name;
+		this.age = age;
+	}
+	//省略getXXX和setxxx()方法
+
+	//重写toString() 方法
+	public void toString() {
+		//override
+	}
+
+}
+public static void main(String[] args) {
+	//创建集合对象   Collection集合为接口，由具体的子类的实现类去调用方法实现
+	Collection c = new ArrayList();
+	//创建学生对象
+	Student s1 = new Student("lili",19);
+	Student s2 = new Student("mmmm",21);
+	//将学生对象存储在集合中
+	c.add(s1);
+	c.add(s2);
+	//通过集合对象创建迭代器对象（多态）
+	Iterator it = c.iterator();
+	//判断循环条件输出
+	while(it.hasNext()) {
+		Student s = (Student) it.next(); 
+		//Object next(); 返回的是一个Object类的对象，进行向下转型输出学生类对象，可以调用学生类特有的输出方法
+		System.out.println(s.getName() +" "+s.getAge()); 
+		 //如果学生类重写了Object类的toString()方法则可以直接输出对象 ，否则输出包名.类名.地址值
+	}
+        
+}
+
+
+
+五、迭代器Iterator方法
+1、判断下一个是否有元素
+boolean hasNext( ) //用于遍历时判断元素是否越界
+2、获取元素并且移动到下一个位置
+Object next( );  //自动返回的是一个Object类的对象
+
+
+ 六、List的功能（索引   有序   对象内容可以重复）
+1、添加（根据特定索引添加元素）
+void add(int index,Object element) ; // 在特定的索引位置进行添加，可以紧跟集合最后一个元素添加，但是不能越界
+2、删除
+boolean remove(int index) 把指定位置的元素删除
+3、修改
+boolean set(int index,  Object element) ;//在指定的位置，用element元素替代原有元素
+4、迭代器方法
+ListIterator listIterator( );
+5、获取
+public Object get(int index);  //根据具体的索引位置获取元素
+
+
+
+六  ---------------list集合的特有遍历方法：(List集合是有序的，且可以根据具体的索引值进行元素的操作，且对象内容可以重复)
+1、size() 和 get() 方法结合
+//创建List集合对象
+ List list = new ArrayList();
+//创建字符串对象
+String s1 = "hello";
+String s2 = "java";
+//将字符串对象添加到集合中
+list.add(s1);
+list.add(s2);
+//遍历List集合
+for(int i=0;i<list.size();i++) {
+	//用public  Object  get(int index);方法实现获取元素  （返回具体索引位置的元素）
+	String s  = (String) list.get(i);
+	System.out.println(s);
+}
+
+
+2、迭代器方法
+/创建List集合对象
+ List list = new ArrayList();
+//创建字符串对象
+String s1 = "hello";
+String s2 = "java";
+//将字符串对象添加到集合中
+list.add(s1);
+list.add(s2);
+//通过List集合对象创建迭代器对象
+ListIterator it = list.listIterator();
+while(it.hasNext()) {
+	String s = (String) it.next();
+	System.out.println(s);
+}
+
+
+
+七、ListIterator 迭代器的使用： （遍历）
+1、查询下一个元素是否存在
+boolean hasNext( );   //放在while循环中用于判断条件
+2、获取元素，并移动到下一个位置
+Object next( );  
+
+
+八、数组与集合的区别
+   A：长度区别：
+	数组的长度是固定的
+	集合的长度是可变的
+   B：内容区别：
+ 	数组元素的类型可以是基本类型也可以是引用类型
+	集合元素的类型只能是引用类型
+   C：形式区别
+	数组中元素类型必须相同
+	集合元素类型可以不同
+
+
+九、出现不合法的并发修改时解决方法：
+1、出现现象
+      J集合长度出现越界异常
+2、原因
+      迭代器是依赖于集合而存在的，先有集合再有迭代器，所以当集合发生改变但是迭代器无法预知改变时，出现异常现象
+3、解决方案
+	A：用集合进行元素的增减或其他操作 ，并且用集合进行遍历操作
+		/创建List集合对象
+		 List list = new ArrayList();
+		//创建字符串对象
+		String s1 = "hello";
+		String s2 = "java";
+		String s3 = "caddo";
+		//将字符串对象添加到集合中
+		list.add(s1);
+		list.add(s2);
+		list.add(s3);
+		//集合修改元素
+		for(int i=0;i<list.size( );i++) {
+			String s = (String) list.get(i);
+			if("java".equals(s)) {
+			    list.add("basic");
+		}
+	}
+	System.out.println(list);  //此时添加的元素默认在集合的末尾
+
+
+	B：用迭代器进行元素的增减或其他操作，且用迭代器进行遍历
+		（注意：用迭代器进行元素的改变时，只有ListIterator可以对元素进行操作，因此用ListIterator迭代器）
+	  public static void main(String[] args) {
+	//创建List集合对象
+	 List list = new ArrayList();
+	//创建字符串对象
+	String s1 = "hello";
+	String s2 = "java";
+	String s3 = "caddo"
+	//将字符串对象添加到集合中
+	list.add(s1);
+	list.add(s2);
+	list.add(s3);
+	//通过集合创建迭代器对象
+	ListIterator it = list.listIterator();
+	//迭代器进行添加判断操作、并且遍历
+	while(it.hasNext()) {
+		String s = (String) list.next();
+		if("java".equals(s)) {    //(list.contains("java")) //判断集合中是否包含某个元素
+			it.add("basic");
+		}
+	}
+	//输出
+	System.out.println(list);    //此时通过迭代器进行添加的元素默认添加到判断元素的后面
+}
+
+
+
+
+十、list子类的特点
+	ArrayList:
+		底层数据结构为数组，查询快，增删慢
+		线程不安全，效率高
+ 	Vector:
+		底层数据结构为数组，查询快，增删慢
+		线程安全，效率低
+	LinkedList:
+		底层数据结构是链表，查询慢，增删快
+		线程不安全，效率高
+
+
+十一、操作步骤
+1、创建类
+2、创建集合对象
+3、创建类对象
+4、迭代器遍历
+	A:通过集合对象创建迭代器对象（多态  向上转型）
+	B：迭代器对象调用方法判断是否有元素可以输出，防止越界
+	C：迭代器获取元素输出
+		向下转型输出（多态的方式，调用类的特有方法进行格式输出）  
+		否则类重写Object类的toString() 方法以特定格式输出
+
+

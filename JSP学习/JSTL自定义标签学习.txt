@@ -1,0 +1,266 @@
+JSTL标签学习
+一、自定义标签基本步骤
+1、创建一个公共的类并且继承SimpleTagSupport
+2、重写doTag方法
+3、在WEB-INF目录下配置后缀名为.tld的 xml配置文件
+	●实现对标签库的配置
+		<!-- 对标签库的配置-->
+		<tlib-version>1.0</tlib-version>
+		<short-name>JSTLTag</short-name>
+		<uri>/WEB-INF/jstl.tld</uri> 
+		
+	●实现对标签的配置
+		 <!-- 自定义标签的配置 -->
+		·<tag>
+			<name>clientIp</name>               《！--自定义标签的名字！》
+			<tag-class>JSTL.JSTLTag</tag-class> 《！--自定义标签类的路径！》
+			<body-content>empty</body-content>  《！--是否具有标签体！》
+		 </tag>
+ 
+ 
+ 4、在JSP界面引用taglib标签
+ <%@ taglib pprefix="JSTLTag" uri="/WEB-INF/jstl.tld" %>
+ 
+ 
+ 5、使用方法
+ <JSTLTag:clientIp></JSTLTag:clientIp>
+ 
+ 
+ 
+二、带标签体、或无标签体，或者带属性的自定义标签
+
+（1）无标签体的自定义标签
+	 ● 实现对标签的配置
+		 <!-- 自定义标签的配置 -->
+		·<tag>
+			<name>clientIp</name>               《！--自定义标签的名字！》
+			<tag-class>JSTL.JSTLTag</tag-class> 《！--自定义标签类的路径！》
+			<body-content>empty</body-content>  《！--是否具有标签体！》
+		 </tag>
+
+	 ●自定义类继承SimpleTagSupport类，并且重写doTag() 方法
+	 
+	 ●在doTag（）方法中获取到标签体对象
+		//获取标签体对象
+		JspFragment jspBody = this.getJspBody();
+		//获取标准输出流
+		JspWriter out = this.getJspContext().getOut();
+		//将标签体内容写入到输出流
+		jspBody.invoke(out);
+		
+	 ● JSP界面中的自定义标签
+		<JSTLTag:clientIp>abc</JSTLTag:clientIp>
+    	此时原样输出   abc  内容
+		
+		
+（2）实现对应标签功能的自定义标签操作
+	·● 注册标签   （实现字符小写变大写）
+		 <tag>
+			<name>LowerToUpperTag</name>
+			<tag-class>JSTL.LowerToUpperTag</tag-class>
+			<!-- 
+				empty : 表示当前标签没有标签体
+				scriptless：表示当前标签具有标签体，但该标签不能出现在Java代码块以及表达式中
+							但是可以出现EL表达式
+				jsp;		（已经过时），表示当前标签具有标签体，标签体内容原样显示到浏览器
+				tagdependent: 表示当前标签具有标签体，将标签体内容原样并且显示到浏览器	
+							  即使标签体中写的是EL，也不会对EL进行计算（就是原样显示）
+			-->
+			<body-content>scriptless</body-content>
+		</tag>
+
+		
+	 ● //创建一个输出流，将流中的内容通过toString()方法获取到其文本形式
+		StringWrite  sw = new StringWrite();
+	 
+	 ●//获取标签体对象
+	 JspFragment  jspBody  = this.getJspBody();
+	 
+	 ●//将标签体内容加载到输出流中,此时sw中已经包含了标签体的内容
+	 jspBody.invoke(sw);
+	
+	 ● //将标签体内容转换成字符串类型，以文本的形式获取输出流的内容
+	 String content = sw.toString();
+	 
+	 ●//转成大写
+	 content = content.toUpperCase();
+	 
+	 ●//将内容以输出流的形式输出到浏览器
+	 this.getJspContext().getOut().println(content);
+	 
+	
+	
+7、带属性的自定义标签
+	●注册标签
+	<tag>
+        <name>if</name>
+        <tag-class>JSTL.IfTag</tag-class>
+        <body-content>tagdependent</body-content>
+        <attribute>
+        	<!-- 自定义的属性名 -->
+        	<name>test</name>
+        	<!-- 该属性是否为必须的 -->
+        	<required>true</required>
+        	<!-- runtime expression  value
+        	     若为true,则该属性的值支持EL与JSP表达式
+        	-->
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>	
+	
+	●自定义类实现doTag()方法
+	 //标签的属性，反映到标签处理器类中，就是一个成员变量set属性
+	private boolean test;
+	
+	public void setTest(boolean test) {
+		this.test = test;
+	}
+	
+    public void doTag() throws JspException, IOException {
+		if(test) {
+//			//获取标签体
+//			JspFragment jspBody = this.getJspBody();
+//			//将标签体写入到标准输出流
+//			jspBody.invoke(this.getJspContext().getOut());
+			<!-- 以上代码等价 -->
+			//如果为null的话，自动返回一个pagaContext相关联的流对象
+			this.getJspBody().invoke(null);	
+		} 
+     }
+	 
+	 ● JSP界面中的使用方式
+	 boolean gender = false;
+     pageContext.setAttribute("gender", gender);
+	 
+	 
+     <JSTLTag:if test="${gender }">男</JSTLTag:if><br>
+     <JSTLTag:if test="${not gender }">女</JSTLTag:if>
+     <JSTLTag:if test="<%=gender %>">女</JSTLTag:if>
+	 
+	 
+	 
+三、自定义JSTL遍历List的forEachList标签
+● 注册标签
+ <tag>
+        <name>forEachList</name>
+        <tag-class>JSTL.ListTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+        	<!-- 自定义的属性 -->
+        	<name>items</name>
+        	<!-- 该属性是否为必须的 -->
+        	<required>true</required>
+        	<!-- runtime expression  value
+        	     若为true,则该属性的值支持EL与JSP表达式
+        	-->
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<!-- 自定义的属性 -->
+        	<name>var</name>
+        	<!-- 该属性是否为必须的 -->
+        	<required>true</required>
+        	<!-- runtime expression  value
+        	     若为true,则该属性的值支持EL与JSP表达式
+        	-->
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+
+● 重写类中的daTag()方法
+	private List items;
+	private String var;//当前遍历对象要放入域中的属性名（键名）
+	
+	public void setItems(List items) {
+		this.items = items;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	@Override
+	public void doTag() throws JspException, IOException {
+		//obj代表每次遍历得出的对象
+		for(Object obj : items) {
+			//要想输出EL表达式中的数据，必须存放在作用域中
+			//key就是var所指定的名称，value就是当前遍历的对象obj
+			this.getJspContext().setAttribute(var, obj);
+			this.getJspBody().invoke(null);
+		}
+	}
+
+● JSP界面中的使用
+	ArrayList<String> list = new ArrayList<>();
+    list.add("caddo");
+    list.add("heizi");
+    list.add("pangzi");
+    pageContext.setAttribute("list", list);	
+	
+	 <!-- 自定义标签forEachList遍历list集合 -->
+    <JSTLTag:forEachList items="${list}" var="arraylist">
+		${arraylist}<br>
+    </JSTLTag:forEachList>
+	
+	
+	
+四、自定义遍历所有集合与数组的forEach标签
+● 注册标签
+● 重写doTag() 方法
+    private Object items;   //不确定遍历的普通数组，或者集合（list,set,map）
+	private String var;//当前遍历对象要放入域中的属性名（键名）
+	
+	public void setItems(Object items) {
+		this.items = items;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	public Collection getColl() {
+		if(items instanceof List) {
+			return (List)items;
+		}else if(items instanceof Set) {
+			return (Set) items;
+		}else if(items instanceof Map) {
+			return ((Map)items).entrySet();
+		}
+	    /*	else if(items instanceof Object[]) {
+			//items是一个数组地址值，将其转换为Object{}数组
+			//将数组转换成一个list集合
+			return Arrays.asList((Object[])items);
+		}*/
+		
+		//判断当前的items是不是一个数组，利用反射中class类的isArray()方法
+		else if(items.getClass().isArray()) {
+			List list = new ArrayList<>();
+			//获取数组的长度，并且遍历
+			for(int i =0;i<Array.getLength(items);i++) {
+				//将当前索引的数组值添加进集合中
+				list.add(Array.get(items, i ));
+			}
+			return list;
+		}
+		return null;
+		
+	}
+	
+	@Override
+	public void doTag() throws JspException, IOException {
+	    for(Object obj : getColl()) {
+			this.getJspContext().setAttribute(var, obj);
+			this.getJspBody().invoke(null);
+		}
+	}
+● JSP界面使用
+
+
+
+五、将自定义标签库打包
+------>选中需要导出的web项目------>右键Export------>输入jar------>找到JAR file------>
+选中要进行打包的项目源码------>选择需要导入的路径
+------>将拓展名为.tld的配置文件复制------>添加到JAR文件的META-INF目录中
+------>将JAR包导入到其他项目------>在其他JSP界面中使用taglib标签进行导入
+	

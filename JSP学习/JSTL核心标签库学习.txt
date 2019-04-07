@@ -1,0 +1,286 @@
+一、JSTL核心标准库
+注意：
+	●在JSP界面中引入标签头
+		<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	
+	●利用JSTL标签存的属性值以及取出来的属性值都是用EL表达式从作用域中取出的
+		
+		
+(1) <c:set>
+ 用于设置变量值和对象属性，往作用域对象中存储了对应的键和值 
+ 用来设置javaBean对象 ，以及Map对象的值
+ 作用： 
+		● var：		存储的数据的键名
+		● value：   存储的属性值
+		● scope：   存储的作用域的范围，如果不指定范围则表示存储的属性在pageConext域对象中
+		● property:	 要修改的属性
+		● target：   要修改的属性所对应的对象
+		
+ 
+●  <c:set var="name"    value="caddo"  scope="request" />
+		name = ${requestScope。name}  
+
+		
+● 给JavaBean对象属性赋值  
+   Student student = new Student();
+   pageContext.setAttribute("someBody", student);
+   
+   <c:set value="李四"   property="name" 	target="${pageScope.student}"/>
+   ${pageScope.someBody.name}
+
+  表示为 student 对象的 name 属性赋值为 李四 （键名为javaBean的属性名）
+
+  
+● 给map集合赋值
+	  Map<String, String> map = new HashMap<String,String>();
+      pageContext.setAttribute("map", map);
+ 
+	  <c:set target="${map}" property="city" value="萍乡市"></c:set>
+	  city = ${map.city }
+
+	  表示为 map 集合的 键city 设置属性值为 萍乡市  （键随便取）
+	  
+
+注意事项：
+		● 如果指定了target 所指定的对象，就一定要指定property
+		● 如果指定了target书信，就不能同时指定 scope 所指定的作用域范围
+		
+
+（2）< c: remove>
+移除对应的键名所对应的属性
+作用：
+		● var :   要移除的变量的键
+		● scope:  移除位于哪个作用域的属性
+		
+<c: remove var="name" scope="page" />
+
+表示为移除对应的pageContext作用域的name属性
+
+注意事项：
+		● 同等于四大作用域的removeAttribute("键名") 方法
+		● 当不指定删除哪个作用域对象时，会将四大作用域中对应的同键名的属性全部删除
+		● 指定删除的作用域范围，只会删除对应作用域中匹配的键的属性值
+		
+	
+（3）<c : catch>
+用于捕获发生的异常信息
+作用：	
+		● var : 用来存储捕获到的异常信息（键）
+		
+<c: catch var="error" >
+	<% int i =3/0;  %>
+</c:catch>		
+${error.message}    // 将发生异常的信息输出	
+
+	
+（4） <c: out>
+用于输出对应的数据，可以是直接数据也可以是EL表达式，底层调用相当于 <%= %>
+作用：
+		● value:     要输出的内容，或者用EL表达式
+		● default：  输出的默认值
+		● escapeXml: 是否忽略HTML标签，若为true，则不解析HTML标签，将按原样输出
+		并且为默认值true，若为flase，解析HTML标签，EL表达式本身是解析HTML标签的
+			
+ <c:out value="caddo"  default="haha"/>
+ <c:out value="${country}" default="pangzi"></c:out>
+ 
+ 注意事项：
+		● 若EL中的变量没有定义则使用default指定的默认值
+		 当EL表达式中取出的值为空时，不输出default中的值
+	    
+	
+（5）<c:if>
+用于进行单分支的逻辑判断，当表达式
+作用：
+		● test： 条件（布尔判断），逻辑判断
+		● var：  用于存储结果的变量（值为true 或者 false）
+		● scope: var属性的作用域
+
+<c:set var="user" value="admin" scope="page"></c:set>
+<c:if test="${user=='caddo'}" var="flag" scope="page">
+	    <i>欢迎${user }登录</i>
+</c:if>
+<c:if test="${not pageScope.flag }">
+		<b>用户信息不匹配，登录失败</b>
+</c:if>	
+		
+	
+注意事项：
+		●：进行逻辑判断。需要依赖于EL表达式的逻辑判断，
+		  也就是说涉及到表达式的数据必须是从四大域中获取
+		  
+		  
+		
+（6）<c:choose>  <c: when>  <c:otherwise>
+用于进行条件选择，相当于if ---else if----else if---else		
+作用：
+		● <c:when> 中只有一个属性 就是条件判断test属性
+
+int score = 83;
+pageContext.setAttribute("score" ,score);
+
+<c:choose>
+	<c:when test="${score>80&&score<=100}">
+		<b>优秀</b>
+	</c:when>
+	<c:when test="${score>=60&&score<=80}">
+		<b>良好</b>
+	</c:when>
+	<c:otherwise>
+		<b>不及格</b>
+	</c:otherwise>
+</c:choose>
+	
+		
+（7）<c:forEach>
+用于循环输出数据，可以用于list,set,map,数组数据的输出
+作用：
+		● items： 	要被循环的信息（一般从EL表达式中获取）
+		● begin：	开始的元素，从几开始循环
+		● end：  	到几结束
+		● step:  	每次循环自增几 ，（默认每次总增1 ）
+		● var:   	代表当前这次要循环的变量名称（存在域对象中）
+		● varStatus：代表循环的状态的变量名称（声明变量记录每次循环的角标）
+					 index： 每次循环变量的角标从0开始
+					 count:  到当前循环变量时，一共输出了多少c次
+					 first： 是不是第一次循环（返回值为布尔类型）
+					 end:    是不是最后一次循环（返回值为布尔类型）
+					 
+
+<c:forEach begin="0" end="4" step="1">
+	  普通forEach遍历 <br>
+</c:forEach>
+
+《！--高级用法---》
+ <c:forEach items="${list }" var="users" varStatus="vs">
+        <tr class="${(vs.count%2)==0 ? 'even' : 'odd' }">
+           <td>${vs.count }</td>
+           <td>${users.name }</td>
+           <td>${users.age}</td>
+        </tr>
+</c:forEach>			
+		
+	
+（8）<c:forTokens>
+作用与上述<c:forEach>相似，只多了一个delims属性
+作用：
+		● delims； 分隔符 ，默认值为无
+		将数据输出时，是否需要进行分隔符修改
+		
+<c:forTokens items="goole,runoob,taobao" delims="," var="ns">
+		${ns }<br>
+</c:forTokens>		
+		
+结果：
+		goole
+		runoob
+		taobao
+		
+		
+（9）<c:redirect>
+通过自动重写URL来将浏览器重定向到一个新的URL，提供内容相关的param
+作用：
+		● url: 目标url
+		● context：紧着着本地网络应用的程序名称
+		
+<c:redirect url="http://www.baidu.com"></c:redirect>
+
+直接跳转到百度首页面中，原页面信息不显示
+		
+
+（10）<c:url>
+将URL格式化为一个字符串，存储在一个变量中，标签在需要的时候会自动重写URL
+var属性用于存储格式化后的URL，这个标签只是调用responser.encoderURL()方法中的一种可选方法
+作用:
+		● value:   基础URL
+		● context: 本地应用程序的名称
+		● var :    代表URL变量名
+		● scope:   var属性的作用域
+		
+<c:url var="newUrl" value="http://www.baidu.com" scope="page">
+	${pageScope.newUrl}
+</c:url>
+
+（11）<c:param>
+用于<c:url>标签中指定参数，而且与URL编码有关
+作用：
+		● name:    URL地址中重写的键名
+		● value：  对应重写键的值
+	
+<c：url  var="newUrl" value="http://localhost:8080/Shop/ShopCLServlet" scope="page">
+	<c:param name="id" value="5"/>
+	<c:param name="bookName" value="活着"/>
+</c:url>	
+${newUrl}
+		
+重写后的地址为：
+			http://localhost:8080/Shop/ShopCLServlet?id=5&bookName=活着
+		
+		
+		
+		
+二、JSTL的格式化标签库
+注意：
+		●在JSP界面中引入标签头
+		<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+		
+		
+（1）<fmt:formatDate>
+用于对日期进行格式化
+作用：
+		● value：   要显示的日期 
+		● type:     DATE,TIME,BOTH
+		● pattern:  自定义的格式模式
+		● var:      要存储的格式化日期的变量
+		● scope：   存储格式化日志变量的范围
+		● timeZone: 显示日期的时区
+	
+Date date = new Date();
+pageContext.setAttribute("date",date);
+<c:formatDate value="${date}" pattern="yyyy-MM-dd hh:mm:ss" var="time"/>
+	${time}
+	
+输出结果为： 2019-03-14 11:10:17 
+	
+		
+（2）<fmt:parseDate >
+将字符串转换成日期形式
+作用：
+		● var:       存储格式日期的变量名（键名）
+		● value:     要进行转换的字符串
+		● pattern: 	 自定义格式模式
+		● scope:     作用域范围
+		
+
+<fmt: parseDate value="1997/08/28" pattern="yyyy/MM/dd" var="time" scope="request"/>
+${requestScope.time}
+
+结果：  Thu Aug 28 00:00:00 CST 1997 
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

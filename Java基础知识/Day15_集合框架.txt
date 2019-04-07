@@ -1,0 +1,126 @@
+Collection:是集合接口；
+
+功能概述： (自动重写了toString方法)
+1、添加功能：
+	boolean add(Object obj);添加一个元素
+	boolean  addAll(Collection c)  ;添加一个集合的元素(将另一个集合所有的元素)
+2、删除功能：
+	void  clear() 移除所有元素
+	boolean remove(Object obj)移除一个元素
+	Boolean removeAll(Collection c);移除一个集合的元素（移除一个就为true）
+3、判断功能；
+	boolean contains(Object c) ;判断集合中是否包含指定的元素
+	boolean containsAll(Collection c) ; 判断集合中是否包含指定集合元素(只有包含所有的元素才是包含)
+	boolean isEmpty();判断集合是否为空
+5、长度功能：
+	int size() ; 元素的个数
+6、交集功能：
+	boolean retainAll(Collection c) :两个集合
+	（两个集合都有的元素，如果存在则为true，交集到的元素放在调用方法的集合中存储）
+7、把集合转换为数组，实现数组遍历
+	Object[]   toArray()
+
+4、获取功能：（遍历）   （迭代器依赖集合存在的）
+	Iterator<E>   iterator() 
+		Iterator ; 是一个接口，对象调用方法其实是一个子类的对象，采取的是多态的方式
+	Object next();获取元素，并移动到下一个位置
+		（注意，但是一旦超出范围就会抛异常）
+		所以每次获取时要判断是否存在元素可以取出，则用 hasNext()判断是否还有元素可以进行遍历
+
+迭代器依赖集合对象去调用iterator方法进行迭代  ：Iterator  迭代对象 =  集合对象.iterator();
+				          迭代对象.next(); 是一个object类对象   向下转型输出 
+
+
+二、集合的使用步骤
+1、创建集合对象
+2、创建元素对象
+3、把元素添加到集合
+4、遍历集合
+	a:通过集合对象获取迭代器对象
+	b:通过迭代器对象的hasNext() 方法判断是否含有元素
+	c:通过迭代器对象调用next() 方法获取元素并且移动到下一个位置	
+
+
+三、迭代器的原理及实现
+原理：定义为一个接口，定义功能，但是未实现 ，由子类的内部类去实现方法
+
+
+四、List类: 
+有序(存储和取出的元素顺序是一致的)的Collection序列 ,通过索引来操作。（与set不同其可以插入重复的）
+
+List集合的特有功能：  （索引值不能越界）
+1、添加功能：
+	void  add(int index, Object element)  //在列表的指定位置插入指定元素 (能紧跟上一个元素索引，但是不能越界)
+2、获取功能：
+	Object  get(int index) //获取指定位置的元素
+3、列表迭代器：
+	listIterator( ) ;//list集合特有迭代器
+	listIterator(int index) //迭代从指定位置的集合
+4、删除元素
+	Object remove(int index) //根据索引删除元素，返回被删除的元素
+5、修改元素：
+	Object set (int index, Object element) ;//根据索引修改元素，返回修改的元素
+ 	
+特有的遍历（ListIterator）：
+	1、get（）方法和size（）方法结合使用
+	2、特有遍历方法：(正向遍历)
+		a: hasNext() 和next()方法结合
+	3、Object prevoius( )  // 返回列表的前一个元素  （相当于倒着遍历）
+	     boolean hasPrevious( )  //判断倒着遍历是否还要元素
+
+ 	注意：可以实现逆向遍历但是必须先正向遍历才可以逆向遍历，所以无啥意义，一般不适用
+
+迭代器异常处理：出现不合法的并发修改时，抛异常
+	原因：因为迭代器是依赖于集合而存在的，当集合进行修改时迭代器不知道，所有抛异常
+	处理方法：
+		1、普通方法进行遍历get() 和size() 方法结合
+		for(int i=0;i<list.size();i++) {
+		    String s = (String) list.get(i);     //此时的S是一个字符串类型的对象，不单纯指代一个字符串
+		       	if("world".equals(s)) {
+			        list.add("javaee");
+			}
+		}
+		System.out.println(list);
+
+		2、迭代器进行修改元素  ListIterator才有修改元素的方法
+			注意：添加对的元素在迭代元素的后面出现
+		
+		//迭代器添加元素      // (此时添加的元素在迭代元素的后面)
+		ListIterator it = list.listIterator();
+		while(it.hasNext()) {
+			String s = (String) it.next();
+			if("world".equals(s)) {
+				it.add("javaee");
+			}
+		}
+		System.out.println(list);
+ 	
+五、栈   ： 先进后出
+       队列： 先进先出
+
+
+六、List的三个子类特点：
+	ArrayList:
+		底层数据结构是数组，查询快，增删慢
+		线程不安全，效率高
+	Vector:
+		底层数据结构是数组，查询快，增删慢
+		线程安全，效率低
+	LinkedList:
+		底层数据结构是链表，查询慢，增删快
+		线程不安全，效率高
+注意》不会分析用那种就用ArrayList
+
+
+七、数组与集合的区别
+	A：长度区别
+		数组长度固定
+		集合长度可变
+	B：内容区别
+		数组可以是基本类型，也可以是引用类型
+		集合只能是引用类型
+	C：元素内容
+		数组只能存储同种类型的数据
+		集合可以存储不同类型的数据
+
+

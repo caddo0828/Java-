@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        #divo1{
+            width :200px;
+            height: 200px;
+            border: solid 1px orange;
+        }
+        .common {
+            background-color: red;;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+        //获取元素内容
+        //修改元素内容
+        function getContext() {
+            //获取元素对象
+            var div = document.getElementById("div01");
+            // alert(div.innerHTML);
+            // alert(div.innerText);
+
+            div.innerHTML = "caddo";
+			alert(div.innerText);
+            //div.innerHTML="你猜？";
+        }
+
+        function changeStyle() {
+           var sty =  document.getElementById("div01");
+           sty.style.backgroundColor="red";
+            sty.style.border= "solid 2px black"; //添加或修改样式
+            sty.style.border="";//清除样式
+        }
+
+        function changeClass() {
+            var cas = document.getElementById("div2");
+            cas.className = "common";
+        }
+
+        function add() {
+            var div = document.getElementById("div01");
+
+            var inp = document.createElement("input");
+            inp.type="file";
+
+            var btn = document.createElement("input");
+            btn.type = "button";
+            btn.value="删除";
+            btn.onclick = function () {
+                div.removeChild(inp);
+                div.removeChild(btn);
+                div.removeChild(br);
+            }
+
+            var br = document.createElement("br");
+             //将创建的对象添加到div对象中
+            div.appendChild(inp);
+            div.appendChild(btn);
+            div.appendChild(br);
+        }
+    </script>
+
+</head>
+<body>
+<h3>操作HTML内容</h3>
+<input type="button" value="测试获取元素内容" onclick="getContext()">
+<input type="button" value="修改div样式背景" onclick="changeStyle()">
+<input type="button" value="修改类选择器样式" onclick="changeClass()"/>
+<input type="button" value="添加" onclick="add()">
+<hr/>
+<div id="div01">
+    龟儿子
+    <b id="b">鬼儿子</b>
+</div>
+<div id="div2">
+    <b>你好</b>
+</div>
+
+
+</body>
+</html>

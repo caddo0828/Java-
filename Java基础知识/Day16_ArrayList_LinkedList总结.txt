@@ -1,0 +1,327 @@
+一、vector：底层数据结构是数组，查询快，增删慢
+	   线程安全，效率低
+特有方法：
+public void addElements(Object obj) ;增加元素
+public Element elements( ) ; 枚举  （相当于迭代器）
+public boolean hasMoreElement( ) ; 集合中是否还有元素
+public void nextElement( )  ; 从集合中取出元素
+
+
+二、Linkedliset： 底层数据结构是链表，查询慢，增删快
+	           线程不安全，效率高
+1、添加元素
+public void addFirst(Object obj) ;  把元素添加到第一个位置
+public void addLast( object obj) ;  把元素添加到最后(几乎无意义)
+2、获取元素
+public void getFirst( ) ; 取出集合中的第一个元素
+public void getLast( ) ;  取出集合中的最后一个元素
+3、移除元素
+public void removeFirst( ) ; 移除集合中的第一个元素
+public void removeLast( )  ; 移除集合中的最后一个元素
+
+
+四、静态导包
+格式： import  包名. 类名. 方法名 
+(一般不使用)
+	注意：导入的方法必须是静态的
+	          如果在一个类中具有相同的方法名，必须在直接在导入的方法中添加前缀（java.lang.Math.abs(-10)）
+
+五、泛型:
+1、泛型类: 在类上定义泛型，当创建类对象时明确数据类型
+2、泛型方法  对方法进行操作（对方法进行定义），相应的对象不需要进行泛型定义
+	格式： 修饰符   <T>  返回类型   方法名（T  变量名） 
+3、泛型接口: 直接对接口进行操作  
+	格式： interface  接口名<T>
+	 实现类格式;  class  类名<T>  implements  接口名<T>
+注意：接口定义为泛型类时实现类不需要定义，，当接口不明确类型时，实现类也需要定义为未知类型<T>
+
+
+
+六、泛型的高级通配符
+1、当集合数据类型明确时 ,   后期数据类型必须是明确且相同的
+Collection<Object> c = new ArrayList<Object>( ); 
+2、?表示任意数据都可以
+Collection<?> c = new ArrayList<任意数据类型>( );
+3、？ extends E 表示只能是本类或者其子类
+ Collection<?  extends  E> c = new ArrayList<E或者子类>( );
+4、?   super   E  表示只能是本类或者其父类
+Collection<?   super  E> c = new ArrayList<E或者父类>( );
+
+
+七、增强for
+本质：其实就是迭代器的功能 , 进行元素遍历
+格式：
+	for(数据类型  变量 :  要进行遍历的对象) {
+		使用变量，就是进行了遍历
+	}
+  	优缺点： 好处：优化了数组以及集合的遍历
+                             缺点：容易出现当对象为空时，抛异常
+	             解决方案 ： 使用前先对对象是否为空进行判断
+
+	   	
+八、可变参数
+	如果一个类的方法 参数是可变的，这是可以定义可变参数
+格式：   修饰符     返回值类型   方法名（T...   a）;
+-------A： 格式中的a代表的是一个数组，用于存储参数
+          B： 当方法中，除了可变参数还有确认的参数时，应该将可变参数定义在明确参数的后面；
+	否则系统自动认为所有参数均为可变参数
+
+
+九、Arrays类的 asList(T... s):  将数组转换为集合
+public <T>  List<T>  asList(T...   a)
+//经过这个方法创建的集合元素，因为其本质还是数组，数组的长度是固定的
+//因此对通过这种方法创建的集合元素，不能改动其长度（也就是不能进行添加和移除操作，只能进行获取，或者是遍历）
+
+
+
+十、练习题
+1、产生10个1-20之间的随机数，要求随机数不可以重复
+package dh16;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+
+//产生10个1-20之间的随机数，要求随机数不可以重复，并且输出这是个随机数
+
+public class RandomText2 {
+	
+	public static void main(String[] args) {
+		//创建集合对象用于存储随机数
+		ArrayList<Integer>  list = new ArrayList<Integer>();
+		
+		//定义一个统计变量用于统计是否存储了十个数
+		int count = 0;
+		
+		//创建随机数对象
+		Random random = new Random();
+		
+		//循环判断是否进行了十次添加操作
+		while(count<10) {
+			//生成随机数nextInt(n) 表示0-n范围内int类型的随机数
+			int number = random.nextInt(20)+1;
+			//判断生成的随机数在集合中有无重复的数
+			if(!list.contains(number)) {
+				list.add(number);
+				count++;
+			}
+		}
+		
+		//最终遍历集合输出随机数
+		//迭代器迭代
+		Iterator<Integer> it  =list.iterator();
+		while(it.hasNext()) {
+			System.out.println(it.next());
+		}
+		System.out.println("===============");
+		//List集合特有方法遍历
+		for(int i=0;i<list.size();i++) {
+			System.out.println(list.get(i));
+		}
+		
+		System.out.println("================");
+		//增强for遍历
+		for(Integer i : list) {
+			System.out.println(i);
+		}
+	}
+	
+
+}
+
+2、集合的循环嵌套，用泛型实现 ,并且用增强for进行遍历
+package dh16;
+
+import java.util.ArrayList;
+
+//集合的循环嵌套，用泛型实现 ,并且用增强for进行遍历
+public class QianTaoListText3 {
+	public static void main(String[] args) {
+		// 创建大集合
+		ArrayList<ArrayList<Student>> arrayList = new ArrayList<ArrayList<Student>>();
+		// 创建单个小集合并且存储相应的对象类型数据
+		ArrayList<Student> list1 = new ArrayList<Student>();
+		// 创建第一个集合中要进行添加的学生类对象
+		Student s1 = new Student("caddo", 21);
+		Student s2 = new Student("dada", 20);
+		// 添加对象到集合中
+		list1.add(s1);
+		list1.add(s2);
+		// 将第一个小集合添加到大集合中
+		arrayList.add(list1);
+
+		// 第二个小集合
+		ArrayList<Student> list2 = new ArrayList<Student>();
+		// 创建第二个集合中要进行添加的学生类对象
+		Student s3 = new Student("mike", 21);
+		Student s4 = new Student("lili", 20);
+		// 添加对象到集合中
+		list1.add(s3);
+		list1.add(s4);
+		// 将第二个小集合添加到大集合中
+		arrayList.add(list2);
+
+		// 第三个小集合
+		ArrayList<Student> list3 = new ArrayList<Student>();
+		// 创建第二个集合中要进行添加的学生类对象
+		Student s5 = new Student("jack", 21);
+		Student s6 = new Student("liu", 20);
+		// 添加对象到集合中
+		list1.add(s5);
+		list1.add(s6);
+		// 将第二个小集合添加到大集合中
+		arrayList.add(list3);
+		
+		//遍历
+		//外层循环对大集合尽心遍历，
+		for(ArrayList<Student> x : arrayList) {
+			for(Student y : x) {
+				System.out.println(y.getName()+" "+ y.getAge());
+				
+			}
+		}
+
+	}
+
+}
+
+3、键盘录入多个数据，以0结束，要求在控制台输出这些数据的最大值，并且将所有数据进行输出
+package dh16;
+
+import java.util.LinkedList;
+
+//创建自定义类实现默认自定义栈
+public class MyLinkedListText6 {
+	//定义集合对象为私有，在其他类中不能通过创建对象来使用
+	private LinkedList link;
+
+	public MyLinkedListText6() {
+		//通过创建自定义对象实际上创建的是LinkedList的对象
+		 link =  new LinkedList();
+	}
+	
+	public void add(Object obj) {
+		link.addFirst(obj);
+	}
+	
+	public Object get() {
+		return link.removeFirst();
+		//每次移除第一个，并且返回第一个对象
+	}
+	
+	public boolean isEmpty() {
+		return link.isEmpty();
+	}
+
+}
+
+4、删除ArrayList集合中重复的元素
+package dh16;
+//删除List集合中重复出现的元素
+//方法一、定义新的集合，进行元素添加判断
+//注意，判断是否重复使用contains时，必须注意，其实使用的是equals()比较是否相同
+//自定义类中没有equals（）方法，则默认使用object类的，若要使用本身的，应该对方法进行重写
+
+import java.util.ArrayList;
+
+public class RemoveSameText5 {
+	public static void main(String[] args) {
+		// 创建集合对象
+		ArrayList<Student> list = new ArrayList<Student>();
+		// 创建学生对象
+		Student s1 = new Student("林", 21);
+		Student s2 = new Student("刘", 20);
+		Student s3 = new Student("游", 21);
+		Student s4 = new Student("林", 21);
+		Student s5 = new Student("吴", 22);
+		Student s6 = new Student("刘", 20);
+		// 将学生对象添加到集合中
+		list.add(s1);
+		list.add(s2);
+		list.add(s3);
+		list.add(s4);
+		list.add(s5);
+		list.add(s6);
+		
+	//方法一、定义新集合	
+		//创建新集合
+		ArrayList<Student> l = new ArrayList<Student>();
+		
+		//遍历原集合进行判断是否在新集合中存在相同的元素
+		for(int i=0;i<list.size();i++) {
+			if(!l.contains(list.get(i))) {
+				l.add(list.get(i));
+			}
+		}
+		
+		//遍历新集合
+		for(Student s : l) {
+			System.out.println(s.getName()+"\t"+s.getAge());
+		}
+		
+	//方法二、选择排序
+		for(int i=0;i<list.size()-1;i++) {
+			for(int j=i+1;j<list.size();j++) {
+				if(list.get(i).equals(list.get(j))) {
+					list.remove(j);
+				}
+			}
+		}
+		
+		System.out.println("===================");
+		for(Student ss : list) {
+			System.out.println(ss.getName()+"\t"+ss.getAge());
+		}
+	}
+	
+}
+
+5、创建一个类，用于实现自定义栈
+package dh16;
+
+import java.util.LinkedList;
+
+//创建自定义类实现默认自定义栈
+public class MyLinkedListText6 {
+	//定义集合对象为私有，在其他类中不能通过创建对象来使用
+	//此时的link对象是一个成员变量
+	private LinkedList link;
+
+	public MyLinkedListText6() {
+		//通过创建自定义对象实际上创建的是LinkedList的对象
+		//如果写成以下形式表示的是一个新的局部对象，在其他方法中无法使用
+		//LinkedList link =  new LinkedList();
+		 link =  new LinkedList();
+	}
+	
+	public void add(Object obj) {
+		link.addFirst(obj);
+	}
+	
+	public Object get() {
+		return link.removeFirst();
+		//每次移除第一个，并且返回第一个对象
+	}
+	
+	public boolean isEmpty() {
+		return link.isEmpty();
+	}
+
+}
+
+测试类
+package dh16;
+//自定义栈测试类
+public class Tool {
+	public static void main(String[] args) {
+		MyLinkedListText6 text = new MyLinkedListText6();
+		text.add("hello");
+		text.add("java");
+		text.add("world");
+		
+		while(!text.isEmpty()) {
+			System.out.println(text.get());
+		}
+	}
+
+}

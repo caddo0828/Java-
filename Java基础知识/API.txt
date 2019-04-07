@@ -1,0 +1,8 @@
+object类
+	1、是所有类的根类
+	2、构造方法：object() {}    无参构造
+	3、hashcode成员方法：public int hashCode()
+		返回该对象的哈希代码值
+	4、toString 方法：返回一个字符串
+	5、equals默认比较的先是地址值
+	6、

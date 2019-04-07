@@ -1,0 +1,44 @@
+1、LoginServlet.java （登录界面）
+
+2、LoginClServlet .java （验证用户是否合法）该文件充当控制器的作用，判断登录界面应该跳转到哪个servlet中
+
+3、表单提交的action 的书写规则应该是   /web应用名 /servlet的url
+     注意事项： web应用名：也就是当前的项目名
+
+	      对应的表单提交的是哪个方法，访问的就是哪个方法
+
+4、界面跳转技术   servlet提供了两种跳转界面的技术
+	response 对象的 sendRedirect 方法  （也叫做是转向）
+	//sendRedirect的url应该写成  /web应用名/servlet url	          
+	例如：resp . sendRedirect ( /web应用名/servlet url  )
+	
+	forward技术 (也叫做是转发)
+
+	
+
+5、主界面   （使用iframe）
+   管理用户
+   添加用户
+   查找用户
+   安全退出
+   
+ 
+6、添加分页变量
+pageNow   表示第几页            该变量是由用于来决定的，因此是经常变化的
+pageSize  每页显示多少行数据    由程序指定，也可以由用户决定
+pageCount 表示共有多少页		该变量是计算出来的
+rowCount  共有多少条记录		该变量是查询数据库得到的
+
+
+如何确定pageCount
+if（rowCount%pageSize==0） {
+   pageCount =rowCount%pageSize；
+}else {
+	 pageCount =rowCount%pageSize+1;
+}
+
+算法等价于：
+int pageCount = (rowCount%pageSize==0) ? rowCount%pageSize : rowCount%pageSize+1;
+
+等价于
+int pageCount = (rowCount-1)/pageSize +1;

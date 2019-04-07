@@ -1,0 +1,409 @@
+正则表达式：符合一定规则的字符串
+
+正则表达式组成规则：
+A：字符
+	x 字符 x , 举例 ： 'a' 表示字符a
+	\\ 反斜线字符
+	\n  换行符    （'\u000A'）
+	\r  回车符  （'\u000D'）
+
+B:字符类
+	[abc] a、b或c(简单类)
+	[^abc] 任何字符，除了a,b,c
+	[a-zA-Z] a 到z 或者A 到 Z 两头字母包括在内
+	[0-9] 0 到9的字符都包括
+
+C：预定字符
+	.  任何字符    如果是 . 字符本身，表示为\.
+	\d 数字：[0-9]
+	\w 单词字符[a-zA-Z_0-9]
+		表示在正则表达式中组成单词的东西必须有这些组成
+
+D：边界匹配器
+	^ 行的开头
+	$ 行的结束
+	\b 单词边界
+		就是不是单词字符的地方
+		举例：hello world？haha;xixi
+
+E:数量词
+	X?      X，一次或一次也没有 
+	X*      X，零次或多次 
+	X+     X，一次或多次 
+	X{n}   X，恰好 n 次 
+	X{n,}  X，至少 n 次 
+	X{n,m}  X，至少 n 次，但是不超过 m 次 
+
+
+正则表达式的功能：
+	判断功能：
+		public boolean matches(String regex);  判断字符串是否匹配给定的正则表达式
+
+	分割功能：String类的public String[ ]  spilt(String regex);   根据给定的正则表达式的匹配拆分此字符串
+			注意：1、对路径进行分割，应该将\改成\\   对应正则表达式两个\\对应路径上一个\
+			          2、. 分割  直接写.表示的是任意字符    如果要表示成.的话要写成\\.	
+	替换功能：
+		String类的public String replaceAll(String regex, String replacement);
+			注意： 使用给定的replacement 替换此字符串所有匹配正则表达式的子字符串
+		
+		//定义一个字符串
+		String string ="caddo12345javaandweb";
+		//定义新的串接收替换后的字符串
+		String string2 = string.replaceAll("\\d+", "*");
+		//注意\\d+  ， "*" 表示出现数字一次或一次以上替换一个*给原字符串
+		//   \\d , "*" 表示数字出现一次就替换一个*给原字符串
+
+		
+	获取功能：
+		Pattern 和Matcher类的使用
+		模式匹配器的基本使用顺序
+			
+		1、把正则表达式编译成模式对象      public static Pattern  compile(String) //将给定的正则表达式编译到模式中
+		    Pattern p = Pattern.compile("a*b");
+		2、通过模式对象得到匹配器对象
+		    Matcher m = p.matcher("aaaaab");
+		3、调用匹配器对象的功能
+ 		    boolean b = m.matches();
+	通过Matcher类的  public boolean find( );查找是否存在符合条件的子字符串
+	通过Matcher类的  public String group( ) ;返回由以前匹配操作所匹配的输入子序列
+		注意：调用group必须先调用find  ，， 先找是否存在再来输出匹配的子字符串
+
+
+
+Math类
+	成员变量 static final double E  //自然底数
+	              static final double PI  //圆周率
+	成员方法：
+ 		public static int abs(int a) ;绝对值
+		public static double ceil(double b) ;  向上取整  返回最小的大于b的值
+		public static double floor(double b) ; 向下取整   返回最大的小于b的整数
+		public static double pow(int a,int b);   a的b次幂
+		public static double random( ); 返回0.0-1.0的随机数
+		public static double sqrt(double b) ;  返回b的正平方根
+		public static int round(其他类型的值) ；返回最接近参数的int值
+
+
+
+Random类：
+	构造方法：
+   		public random() 没用给种子，默认是当前的毫秒值
+ 		public random(long seed)给出指定的种子
+
+		 区别： 给定种子后，每次得到的随机数是相同的
+  
+ 	成员方法：
+  		public int nextInt();返回int类型的随机数
+  		public int nextInt(int n)； 返回（0，n）范围内的随机数
+
+
+System类：
+	方法：
+		public   static   void    gc()  运行垃圾回收器     重写Object类的finalize() 方法，进行回收
+		public   static   void    exit(int status)    终止当前正在运行的 Java 虚拟机。 
+		public   static   long    currentTimeMillis()  返回以毫秒为单位的当前时间
+		public   static   void    arraycopy(Object src, int srcPos, Object dest, int destPos, int length) 
+                                从指定源数组中复制一个数组，复制从指定的位置开始，到目标数组的指定位置结束。 
+		src - 源数组。
+		srcPos - 源数组中的起始位置。
+		dest - 目标数组。
+		destPos - 目标数据中的起始位置。
+		length - 要复制的数组元素的数量。      最终用Arrays.toString(  int[] arr);输出数组
+
+BigInteger :可以让超过Integer范围内的数据进行运算
+	
+	构造方法：BigInteger(String value )；
+ 	public BigInteger[]  divideAndRemainder(String value)
+	    //以数组的形式将商和余数放在数组中
+
+
+Date类：表示特定的时间，精确到毫秒值
+
+	构造方法：
+		Date( ) ;	根据当前默认的毫秒值创建日期对象
+		Date(long date) ;根据给定的毫秒值创建日期对象
+
+	成员方法：
+		public long getTime( );获取时间，以毫秒为单位
+		public void setTime(long time) :设置时间
+注意：
+	从Date得到一个毫秒值：
+		创建Date对象，调用getTime( ）方法
+	把一个毫秒值转换为Date:
+		1、构造方法
+		2、setTime( )方法
+
+DateFormat:   (抽象类无实例对象)
+	进行日期和字符串格式化和解析：可以将Date和String类型进行转换：默认使用simpleDateFormat具体类实现
+	
+simpleDateFormat
+	构造方法：
+		simpleDateFormat( );默认模式
+		simpleDateFormat(String pattern ) ;  给定的模式  pattern代表输出的模式规则
+			规则表示：1、年y     2、月M    3、日d     4、 时H      5、 分m     6、 秒s    
+			例如：yyyy-MM-dd  HH:mm:ss   输出当前时间
+	
+	成员方法：
+		public String format(Date d) ; 将Date类型转换为以字符串类型输出的模式
+	
+		public Date parse(String s) ;  将字符串转换成一个Date类型的数据
+			注意一点，使用SimpleDateFormat需要捕获ParseException异常。
+
+Calendar：类是一个抽象类，它为特定瞬间与一组诸如 YEAR、MONTH、DAY_OF_MONTH、HOUR 等 日历字段之间的转换提供了一些方法，并为操作日历字段
+	//其日历字段由当前日期和时间进行初始化
+	Calendar rightNow = Calendar.	getInstance();   //返回一个子类的对象
+		
+	成员方法:
+		public int get(int filed); 返回给定字段的值，日历类中的每个日历字段都是静态的成员变量，且为int类型
+
+	注意：month 从0 开始显示
+
+		public void add(int filed, int amount)根据给定日历字段和对应的时间，来对当前的日历进行操作
+		public final  void set(int year,int month,int date);设置当前日历的年月日
+
+
+1、判断电话号码和邮箱
+package dh14;
+
+import java.util.Scanner;
+
+
+//判断电话号码
+public class MatchesDemo1 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入要进行判断的qq号码");
+		String string = sc.nextLine();
+		
+		boolean b = isNuCheck(string);
+		System.out.println(b);
+		
+	}
+		
+	public static boolean isNuCheck(String string) {
+		boolean flag = true;
+		if(string.length()>=5&&string.length()<=15) {
+			if(string.charAt(0)!='0') {
+				char[] ch = string.toCharArray();
+				for(int i=0;i<ch.length;i++) {
+					if(!Character.isDigit(ch[i])) {
+						flag = false;
+						return flag;
+					}
+				}
+			}else {
+				flag = false;
+				return flag;
+			}
+		}else {
+			flag = false;
+			return flag;
+		}
+		
+		return flag;
+	}
+}
+
+2、按照不同的规则分割数据
+package dh14;
+//按照不同的规则分割数据
+public class SpiltDemo1 {
+	public static void main(String[] args) {
+		String s1 ="aa,bb,cc";
+		String[] strings = s1.split(",");
+		for(int i=0;i<strings.length;i++) {
+			System.out.print(strings[i]+"  ");
+		}
+		
+		System.out.println();
+	
+		String s2 = "aa.bb.cc";
+		String[] strings2 = s2.split("\\.");
+		for(int i=0;i<strings2.length;i++) {
+			System.out.print(strings2[i]+"  ");
+		}
+		
+		System.out.println();
+		
+		String s3 = "D:\\JSP实验\\第二次实验\\登录验证";
+		String[] strings3 = s3.split("\\\\");
+		for(int i=0;i<strings3.length;i++) {
+			System.out.print(strings3[i]+"  ");
+		}
+		
+	}
+
+}
+
+3、把字符串中的数字替换成*
+package dh14;
+//将字符串中的数字替换成*
+public class ReplaceAllDemo1 {
+	public static void main(String[] args) {
+		String string = "java121212andweb";
+		String string2 = string.replaceAll("\\d+", "*");//表示用*替换满足正则表达式的字符串
+		System.out.println(string2);
+		
+		//代表一个数字就用一个*替换
+		String string3 = "java121212andweb";
+		String string4 = string3.replaceAll("\\d", "*");
+		System.out.println(string4);
+				
+		
+		
+	}
+
+}
+
+4、获取字符串中由三个字符组成的字符串
+package dh14;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//获取字符串中由三个字符组成的类
+public class HuoQuDemo1 {
+	public static void main(String[] args) {
+		String string = "ni sha diao ba shi jiu shi";
+		
+		//创建模式对象
+		Pattern p = Pattern.compile("\\b\\w{3}\\b");
+		//将模式对象放在匹配器中
+		Matcher m = p.matcher(string);
+		//调用  find 找到    group 输出找到的字符串
+		while(m.find()) {
+			System.out.println(m.group());
+		}
+	}
+
+}
+
+6、获取任意范围内的随机数
+package dh14;
+
+import java.util.Scanner;
+
+//获取任意范围内的随机数
+public class RandomDemo {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入起始范围：");
+		int start = sc.nextInt();
+		System.out.println("请输入终止范围：");
+		int end = sc.nextInt();
+		
+		for(int i=0;i<100;i++) {
+			int m =(int)(Math.random()*(end-start))+start;
+			System.out.println(m);
+			
+		}	
+	}
+}
+
+7、来到世界多少天
+package dh14;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+//来到这个世界多少天
+public class DateCountDemo {
+	public static void main(String[] args) throws ParseException {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入出生日期：");
+		String string = sc.nextLine();
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = dateFormat.parse(string);
+		
+		long l =(new Date().getTime()-date.getTime())/1000/60/60/24;
+		System.out.println(l);
+	}
+
+}
+
+8、输出任意年的2月份有多少天
+package dh14;
+
+import java.util.Calendar;
+import java.util.Scanner;
+
+//获取任意年份的2月份有多少天
+public class CalendarDemo {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入要进行判断的年份");
+		int year = sc.nextInt();
+		
+		Calendar  c = Calendar .getInstance();
+		c.set(year, 2, 1);
+		c.add(Calendar.DATE, -1);
+		System.out.println(c.get(Calendar.DATE));
+	}
+
+}
+
+9、将字符串“91 27 46 38 50”
+ * 用代码实现输出结果为：“27 38 46 50 91”
+package dh14;
+import java.util.Arrays;
+/*
+ * 将字符串“91 27 46 38 50”
+ * 用代码实现输出结果为：“27 38 46 50 91”(字符串)
+ */
+public class SplitDemo {
+	public static void main(String[] args) {
+		String string = "91 27 46 38 50";
+		String[] strings = string.split(" ");
+		
+		int[] arr = new int[strings.length];
+		for(int i=0;i<strings.length;i++) {
+			arr[i] = Integer.parseInt(strings[i]);
+		}
+		
+		Arrays.sort(arr);
+		StringBuffer buffer = new StringBuffer();
+		for(int j=0;j<arr.length;j++) {
+			buffer.append(arr[j]+" ");
+		}
+		
+		String string2 = buffer.toString().trim();
+		System.out.println(string2);
+		
+	}
+
+}
+
+
+10、Date---String  之间的转换
+package dh14;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+//Date----String之间的转换
+public class Date_String {
+	public static void main(String[] args) throws ParseException {
+		Date d = new Date();
+		String string = dateToString(d,"yyyy-MM-dd");
+		System.out.println(string);
+		
+		String s = "2020-01-02";
+		Date date = stringToDate(s,"yyyy-MM-dd");
+		System.out.println(date);
+		
+	}
+	
+	public static String dateToString(Date d,String pattern ) {
+		return new SimpleDateFormat(pattern).format(d);
+	}
+	
+	public static Date stringToDate(String s,String pattern) throws ParseException {
+		return new SimpleDateFormat(pattern).parse(s);
+	}
+
+}
+
+

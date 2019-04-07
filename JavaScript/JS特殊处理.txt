@@ -1,0 +1,150 @@
+一、获取输入框内容
+● 根据标记的name属性获取标记对象，这种方式只能获取输入框对象
+	*  var inputObj = document.form.username;
+	
+	* 使用：
+		<form name="form1">
+           用户名<input type="text" name="username" id="user">
+			<input type="button" name="openBtn" id="openBtn" value="提交" onclick="fun()">
+		</form>
+	
+●  var username = document.getElementById("username").value
+
+
+二、 输入框失去焦点：
+●  input框的 onblur 属性
+onblur : 输入框标记失去焦点的事件处理机制
+this:  代表当前的input输入框
+this.value : 代表当前输入框的属性值
+
+<input type="text" name="username" onblur="alert( checkName(this) ? '有效用户名' : '无效用户名')">
+
+<script type="text/javascript">
+	function checkName(username) {
+		if(username.value=='admin') {
+			return true;
+		}else {
+			return false;
+		}
+	}
+</script>
+
+
+三、JS中声明自定义引用类型
+● 声明一个类  (this代表本类)
+● 使用声明的类创建对象（具体来说使用new来创建对象）
+* function Dept(city,name,time) {
+	this.city = city; //相当于给属性初始值赋值为city
+	this.name = name;
+	this.time = time;
+	
+	//在类中声明方法
+	this.getInfo = function() {
+		//在类中访问类的属性，必须使用this,  格式： this.属性名
+		return "Dept[city="+this.city+",name="+this.name+",time="+this.time+"]";
+	}
+}
+
+* 使用声明的类创建对象（具体来说使用new来创建对象）
+var dept = new Dept("北京“,"谭琪",2019);	
+
+* 使用对象上面的属性/方法
+alert(dept.city+","+dept.name+","+dept.time)
+alert(dept.getInfo());
+
+* 改变对象的属性值
+dept.name = "caddo";
+dept.city = "深圳";
+
+* 调用属性输出值
+alert(dept.name+","+dept.city);
+
+*  直接当Dept当成函数调用
+var dd = Dept("深圳","elina",2019);
+
+
+
+四、给标记添加事件处理
+● 方式一、
+     function fun() {
+		var username = document.getElementById("username").value;
+			if(username=='admin') {
+				alert("输入成功");
+			}else if(username=="") {
+				alert("输入不能为空")
+			}else {
+				alert("error");
+			}
+	 }
+    
+	<input type="text" name="username" id="username">	
+	<input type="button" value="提交"  id="btn" onclick="fun()">	
+
+	
+● 方式二、
+ document.getElementById("btn").onclick = function() {
+	var username = document.getElementById("username").value;
+			if(username=='admin') {
+				alert("输入成功");
+			}else if(username=="") {
+				alert("输入不能为空")
+			}else {
+				alert("error");
+			}
+ }
+
+	<input type="text" name="username" id="username">	
+	<input type="button" value="提交"  id="btn"/>
+
+
+● 方式三、在body 中添加属性 onload
+* body标记的onload ；浏览器加载页面完成事件的处理机制
+  浏览器加载页面完成之后，会自动调用指定的回调函数
+function text() {
+		document.getElementById("btn").onclick = function() {
+			var username = document.getElementById("username").value;
+			if(username=='admin') {
+				alert("输入成功");
+			}else if(username=="") {
+				alert("输入不能为空")
+			}else {
+				alert("error");
+			}
+		}
+
+	}
+
+	<body onload="text()">
+	<input type="text" name="username" id="username">	
+	<input type="button" value="提交"  id="btn">	
+	</body>
+	  
+● 方式四、给window对象的onload属性处理指定的回调函数
+window.onload = function() {
+	//页面已经被加载了，直接可以获取信息，执行相应的代码
+}
+
+
+
+五、捕获键盘事件
+● 在JS中，有一个内置的event对象，也就是标记发生的特定事件
+  可以通过event。keyCode 捕获到键盘
+
+  
+● body 中的onKeypress属性:  键盘按下事件的处理机制	，捕获小键盘
+  onKeydown : 捕获所有的键盘  
+  
+  
+  * 使用：
+	function test() {
+			var code = event.KeyCode;
+			alert("code="+code);
+		}
+		
+	<body onkeypress="test()">
+	
+
+六、图片滑动显示隐藏
+● img图片标记中，控制宽度为0，也就是让图片默认不显示，为保证图片不失真
+  则要控制图片的宽度和高度
+  *  通过调用方法来控制图片的大小

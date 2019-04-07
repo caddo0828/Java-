@@ -1,0 +1,149 @@
+Scanner类
+基本格式：
+ * 	public boolean hasNextxxx();判断是否是某种类型的数据
+ * 	public xxx   nextXxx();获取该元素
+ * 
+ *	 public int nextInt();
+ * 	public String nextLine();输入string类型的数据
+ * 
+ * 先获取一个数值在获取一个字符串，回车默认给了数据给String类
+
+
+String 类
+	字符串：就是由多个字符组成的一串数据，也可以看成是一个字符数组
+	（字符串是常量，一旦被赋值，就不能被改变）
+	public String(); 空构造
+
+	public String(byte[] bytes); //把字节数组转换成字符串
+
+	public String(byte[] bytee,int index ,int length); 把字节数组的一部分转换成字符串
+
+	public String(char[] value);//把字符数组转换成字符串
+
+	public String(char[] value,int index,int length);//把字符数组的一部分转换成字符串
+
+	public String(String original );//把字符串常量值转换成字符串
+
+  	字符串一旦被赋值就不能被修改（指的是值不变，而不是引用）
+
+
+面试题：
+	String s1= new String("hello");
+	String s2 = "hello"; 有什么区别
+解答：
+      ==比较对象的地址值，比较引用类型
+      equals：比较引用类型，也是比较地址值，而string类重写了equals方法，比较的是内容是否相同
+
+前者 中其实有两个对象，堆内存和方法区里分别一个，（先是常量池----然后堆内存指向方法区改变地址值，最后栈内存指向堆内存）
+后者直接在方法区常量池中创建一个对象
+
+
+面试题：
+String s1 = "hello";
+String s2 =  "word";
+String  s3 = "helloword";
+s3==s1+s2;
+s3=="hello" + "word";
+字符串如果变量相加,先开空间，在拼接
+字符串如果是常量相加，先加，然后在常量池中找，如果有直接返回，否则创建
+
+
+
+String类的判断功能 :
+	boolean equals(Object obj);//比较字符串内容是否相同，区分大小写
+
+	boolean equalsIgnoreScae(String str);//比较字符串内容是否相同，忽略大小写
+
+	boolean contains(String str);//比较大字符串是否包含小字符串
+
+	boolean stratWith(String str);//判断字符串是否以某个指定的字符串开头
+
+	boolean endsWith(String str);//判断字符串是否以某个指定的字符串结尾
+
+	boolean isEmpty();//判断字符串是否为空
+
+注意：
+	字符串内容为空，字符串对象为空
+                 String s = " "; //对象所表示得到内容为空，但是对象存在
+	String s  = null;  //   表示对象不存在
+
+
+
+String 类的获取功能：
+	int  length();//获取字符串长度
+
+	char CharAt(int index);  //获取指定索引位置的字符
+
+	int indexOf(int ch);  //返回指定字符在此字符串中第一次出现的索引
+		为什么此处是int类型，而不是char类型？
+		原因是 'a' 和97 其实都可以代表 ‘a’                            index  返回-1 表示不存在该字符
+		但是如果单写成char类型，，，97就会无法识别
+
+	int indexOf(String str);  //返回指定字符串在此字符串中第一次出现的索引值
+
+	int indexOf(int ch,int fromIndex);//返回指定字符在此字符串从指定位置后第一次出现的索引位置
+
+	String substring(int start)；//从指定位置开始获取字符串，默认到末尾结束
+
+	String substring(int start ,int end);//从指定位置开始到指定的位置结束
+	[ strat ，end } 返回的字符串只包含start索引处的字符，但是不包含end所在索引位置的字符
+
+
+
+
+字符串的遍历：
+	A：如何遍历？
+ 	*   char  charAt(int index)
+ 	B:如何知道字符到底有多少呢？
+ 	int length();  
+
+字符判断是大写还是小写还是数字：
+		if(ch>='0'&&ch<='9') {
+			number ++;//数字
+		}else if(ch>='A'&&ch<='Z') {
+			maxCount ++;//大写
+		}else if(ch>='a'&&ch<='z') {
+			minCount ++;//小写
+		}
+
+
+
+String的转换功能：
+	byte[ ]  getBytes( )；//把字符串转换成字节数组
+	
+	char[ ]  toCharArray();//把字符串改变成字符数组
+	
+	static   String valueOf(char[ ]  chs);//把字符数组转换成字符串
+	
+	static String valueOf(int  i) ;//把int类型的数据转换成字符串
+		注意：String类型的valueOf能把任意类型的数据转换成字符串
+
+	String  toLowerCase( );//把字符串全部变成小写
+
+	String toUpperCase( );//把字符串全部变成大写
+
+	String concat(String str);// 把字符串进行拼接
+	
+
+String的其他功能：
+替换功能：
+	String replace(char old ,  char new)  //将一个字符换成另一个字符
+	String replace(String old,String new)//将一个字符串换成另一个字符串
+
+去除字符串空格：(只能去除两端的空格)
+	String trim( )
+
+按字典顺序比较两个字符串：
+	int  compareTo(String str)
+	int  compareToIgnoreCase(String str)
+
+分割字符串：
+	String str[]=s.split(" ");//将一个字符串分割成子字符串，然后结果作为字符串数组返回
+
+Copy方法     
+	1、  创建一个与指定的字符串具有相同值的字符串的新实例，其语法格式如下。 
+  		public static string Copy (string str)；  ?	
+		 其中：str是指要复制的字符串；返回值是与str具有相同值的字符串。
+ 	2．CopyTo方法      
+		 CopyTo方法可以将字符串的某一部分复制到另一个数组中，其语法格式如下。
+		   	

@@ -1,0 +1,127 @@
+一、css盒子模型
+div 标签：
+	块级标签：主要是用来进行网页布局的，会将其中的子元素内容作为一个独立的整体存在
+	特点：
+	      默认宽度是页面的宽度，但是可以设置
+	      默认高度是没有的，但是可以进行设置 （可以顶开）
+	      如果子元素设置了百分比，占据的是div的百分比，不是页面的
+
+注意：div里面可以嵌套div
+
+盒子模型：（就是div中常见的属性）
+	外边距：margin
+		作用；用来设置元素和元素之间的间隔（div和div之间的）
+		居中设置：margin ： 0px auto ; 上下0间隔，左右居中
+		可以根据需求设置上下左右的距离
+	边框：border
+		作用；用来设置元素的边框大小（也就是div的边框）
+		可以单独设置上下左右
+	内边框：padding
+		作用：用来设置边框和内容之间的距离
+		注意；内边距不会改变内容区域的大小，可以单独设置设置上下左右大小（padding-left）
+	内容区域：
+		作用：改变内容区域的大小
+		设置高和宽即可改变内容区域的大小
+
+
+二、定位学习：
+position
+	相对定位：relative
+		作用；在元素原有位置移动指定的距离（相对移动的是自己的位置）
+		         可以使用top , left , right ,bottom来进行设置
+		 position:relative; /*设置相对定位，相对的距离是自己原来的位置*/
+		 left:50px;
+		 top:100px;
+
+	完全定位：absolute
+		作用；可以使元素参照界面或者参照父元素进行移动
+		注意；
+			当要以父级元素进行参照时，父级元素要添加相对定位属性
+			默认情况下，以界面为基础进行移动
+			可以使用	top , left , right ,bottom来进行设置
+
+	固定定位：fixed
+		作用：可以使元素固定在具体位置，不会随着滚动条的移动而改变位置
+		以上定位中均可以使用top , end , right , left 来进行移动
+ 
+三、设置元素显示优先级别；z-index ： 1（优先级别）；
+当要设置两个元素的优先级时，必须是同级别的，也就是说两个元素的定位必须相同
+z-index : 1 ;  
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>css定位</title>
+	<style type="text/css">
+		#div01{
+		 border:solid 2px orange;
+		 width:800px;
+		 height:200px;
+		 margin-bottom : 10px;
+		 margin-top:50px;
+		 position:relative; /*设置相对定位，成为子元素的绝对定位的参照*/
+		}
+		/*给showdiv添加样式*/
+		#showdiv{
+			border:solid 3px;
+			height:100px;
+			width:100px;
+			position:absolute; /*完全定位*/
+			top:10px;
+		}
+		
+		/*dashed 表示虚线*/
+		#div02{
+		 border:dashed 2px red;
+		 width:800px;
+		 height:200px;
+		 margin-bottom:10px;
+		 position:relative; /*设置相对定位，相对的距离是自己原理的位置*/
+		 left:50px;
+		 top:100px;
+		 background-color:red;
+		 z-index:2px; /*设置优先级别*/
+		}
+		
+		#div03{
+		 border:solid 2px blue;
+		 width:800px;
+		 height:200px;
+		 position:relative; 
+		 background-color:blue;
+		 z-index:1; /*设置优先级*/
+		}
+		#div04{
+			border:solid 3px;
+			width:100px;
+			height:100px;
+			position:fixed;
+			top:20px;
+			right:10px;
+		}
+	
+	 </style>
+</head>
+
+<body>
+	<div id="div01" > 
+    	<div id="showdiv"> </div>
+    </div>
+    
+	<div id="div02" >
+     div02
+     </div>
+     
+	<div id="div03" > </div>
+    <div id="div04"> </div>
+    <br />
+    <br />
+    <br />
+    <br /><br /><br /><br />
+</body>
+
+</html>

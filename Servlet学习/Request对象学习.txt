@@ -1,0 +1,260 @@
+一、Request对象
+该对象表示浏览器的请求，当web服务器得到该请求后，会把信息封装在HttpRequest对象中
+作用：request对象中封存了当前请求的所有信息
+使用：获取请求行信息
+	  获取请求头信息
+	  获取用户数据
+
+注意：request对象由tomcat服务器创建，并且作为实参传递给处理请求的对应servlet的service或者doget，dopost方法
+
+
+二、成员方法（获得客户机信息请求行）
+1、获取请求的方式
+request.getMethod( );
+
+2、获取请求的完整URL
+request.getRequestURL( );   url=http://localhost:8080/StudyServlet/Request
+
+注意：URL 和 URI的区别？
+	URL:代表的是资源的绝对路径
+	URI：代表的是/web应用名/servlet的url路径名
+
+
+3、返回请求行中的资源名部分
+request.getRequestURI( );        /StudyServlet/Request
+
+4、返回请求行中的参数部分(参数名=值）
+request.getQueryString( )    
+			
+			query=null  ，通过get请求时，其实获取的是浏览器？后面的参数名和参数值
+			当参数名和参数值不存在时，返回null
+		
+			http://localhost:8080/StudyServlet/Request?uname=caddo&pwd=123
+			当是以上情况时，取到的值为：
+			query=uname=caddo&pwd=123
+			
+
+5、返回发出请求的客户机的ip地址
+request.getRemoteAddr( );
+		
+		http://192.168.56.1:8080/StudyServlet/Request
+		address=192.168.56.1
+
+6、返回客户端发出请求的客户机的完整的主机名
+request.getRemoteHost( );
+	
+		host=192.168.56.1
+		因为没用注册DNS，所以只能打出localhost部分
+		当注册了以后，就能获取机器的主机名  ： LAPTOP-CU26S49B
+
+
+7、返回客户机所使用的网络端口号 （用于搭建请求）
+request.getRemotePort( );
+
+		浏览器客户端中的端口号随机产生；
+		客户端其实一直都有使用端口与web服务器的端口之间建立连接， 如果没有端口号建立连接则无法正常连接
+		
+
+8、返回web服务器所使用的网络端口号
+request.getLocalPort( );
+
+		服务器方的端口是固定不变的；
+		http://192.168.56.1:8080/StudyServlet/Request   
+		固定的端口使用的是 8080 ;
+
+
+9、返回web服务器所使用的IP地址
+request.getLocalAddr( );
+
+		localAddress=192.168.56.1
+
+10、返回web服务器的主机名
+request.getLocalName( );
+
+		localName=LAPTOP-CU26S49B
+
+11、获取协议
+request.getScheme( );
+
+12、获取使用的协议
+request.getProtocal( ) ;
+
+
+
+三、如何将客户端发送的请求，由服务器端返回给客户端  (需要注意的是通过浏览器上方地址栏传送的数据可能默认传回不是utf-8,具体情况具体分析)
+String message = request.getQueryString();
+//以&分割出不同的参数
+String[] strings = message.split("&");
+for(String str : strings) {
+	//考虑到取到的键值对中可能存在中文乱码的情况,再次将键和分割
+	String[] nameValue = str.split("=");
+	String value = new String(nameValue[1].getBytes("iso-8859-1"),"utf-8");
+	
+	response.getWriter().write(nameValue[0]+"="+value+"<br/>");
+
+}
+
+
+四、成员方法  （获取客户端的请求头信息）   （http协议中按照对应的键值对存储信息）
+1、获取请求头的数据 ， 通过对应的键获取对应的信息
+request.getHeader(String name);
+		//name 代表的是键名
+		当键名不存在时，返回null，可以通过是否返回null判断键是否存在
+		
+
+2、获取所有的请求头的键的枚举 （Enumeration）
+request.getHeaderNames();
+
+		//通过遍历获取所有请求头的键以及值
+		Enumeration<String> enumeration = request.getHeaderNames();
+		while(enumeration.hasMoreElements()) {
+			System.out.println((String)enumeration.nextElement()+"="+request.getHeader((String)enumeration.nextElement()));
+		}
+		
+
+
+五、成员方法   （获取客户端用户数据） (request对象封存了用户端发送的数据)
+1、获取指定键的值
+request.getParameter(String name)   
+
+		//name  为键名
+		对应的键一定要与用户提交的键名相同，
+		
+		注意：如果获取的值为null 
+			要么是获取的键和提交的键是不一致的
+			要么就是没用填写对应键的值
+		
+		getParameter( String name);
+		不能获取同键不同值的数据，会漏掉响应的值   （如多选框）
+
+		
+2、获取同键不同值的数据，返回一个值数组
+request.getParameterValues(String name);
+
+		String[] value = request.getParameterValues(String name);   
+		for(String str : value) {
+			System.out.println(str);
+		}
+		
+		//注意：此处容易踩坑
+		因为当键对应的值为空时, 遍历值数组容易抛空指针异常
+		
+		//因此：在遍历值数组之前进行判断值数组是否为空，不为空在进行值数组遍历
+
+3、获取所有用户的请求数据的枚举集合
+request.getParameterNames( );   返回枚举集合（Enumeration）
+		
+		
+		//获取用户提交的所有的键的枚举集合
+		Enumeration<String> enumeration2 = request.getParameterNames();
+		//遍历集合
+		while(enumeration2.hasMoreElements()) {
+			String content = enumeration2.nextElement();
+			System.out.println(content+"="+request.getParameter(content));
+			response.getWriter().write(content+"="+request.getParameter(content)+"<br/>");
+			
+		}
+		
+		//注意事项：
+				枚举中遍历取到的值注意每使用一个nextElement( ) 实际上都不相同，最后容易出现越界
+				最重要的是直接把当前获取的数据放在变量中
+				
+		//获取用户提交的所有的键的枚举集合
+		Enumeration<String> enumeration2 = request.getParameterNames();
+		//遍历集合
+		while(enumeration2.hasMoreElements()) {
+			String content = enumeration2.nextElement();
+			System.out.println(content+"="+request.getParameter(content));
+			response.getWriter().write(content+"="+request.getParameter(content)+"<br/>");
+			
+		}
+
+
+3、获取字节输入流，读取客户端的信息
+request.getInputStream( ) ;
+		
+
+六、实现请求转向
+1、通过Request对象获取RequestDispatcher对象（分派器），然后通过该对象的forward方法实现请求的转发
+		//表示转发的方法，将request，和 response对象传递给下一个servlet
+		//也就代表Request 中和Forward 使用的域对象是相同的
+		//此处的servlet中不需要加web应用名
+		request.getRequestDispatcher(String url 需要将数据发送给的servlet的url路径) . forward(ServletRequest request , ServletResponse response ) ;
+
+		
+2、request对象同时也是一个域对象，通过request对象在实现转发时，把数据通过request对象带给其他的web资源处理
+				
+3、	浏览器将信息传递给web服务器，	web服务器进行解析后，存储到request域对象中，将域对象传递到下一个servlet中
+	也就当然request中存储了信息，可以通过request取出对应信息
+
+	//request存储信息
+	 void  setAttribute(java.lang.String name, java.lang.Object o)  ；
+	 将属性到request对象中， 结构为  name = value 形式存储
+	 //value中可以放对象
+	 
+	 request中的属性在一次请求中有效；只要请求没有重新回到浏览器界面就是有效的
+	 
+	 //request取出信息
+	 void getAttribute( String name) ; 
+	 此处的name 代表 的是存储request信息的键，通过指定的键取出对应的值
+	 
+         
+	
+	
+	
+七、sendRedirect( ) 和 forward( )  的区别？
+
+1、forward是转向，将现在的请求转交，他只能在同一个容器里使用同时保存客户的请求状态。
+   sendRedirect是重定向.转发 ，可以在同一个容器里使用，也可以发送其他容器请求，但是会丢失请求信息。它等于重发一个请求
+
+   
+2、forward转发方法中，用request转发到下一个资源页面时，会直接跳回到web服务器，通知web服务器去找对应的资源
+    重新调用第二个接收页面的init( ) 方法对servlet 进行初始化，此时的request 对象与上一级页面对象是同一个
+    因此不需要再次使用    web应用名，只需要填写  需要接收数据的servlet的url路径
+   
+   
+   sendRedirect( ) 中是将你的第二次请求重新返还给浏览器，告诉浏览器去找对应的资源，此时需要再次访问web 应用下的资源
+
+   
+3、 forward中只能转向到当前web应用下存在的servlet资源  
+    因为默认回到的是当前的web应用下，，，
+    request.getRequestDispatcher("/Forward").forward(request,response);
+   
+   
+    如果要将数据转向到  "外部的资源中"    , 则应该使用  sendRedirect( );
+	response.sendRedirect("http://www.baidu.com");
+
+	
+4、用法格式不一样；
+forward :
+		//发送方：
+        request.setAttribute( String name ,object value);
+		request.getRequestDispatcher(String url) .forward( ServletRequest request , ServletResponse response);
+	
+		//接收方：
+		request.getAttribute(String name) ;
+		
+		
+sendRedirect:
+		//发送方：
+		 response.sendRedirect( "/web应用名/资源路径？name=value&pwd=123");
+		 
+		 //接收方：
+		 request.getParameter(String name);
+
+
+
+八、怎么算一次http请求？
+只要没有停止，也没有回到浏览器重定向就算是一次http请求
+
+
+
+九、请求转发（forward）  和 请求重定向（sendRedirect）的概念
+
+1、请求转发：
+     当一个web资源收到客户端请求时，通知服务器去调用另外一个web资源进行处理
+	 
+2、请求重定向：
+	当一个web服务器收到客户端请求时，通知浏览器去调用另外一个web资源去进行处理
+	
+		 

@@ -1,0 +1,215 @@
+<html>
+<head>
+<meta charset="utf-8" content="text/html">
+    <script>
+        //声明操作删除行
+        function delRow(btn) {
+            //获取table对象
+            var ta = document.getElementById("ta");
+            //通过子节点btn，获取到父节点tr
+            var tr = btn.parentNode.parentNode;
+            ta.deleteRow(tr.rowIndex);
+        }
+
+        //修改操作
+        function updateRow(btn) {
+            //获取行对象
+            var tr = btn.parentNode.parentNode;
+            //获取行对象下的单元格数组
+            var cell = tr.cells[4];
+            if(!isNaN(Number(cell.innerHTML))) {
+                //isNaN(Number(td.innerHTML)) 代表不是数字，返回true
+                //将标签体内容变成一个input框
+                cell.innerHTML = "<input type='text' name='number' id='number' onblur='save(this)' value='" + cell.innerHTML + "'>"
+            }
+        }
+
+        function save(btn) {
+            //获取行对象
+            var tr = btn.parentNode.parentNode;
+            //获取行对象下的单元格数组 ,索引代表第几个单元格
+            var cell = tr.cells[4];
+            var inp = document.getElementById("number");
+            if(!isNaN(Number(inp.value))) {
+                cell.innerHTML= inp.value;
+            }
+        }
+
+        //实现全选操作
+        function selectAll(btn) {
+            //获取全选按钮对象, 传入当前的元素对象即可
+//            var all = document.getElementById("all");
+            //判断全选框是否被选中
+            //获取其他多选框的数组对象
+            var chks = document.getElementsByName("chk");
+            if(btn.checked) {
+                //遍历获取将所有的选中
+                for(var i=0;i<chks.length;i++) {
+                    chks[i].checked=true;
+                }
+            }else {
+                for(var i=0;i<chks.length;i++) {
+                    chks[i].checked=false;
+                }
+            }
+
+        }
+
+        //实现单个或多个删除行操作
+        function deleteTr() {
+            //获取到表格对象
+            var ta = document.getElementById("ta");
+            //根据点击的多选框，获取到要删除的行号
+            var chks = document.getElementsByName("chk");
+            for(var i= 0;i<chks.length;i++) {
+                if(chks[i].checked) {
+//                    alert(i);
+                    //删除指定索引的行对象 ，数组角标与行号之间的关系是：   角标= 行号+1；
+                    ta.deleteRow(i+1);
+                    i--;//当表格执行多个删除时，表格长度变小，i值增大，因此将i值减小，避免出现少删的情况
+                }
+            }
+        }
+
+        //复制行操作
+        function copyTr() {
+            //获取到表格对象
+            var ta = document.getElementById("ta");
+            //获取到要复制添加的行对象  ,ta.rows.length  代表表格中行对象的长度
+            var tr = ta.insertRow(ta.rows.length);
+
+            //通过多选框知道是哪一行被选中，复制哪一行下标
+            var chks = document.getElementsByName("chk");
+            for(var i= 0;i<chks.length;i++) {
+                if(chks[i].checked) {
+                    tr.innerHTML = ta.rows[i+1].innerHTML;
+                }
+            }
+        }
+
+        //添加行数据   ;  单元格角标从0开始。当前一个单元格不存在时，下一个或多个单元格无法插入
+        function addRow() {
+            //获取表格对象
+            var ta = document.getElementById("ta");
+
+            //通过多选框知道是哪一行被选中，在哪一行上面添加一行
+            var chks = document.getElementsByName("chk");
+            for(var i= 0;i<chks.length;i++) {
+                if(chks[i].checked) {
+                    //创建一个添加的行对象
+                    var tr = ta.insertRow(i+1);
+                    //创建单元格对象
+                    var cell1 = tr.insertCell(i);
+                    cell1.innerHTML="<input type='checkbox' name='chk' id='chk'/>";
+                    var cell2 = tr.insertCell(i+1);
+                    cell2.innerHTML=document.getElementById("bookName").value;
+                    var cell3 = tr.insertCell(i+2);
+                    cell3.innerHTML="ddd";
+                    var cell4 = tr.insertCell(i+3);
+                    cell4.innerHTML="ddd";
+                    var cell5 = tr.insertCell(i+4);
+                    cell5.innerHTML="ddd";
+                    var cell6 = tr.insertCell(i+5);
+                    cell6.innerHTML="ddd";
+
+                }
+            }
+        }
+
+
+        //隔行变色
+        function changeColor() {
+            //获取表格的所有行对象数组
+            var trs = document.getElementById("ta").rows;
+            //遍历  ,  从1 开始忽视掉表头
+            for(var i=1;i<trs.length;i++) {
+                if(i%2==0) {
+                    trs[i].style.backgroundColor="blue";
+                }else {
+                    trs[i].style.backgroundColor="pink";
+                }
+            }
+
+
+        }
+
+//
+//        //当鼠标悬浮在此处时调用
+//        function ChaColor() {
+//            //获取到行对象
+//            var tr = document.getElementsByName("tr");
+//            for(var i=0;i<tr.length;i++) {
+//                tr[i].style.backgroundColor="pink";
+//            }
+//
+//        }
+
+        //超链接调用js方法
+        function text() {
+            var a = document.getElementById("a");
+             a.href="http://www.baidu.com";
+        }
+    </script>
+
+
+</head>
+<body>
+<h3 align="center">操作表格</h3>
+<a href="javascript:text();" id="a">超链接调用js函数</a>
+
+<div align="center">
+    <input type="button" value="删除行" onclick="deleteTr()"/>
+    <input type="button" value="复制行" onclick="copyTr() "/>
+    <input type="button" value="添加行" onclick="addRow()"/>
+    <input type="button" value="修改表格颜色" onclick="changeColor()">
+    <input type="text" name="bookName" value="" id="bookName"/>
+
+</div>
+
+<table border="1" cellpadding="5" cellspacing="1" align="center" id="ta">
+    <tr  style="text-align: center;font-weight: bold">
+        <td align="center">全选<input type="checkbox" name="all" id="all" onclick="selectAll(this)"></td>
+        <td>书名</td>
+        <td>作者</td>
+        <td>价格</td>
+        <td>购买数量</td>
+        <td>操作</td>
+    </tr>
+    <tr onmouseover="this.style.backgroundColor='pink'" onmouseout="this.style.backgroundColor='white'" />
+        <td align="center"><input type="checkbox" name="chk" id="chk" align="center"></td>
+        <td>java从入门到放弃</td>
+        <td>wollo</td>
+        <td>43.50</td>
+        <td>3</td>
+        <td>
+            <input type="button" name="" id="" value="修改数量" onclick="updateRow(this)"/>
+            <input type="button" name="" id="" value="删除" onclick="delRow(this)"/>
+        </td>
+    </tr>
+    <tr  onmouseover="this.style.backgroundColor='pink'" onmouseout="this.style.backgroundColor='white'">
+        <td align="center"><input type="checkbox" name="chk" id="chk" align="center"></td>
+        <td>javascript</td>
+        <td>caddo</td>
+        <td>55</td>
+        <td>2</td>
+        <td>
+            <input type="button" name="" id="" value="修改数量" onclick="updateRow(this)"/>
+            <input type="button" name="" id="" value="删除" onclick="delRow(this)"/>
+        </td>
+    </tr>
+    <tr  onmouseover="this.style.backgroundColor='pink'" onmouseout="this.style.backgroundColor='white'">
+        <td align="center"><input type="checkbox" name="chk" id="chk"></td>
+        <td>jsp</td>
+        <td>elina</td>
+        <td>35.6</td>
+        <td>8</td>
+        <td>
+            <input type="button" name="" id="" value="修改数量" onclick="updateRow(this)"/>
+            <input type="button" name="" id="" value="删除" onclick="delRow(this)"/>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
+

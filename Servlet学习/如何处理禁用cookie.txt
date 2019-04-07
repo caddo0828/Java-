@@ -1,0 +1,54 @@
+ 面试题：
+1、关掉ie浏览器后，再开ie，上次购买的商品还在；  ----》涉及到session的生命周期问题
+
+
+实验方案一、 此时浏览器未禁用cookie
+分析：
+     session的生命周期如果是30分钟，该session不会随着浏览器的关闭，而自动销毁，而会到30min之后，才会被服务器销毁
+	
+	使用代码来实现该功能（session+cookie结合使用）
+	 
+	
+实现：把session的id保存到cookie中
+
+//将session的id保存在cookie中，并且保存id必须按照服务器读取的id来写
+		Cookie cookie = new Cookie("JSESSIONID", session.getId());
+		cookie.setMaxAge(3600);
+		response.addCookie(cookie);
+		
+注意事项：
+        1、将session创建的id保存在从cookie中，也就是告诉服务器，我所访问的session是已经创建好的
+		   服务器也就可以通过你提供的session的id号去查找对应id号的session对象，然后从对应的属性中找出你需要的信息
+		 
+		2、此时cookie中所保存的session的id必须按照HTTP协议解析的形式写
+		   也就是键名必须为：JSESSIONID    (区分大小写)
+	
+	
+
+	
+实验方案二、IE禁用Cookie后的session处理
+解决方案URL重写：
+
+1、用于实现对sendRedirect方法后的url地址进行重写
+response.encodeRedirectURL(String url);
+
+
+
+2、用于对表单action和超链接的url地址进行重写
+response.encodeURL(String url);
+ 
+ 
+ 
+使用步骤： 
+（1）第一步：先对session进行访问
+			request.getSession();
+			
+（2）第二步：对地址进行重写操作
+			String url = response. encodeURL("web应用名/servlet访问地址?id="+id);
+			此时地址拼接的形式在http请求过程中变成 "web应用名/servlet访问地址?JSESSIONID=?&id="+id
+			
+（3）第三步：在接收方对地址进行同样方式的重新（重复第一步和第二步）
+ 
+ 注意事项：在第三步中采用的地址重写的方法要和第二步中重写的方法一致
+ 
+ 

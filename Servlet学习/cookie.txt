@@ -1,0 +1,98 @@
+一、会话
+基本概念：指用户开一个浏览器，访问一个网站，只要不关闭该浏览器，不管该用户点击多少个超链接，
+			访问多少个资源，直到用户关闭浏览器，整个这个过程我们称之为一次会话
+	
+
+二、什么是cookie
+概念：
+		服务器在客户端保存用户的信息，比如登录名，密码等，就是cookie
+
+作用：
+		1、保存客户端的数据
+		2、将原有资源的数据保存到下一级资源（相当于存储用户的信息）
+
+
+三、cookie小结
+	1、cookie是在服务端创建
+	2、cookie是保存在浏览器这端数据的
+	3、cookie的生命周期可以通过cookie.setMaxAge(int time) ;
+	   如果不设置的话，则该cookie的生命周期当浏览器关闭时就消失了
+	   
+	4、cookie可以被多个浏览器共享
+	
+    5、cookie可以看成是一张表，存放值和数据
+       值是  String 类型的，value  也是String 类型的	
+       
+	    结论：如果cookie重名了，就会替换掉存在的cookie值   （差不多相当于map集合替换）
+	
+	6、一个web应用可以保存多个cookie  （一般不超过20个）
+	    而且一个cookie的大小限制在4K
+	
+	7、cookie中存放数据的时候采用明文的方式存放，因此安全性较低
+	   因此最好通过加密后保存
+	 yyyy-MM-dd HH:mm:ss  
+	//将字符串转成date类型
+	
+	
+四、cookie技术
+构造方法：
+		Cookie(String name, String value) ;
+         //通过构造方法可以知道cookie中只能保存字符串对象
+			
+			 
+		 
+成员方法：
+1、设置cookie的最大生命周期
+void  setMaxAge(int expiry) 
+
+         
+2、获取cookie的最大生命周期
+void    getMaxAge( );
+
+3、将当前保存的cookie放在response对象中 ， 如果没用此方法，无法保存cookie
+void  addCookie(Cookie cookie) 
+		//使用方法
+		response.addCookie(Cookie cookie);
+         
+
+4、获取所有的cookie，返回一个cookie数组 , 通过request对象得到
+Cookie[] c = request.getCookies();
+
+5、获取cookie的名字，返回字符串类型的数据
+String  getName() 
+       cookie.getName();
+
+6、获取cookie的值，返回的是字符串类型的数据
+String   getValue( );
+		cookie.getValue();
+	
+7、获取保存的cookie的路径
+String  getPath() 
+ 
+8、设置cookie所保存的路径 
+ void setPath(String uri)   
+	   
+五、重点：    cookie生命周期的说明
+（1）cookie默认生命周期是会话级别，也就是浏览器关闭则消失
+（2）cookie的生命周期通过setMaxAge(int time) ;设置
+      如果  time 为正数，则表示保存多少秒失效
+	  
+	  如果  time 为零，，则表示删除cookie ,
+			并且重新删除cookie时，不仅要写cookie.setMaxAge(0);
+			还要写response.addCookie(cookie);
+	
+	  如果  time  为负数 ， 则表示相当于随着浏览器的关闭，cookie生命周期结束
+	  
+	
+	
+六、编码和解码  (  base64码 )
+//编码    context, 代表需要编码的参数     encoding   代表解码的格式
+可以用于servlet编码使用
+java.net.URLEncoder.encode(String context , String encoding); 
+
+
+
+//解码    context, 代表需要解码的参数     encoding   代表解码的格式
+用处：用在jsp界面解码使用
+java.net.URLDecoder.decode(String context , String encoding) ;
+

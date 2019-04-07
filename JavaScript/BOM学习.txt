@@ -1,0 +1,158 @@
+一、BOM学习；
+● 概念：Browser object Model 浏览器对象模型
+	* 将浏览器的各个组成部分封装成功对象
+
+● 组成：
+	* window: 窗口对象
+	* Navigator: 浏览器对象
+	* Screen : 显示器屏幕对象
+	* History: 历史记录对象
+	* Location:  地址栏对象
+	
+	
+一、 window对象：
+	● 方法：
+		弹出框： 参数代表提示的内容信息
+			  {
+				*  alert(参数);  显示一段带有消息和确认按钮的警告框
+		
+				*  confirm(参数);   显示带有一段消息以及确认按钮和取消按钮的警告框
+				
+								    * 如果用户点击确定按钮，则返回true
+								    如果用户点击取消按钮，则返回false;
+		
+				*  prompt();     显示可提示用户输入的对话框
+								 *  点击确定，返回当前用户录入的数据，默认返回为空字符串
+									点击取消，返回null
+			  }
+	
+		窗口方法：
+			  {
+				  *  open(参数)；  打开一个新的浏览器窗口或查找一个已命名的窗口。
+				  
+				  *  close();    关闭浏览器窗口
+								 谁调用我，关谁， 返回一个新的window对象
+				 
+			      *  onload() ;  浏览器界面加载
+			  }
+		
+		定时器：
+				{
+				  * setTimeOut( js代码或者方法 ， 毫秒) :  在指定的毫秒时间以后调用该方法
+				  
+				  * clearTimeOut(id)  :    	清除指定的定时器
+											id 参数代表指定的定时器的id值，由此知晓要清除哪一个定时器
+											
+				  * setInterval( js代码或者方法 , 豪秒 )   :   按照指定的时间周期来循环调用方法
+				 
+				
+				  * clearInterval(参数id) :   清除循环定时器
+				}
+		 
+		
+	● 特点：
+		*window对象不需要创建，直接使用
+		   * window.方法名（）；
+		   *  方法名（）；
+		  
+		 
+	● 属性：
+		*  获取其他的BOM对象 history , screen , location ,Navigator
+			var h = history;
+			
+		*  获取DOM对象 
+			var d = document;
+		
+		
+	● 使用	
+    打开或者关闭窗口	
+		<input type="button" name="openBtn" id="openBtn" value="打开新窗口">
+		<input type="button" name="closeBtn" id="closeBtn" value="关闭窗口">
+	
+		var openBtn = document.getElementById("openBtn");
+		var newScreen ;
+		openBtn.onclick = function() {
+			newScreen  = open("http://www.baidu.com");
+		}
+	
+		var closeBtn = document.getElementById("closeBtn");
+		closeBtn.onclick = function() {
+				newScreen.close();
+		}
+	
+	
+	循环更替照片:
+		<img src="image_1.png" alt="***" id="img" width="100%"> 
+	
+		var number = 1;
+		function fun() {
+			number++;
+			if(number>3) {
+				number = 1;
+			}
+
+		var img = document.getElementById("img");
+		img.src="image_"+number+".png";
+
+		}
+		//定时器循环更换图片
+		setInterval(fun,3000);
+    
+	
+	
+	
+二、 Location对象：
+包含之前的URL信息
+	● 创建:
+			*可以通过window对象创建
+			
+	● 方法：
+			* reload()  重新加载当前的界面，相当于刷新按钮
+			
+	● 属性：
+			* href    设置当前的URL地址
+				window.location.href="http://www.baidu.com"；
+				
+			
+三、 history历史记录对象：
+	● 创建
+			*可以通过window对象创建
+			
+	● 方法：
+			*  window.history.forward();      页面资源前进，相当于历史记录的前进
+			
+			*  window.history.back();         页面资源后退，回到之前的历史记录
+			
+			*  window.history.go(index);      跳转到指定的历史记录资源
+				
+					// 当index的值为0时，相当于界面的刷新
+					  window.history.go(0);
+					 
+
+四、 screen屏幕对象：					
+	● 属性:
+			* window.screen.width;         获取屏幕的宽度分辨率
+			
+			* window.screen.height;        获取屏幕的高度分辨率
+			
+			
+五、浏览器配置属性
+	* window.navigator.userAgent ;         浏览器配置属性
+	
+	
+六、重点中的重点方法
+	eval()      函数可计算某个字符串，并执行其中的的 JavaScript 代码。 （可以解析json对象）
+				可以将字符串转成对象 
+				
+				该方法只接受原始字符串作为参数，如果 string 参数不是原始字符串，那么该方法将不作任何改变地返回。
+	
+	* 使用：
+			response.getWrite().writte(" var obj ={};obj.name="+user.getName()+";obj.pwd="+user.getPwd() ");
+			var result = ajax.responseText;
+			eval(result)；   // 返回的就是一个变量名叫做obj的对象,,
+			alert(obj.name)
+			
+	
+
+
+			

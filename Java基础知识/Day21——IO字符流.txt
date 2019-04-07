@@ -1,0 +1,80 @@
+一、字节流读取数据可能出现的小问题
+1、字节流进行一次读取一个字节时，如果不进行强制类型转换，那么读取的返回值是int类型不会出错
+2、一次读取一个字节时，当进行强制类型转换为（char）类型时，当遇到中文时会出现乱码
+3、因为中文字符是降阶两个字符的，一次取一个字符是取不到中文字符的
+
+二、字符流=字节流+编码表
+
+三、编码表：由现实世界的字符和对应的数据组成的一张表
+1、ASCII码表：最高位为符号位，其余为数值位
+2、ISO-8859-1 ：拉丁码表    8位表示一个数据
+3、GB2312  简体中文表
+4、GBK 中文编码表升级，融入更多中文字符 (简体中文) 
+5、GBI18030 ： GBK的取代版本
+6、BIG-5码 ： 通行于台湾，香港的一个繁体字节编码方案，俗称五大码
+7、Unicode :国际标准码，融入多种字符   , 所有文字两个字节表示
+8、UTF-8 ：最多用三个字节表示一个字符(能一个，也可以两个，最多三个)
+
+四、String类的编码问题
+String (byte[ ] bytes , String charsetName) ; 通过指定的字符解码成字节数组
+byte[ ] getBytes(String charsetName) ; 使用指定的字符集合，将字符串转换成字符数
+
+编码：把看的懂的变成看不懂的
+String  ...... byte[ ]
+
+解码：把看不懂的变成看的懂的
+byte[ ]  .... String
+
+
+
+五、转换流：
+OutputStreamWriter 写数据
+构造方法：
+	OutputStreamWriter(OutputStream)   根据默认编码把字节流的数据转换成字符流
+	OutputStreamWriter(OutputStream out,String characsetName) , 根据指定编码，将字节流转换为字符流
+
+成员方法:
+	close( ) ;关闭
+	flush( ) ; 刷新  (字符流写数据记得flush)
+	public void write(int c) ; 一次写入一个字符
+	public void write(char[ ]  ch) ; 一次写入一个字符数组
+	public void write(String str ,0, len) ; 一次写入一个字符串的一部分
+	public void write(String str ) ；一次写入一个字符串
+	public void write(char[ ]  ch ,0, len) ; 一次写入字符数组的一部分
+
+InputStreamReader 读数据   ， 是字节流通向字符流的桥梁
+构造方法：
+	InputStreamReader(InputStream input ) ;  //按照默认编码读取
+	InputStreamReader(InputStream input , String characsetName) ; //指定编码进行解码操作
+成员方法：
+	close( ) ;释放资源
+	int read( ) ; 一次读取一个字符
+	int read(char[ ] chs , int offset , int length) ; 一次读取字符数组的一部分，也可以代表一次读一个字符数组
+
+
+六、转换流
+FileWriter 对应上述OutputStreamWriter一样的功能  ，  并且和 FileOutputStream的构造方法一样
+FileReader 对应上述InputStreamReader一样的功能   ，并且和FileInputStream的构造方法一样
+
+七、高速缓冲字符输入输出流
+1、BufferedWrite ; 高速缓冲输出流 
+构造方法：
+	BufferedWrite buffer = new BufferedWriter(OutputStream out) ;  //这里直接用FileWriter
+2、BufferedReader : 高速缓冲输入流
+构造方法：
+	BufferedReader bufferRead = new BufferedReader(InputStream in) ; 这里建议使用FileReader
+
+
+八、字符缓冲流的特殊功能
+1、BufferedWrite  void newLine( ) ;根据系统来决定分隔符
+2、BufferedReader  String readLine( ) ; 一次读取一行数据
+ 	注意 ：根据换行或者回车符，表示终止，如果到达字符串末尾就返回null
+		之前的操作都不要println 换行，，，但是此处必须使用println
+		readLine( ) 本身没有提供换行
+	代码：
+		String line = null ;
+		while((line=字符输入流对象 . readLine( ) )!=null) {
+			System.out.println(line) ; 注意此处一定要是println
+		}
+
+

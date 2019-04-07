@@ -1,0 +1,117 @@
+一、Servlet事件监听器
+Servlet监听器是Servlet规范中定义的一种特殊类，用于监听ServletContext、HttpSession、ServletRequest域对象
+的创建与销毁，以及监听这些域对象中属性发生的时间
+
+
+
+二、配置监听器
+ <listener>
+  		<listener-class>ServletListener.Listener</listener-class>
+  </listener>
+
+注意事项：
+		在web.xml中进行配置监听器时<listener>元素必须位于所有<servlet> 之前以及所有的<filter-mapping>之后
+		否则在启动tomcat服务器时将会报错误信息
+		
+
+三、监听request域对象的创建
+使用步骤：
+	1、定义一个普通的java类，实现ServletRequestListener接口
+	
+	2、重写方法
+		request域对象销毁时调用
+			requestDestroyed(ServletRequestEvent srae)
+			
+			此时该方法的参数可以用于获取被销毁前的request对象，以及ServletContext对象
+			srae.getServletRequest();
+			srae.getServletContext();
+			
+			
+		request域对象创建时调用
+			requestInitialized(ServletRequestEvent srae)
+			
+			此时该方法的参数可以获取当前的request对象，以及ServletContext对象
+			srae.getServletRequest();
+			srae.getServletContext();
+			
+	3、在web.xml中配置对应的监听器
+	
+	4、监听request域对象属性的改变
+	    A： 实现ServletRequestAttributeListener接口
+		B：复写方法
+			attributeAdded(ServletRequestAttributeEvent srae)
+			
+			attributeRemoved(ServletRequestAttributeEvent srae)
+			
+			attributeReplaced(ServletRequestAttributeEvent srae) 
+			
+		注意：形参可以用来获取被监听的数据
+		     srae.getName() ;    获取session属性中的键名
+			 srae.getValue() ；  获取session属性中对应的值
+			 
+			
+四、监听Session域对象
+使用步骤
+     1、实现HttpSessionListener接口
+	 
+	 2、复写方法
+		sessionCreated(HttpSessionEvent se)
+		  
+		  形参可以获取被创建的session对象
+		  se.getSession();
+		
+		sessionDestory(HttpSessionEvent se)
+
+           形参可以获取被销毁的session对象
+		   se.getSession();
+		   
+	
+     3、实现HttpSessionAttributeListener接口
+		A：attributeAdded(HttpSessionBindingEvent arg0)
+		B：attributeRemoved(HttpSessionBindingEvent arg0)
+		C：attributeReplaced(HttpSessionBindingEvent arg0)
+		
+	     注意：形参可以获取当前被监听的session对象
+		 arg0.getSession() ; 获取当前的session 
+		 arg0.getName() ;    获取Session中的键名
+		 arg0.getValue();    获取属性值
+		 
+		 
+五、监听ServletContext对象
+使用步骤：
+		1、实现ServletContextListener接口
+		
+		2、复习方法
+			contextDestroyed(ServletContextEvent arg0)     服务器关闭时调用
+		  
+		    contextInitialized(ServletContextEvent arg0)   服务器启动时调用
+			
+			注意：形参可以用来获取被监听的ServletContext对象
+			
+			
+		3、实现ServletContextAttributeListener接口
+			attributeAdded(ServletContextAttributeEvent arg0) 
+		    attributeRemoved(ServletContextAttributeEvent arg0) 
+		    attributeReplaced(ServletContextAttributeEvent arg0) 
+			
+			注意：形参可以获取当前被监听的ServletContext对象以及属性
+			arg0.getServletContext();
+			arg0.getName();
+			arg0.getValue();
+			
+		
+六、使用案例
+1、统计当前的在线人数
+	解决思路：
+       	A：	在监听器实现类中创建一个全局变量用于统计登录的人数 count
+		
+		B： 当每次监听到有HttpSession的创建时 ，说明有用户正在访问资源，此时 count++；
+		    当每次监听到有HttpSession的销毁时，说明有用户退出；此时count--；
+            （因为每一次用户的不同，所对应的Session对象不同，且同一个用户共用一个session）			
+		
+		C：并且同时将count变量的值存储在ServletContext对象中，其他的web资源将从此对象中 获取信息
+		
+
+2、统计网页浏览次数
+
+		

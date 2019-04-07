@@ -1,0 +1,159 @@
+一、ServletContext的定义
+	web容器在启动时，它会为每一个web应用程序创建一个对应的ServletContext对象，它代表当前web应用
+	
+
+二、如何获取ServletContext对象
+	A: 可以通过ServletConfig.getServletContext方法获得对ServletContext对象的引用
+	   this.getServletConfig().getServletContext();
+	B：可以通过this.getServletContext方法来获取其对象的引用
+	
+
+三、使用的原理
+	由于一个web应用中所有的servlet共享一个ServletContext对象，因此Servlet对象之间可以通过ServletContext对象传递信息
+	因此ServletContext对象也被称为是context域对象，在公共聊天室时经常用到
+	
+
+四、ServletContext
+1、ServletContext 是在服务器端
+2、ServletContext 是被所有客户端共享
+3、ServletContext 是当web应用启动时侯自动创建
+4、ServletContext 当web应用关闭tomcat ，或者是重新reloadweb应用时，会造成该对象被销毁
+
+
+五、成员方法
+1、将数据绑定在ServletContext对象上 （根据键值对的形式存储）
+    void setAttribute(String str , Object object);
+	
+2、取出对应ServletContext中的属性值
+    object getAttribute(String str);
+	取出的是一个对象，要进行强转
+
+3、删除对应的属性
+    void removeAttribute(String name);
+	
+	
+4、获取web应用的初始化参数
+    String getInitParameter(String str);
+
+	<!--所有的servlet都可以访问该配置-->
+	<context-param> 
+		<param-name> name </param-name>
+		<param-value> scotte </param-value>
+	</context-param>
+	
+	使用代码； this.getServletContext().getInitParameter(String str);
+	
+
+5、实现Servlet转发
+     RequestDispatcher getRequestDispatcher(String 资源的url)
+	 
+	 使用代码：this.getServletContext().getRequestDispatcher("/url").forward(request,response);
+	
+	
+6、读取资源文件  （资源的后缀必须是properties）
+	InputStream   getResourceAsStream(java.lang.String path) 
+	读取读取指定路径下的文件资源
+	
+	（1）注意事项：此时放置的文件路径在web应用下
+		//读取资源文件
+			InputStream inputStream = this.getServletContext().getResourceAsStream("db.properties");
+		//创建配置对象
+			Properties prop = new Properties();
+			prop.load(inputStream);
+	   
+			response.getWriter().write("username="+prop.getProperty("username"));
+	   
+    （2）注意事项二、此时放置的文件路径在src根目录下，必须通过类加载器去加载资源
+			this.getServletContext().getClassLoder().getResourceAsStream("资源的名称及后缀")；
+	
+
+7、(1) 获取文件的全路径
+    String  getRealPath(java.lang.String path) 
+   
+    使用代码：  String path = context.getRealPath("/images/car.jpg");
+	             response.getWriter().write(path);
+    结果：   
+				D:\e4workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\StudyServlet\images\car.jpg
+	            返回的是文件真正存在于电脑中的全路径
+
+
+
+7、(2) 用于获取指定资源路径下的URL路径
+      URL   getResource(String path);
+	  
+	 使用代码： this.getServletContext().getResource("/image/car.jpg");
+	 
+	 结果：
+	         file:/D:/e4workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/StudyServlet/images/car.jpg
+			 返回的结果与getRealPath方法返回结果大致相同
+				
+				
+8、获取当前web应用的路径
+	String   getContextPath();
+	
+	返回结果：
+			/StudyServlet
+			此时返回的是web应用名
+	
+	
+9、获取同键不同值的枚举集合
+	Enumeration<java.lang.String>   getAttributeNames() 
+	
+	
+10、获取类加载器对象
+	java.lang.ClassLoader    getClassLoader() 
+	 通常用于访问src根目录下的文件资源
+	 
+	 
+11、 返回指定的uri路径下的ServletContext对象
+	ServletContext   getContext(String uripath) 
+	
+	
+12、设置web应用的参数名及值
+ boolean  setInitParameter(String name, String value) 
+ 
+ 
+ 
+ 
+ 六、网站计数器
+ 1、登录页面
+ 
+ 2、登录认证页面
+ 
+ 3、成功登录界面，显示总共被访问了多少次
+ 
+ 
+解决思路：将认证成功的信息，此时设置一个变量用于存储基本的数量
+
+先获取要存储的键的值，判断
+		1、当值为null，代表第一个人进行访问
+		   此时设置值为1
+		2、当值不为空值时，将值重新设置并且在原基础的值上将值+1操作
+		3、为了避免用户通过刷新的方式（本质上是表单提交），通过sendRedirect() 进行页面的重定向
+		
+
+		
+当服务器被关闭或者是重启时，所有保存在服务器端的数据将会被丢失
+因此将数据保存在文本文件中
+         
+		在web.xml中配置Servlet，并且设置load-on-starup = 1
+		配置服务器Servlet的启动级别为1，不论是启动还是关闭服务器都是第一初始化和销毁此Servlet
+		 
+		此处操作在init方法里写
+		1、首先创建文本文件，获取文本文件的真实路径
+		2、打开文件
+		3、创建缓冲字符流读取文件数据
+		4、将数据保存在ServletContext对象中
+		5、一定要记住关闭流对象（后打开的先关闭）
+		6、首先将ServletContext中的数据获取
+		7、直接将访问数量加1
+		
+		此处在destory（）方法里写
+		修改ServletContext中的内容，并且将数据写入到文本文件中
+		
+		
+如果tomcat异常退出时，该怎么办？
+		使用线程定时10min ,将ServletContext的值，刷新到recoder.txt中
+
+	
+	

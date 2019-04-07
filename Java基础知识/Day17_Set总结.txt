@@ -1,0 +1,318 @@
+一、登录注册案例
+
+二、Set集合（理解）
+1、元素是唯一的（不允许重复）
+2、集合是无序的
+
+三、HashSet ：存储无序并且唯一
+-----存储数据时是依靠什么保证数据的唯一性的？
+通过查看add( )方法的源码可以知道实际依据的是hashCode( ) 和 equals ( ) 方法
+-----步骤：
+	1、先比较哈希值是否一样？
+	是：接着比较地址值或者用equals( )方法；
+		如果返回的是true；表示元素重复不添加
+		如果返回的是false；添加元素到集合
+	否：添加元素到集合
+-------------------------
+为什么String类进行添加时可以直接判断是否重复？
+因为String类自动重写了hashCode( ) 和equals( ) 方法；
+如果要实现自定义对象类的话，必须重写这两个方法；
+
+
+四、TreeSet ：底层数据结构是一种红黑树（自平衡的二叉树）
+                      元素无序且唯一；
+二叉树遍历规则：前序遍历，中序遍历，后序遍历
+1、前序遍历： 
+    1.访问根节点 
+    2.前序遍历左子树 
+    3.前序遍历右子树 
+2、中序遍历： 
+    1.中序遍历左子树 
+    2.访问根节点 
+    3.中序遍历右子树 
+3、后序遍历： 
+    1.后序遍历左子树 
+    2.后序遍历右子树 
+    3.访问根节点
+----------------元素是如何存储进去的？
+1、第一个元素作为根结点
+2、从第二个元素开始每个元素和根节点进行比较
+	大了	就作为右孩子
+	小了	就作为左孩子
+	相等	就不添加
+---------------
+
+
+五、LinkedHashSet : 底层数据结构是哈希表和链表
+1、哈希表确认元素的唯一性
+2、链表确认元素的有序性
+
+
+六、TreeSet排序:
+1、自然排序
+	A：是依据集合无参构造的，定义无参构造，默认实现的是自然排序
+	     自定义的类就要实现接口Comparable( ) ，并且重写compareTo( )方法
+	     注意：public int compareTo(自定义类   类对象 ) 
+		返回的是一个int类型的值，如果返回0表示元素相同，不添加，需要自己重写方法里的代码实现功能
+2、比较器排序
+	A：是依据集合有参构造形式产生的
+	     格式TreeSet<T>  set = new   TreeSet<T>(comparator <? super E> c); //接口实现类的父类或者本身
+	     其实就是定义一个类，用于实现Comparable( )接口，实现类再进行重写compare( )方法
+	           TreeSet<T>  set = new   TreeSet<T>(new  接口实现类对象);
+	     如果一个方法需要实现了接口的参数方法，其实要的是接口的 实现类对象
+	     可以用匿名对象进行操作
+
+
+七、针对Collection集合我们到底如何使用呢？
+	唯一吗？
+	      是：Set
+		排序吗?
+		       是：TreeSet
+		       否;   HashSet
+	             如果你知道是Set,但是不知道是哪个Set,使用 HashSet
+	      否：List
+		 要安全吗？
+		        是：Vector
+		         否; ArrayList 或LinkedList
+			查询多：ArrayList 
+			增删多：LinkedList
+		如果知道要用List , 但是不知道用哪个，就用ArrayList 
+如果知道要用集合，不知道用什么就用ArrayList
+
+
+八、TreeSet排序
+是根据方法返回的int类型值进行判断的，0表示相同
+	1、自然排序（作用于元素上的）
+		用于元素定义类上实现接口，重写方法的；
+	2、比较器排序（作用于集合对象上的有参构造）
+		需要的是一个接口实现类，并且集合通过有参构造的（匿名内部类）
+
+	
+七、练习
+1、（编写一个程序，获取10个1-20之间的数，且不能有重复）
+package dh17;
+
+import java.util.HashSet;
+import java.util.Random;
+
+//获取10个1-20内的无重复的随机数
+public class RandomText1 {
+	public static void main(String[] args) {
+		//创建集合对象
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		
+		//创建随机数对象
+		Random random = new Random();
+		
+		//循环判断次数，并且进行元素添加
+		//因为set集合元素唯一性，所以无法通过定义统计变量实现操作
+		//只能通过判断集合最后的长度来判断是否有10个数
+		while(hashSet.size()<10) {
+			int number = random.nextInt(20)+1;
+			hashSet.add(number);
+		}
+		
+		for(Integer i : hashSet) {
+			System.out.println(i);
+		}
+	}
+
+}
+
+2、键盘录入5次学生的信息（姓名，数学成绩，英语成绩，语文成绩），根据总分进行从高到低排序
+package dh17;
+
+public class Student {
+	private String name;
+	private int mathScore;
+	private int englishScore;
+	private int chineseScore;
+	
+	public Student() {
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getMathScore() {
+		return mathScore;
+	}
+
+	public void setMathScore(int mathScore) {
+		this.mathScore = mathScore;
+	}
+
+	public int getEnglishScore() {
+		return englishScore;
+	}
+
+	public void setEnglishScore(int englishScore) {
+		this.englishScore = englishScore;
+	}
+
+	public int getChineseScore() {
+		return chineseScore;
+	}
+
+	public void setChineseScore(int chineseScore) {
+		this.chineseScore = chineseScore;
+	}
+	
+	public int sum() {
+		return this.mathScore+this.chineseScore+this.chineseScore;
+	}
+}
+
+
+package dh17;
+
+import java.util.Comparator;
+import java.util.Scanner;
+import java.util.TreeSet;
+
+//键盘录入3个学生的信息（姓名，数学成绩，英语成绩，语文成绩），根据总分进行从高到低排序
+/*分析：
+ * 1、键盘录入学生信息，所以创建学生类（姓名，数学成绩，英语成绩，语文成绩）
+ * 2、创建对象录入成绩，姓名，存储到学生对象中
+ * 3、因为要输出，所以使用集合，又因为要排序，所以使用TreeSet
+ * 4、将每个对象存储到集合中
+ * 5、因为依靠总分进行排序，因此实现总分的计算
+ * 6、又因为此集合不能有重复的元素出现，所以要实现接口，并重写compare()方法
+ * 
+ */
+public class SumScoreSort {
+	public static void main(String[] args) {
+		//创建集合有参构造的对象
+		TreeSet<Student> set = new TreeSet<Student>(new Comparator<Student>() {
+			@Override
+			public int compare(Student s1, Student s2) {
+				//比较总分是否相同(从高到低，后面减前面)
+				int num1 = s2.sum()-s1.sum();
+				//判断是否名字相同
+				int num2 =  num1==0 ? s2.getName().compareTo(s1.getName()) : num1;
+				//判断数学成绩是否相同
+				int num3 = num2==0 ? s2.getMathScore()-s1.getMathScore() : num2;
+				//判断英语成绩是否相同
+				int num4 = num3==0 ? s2.getChineseScore()-s1.getChineseScore() : num3;
+				return num4;
+			}
+		});
+		
+		//键盘录入
+		while(set.size()<3) {
+			Scanner sc = new Scanner(System.in);
+			System.out.print("请录入学生姓名：");
+			String name = sc.nextLine();
+			System.out.print("请录入数学成绩：");
+			int mathScore = sc.nextInt();
+			System.out.print("请录入英语成绩：");
+			int englishScore = sc.nextInt();
+			System.out.print("请录入语文成绩：");
+			int chineseScore = sc.nextInt();
+			
+			//创建学生对象，将键盘录入的信息存储到学生对象中
+			Student stu = new Student();
+			stu.setName(name);
+			stu.setMathScore(mathScore);
+			stu.setEnglishScore(englishScore);
+			stu.setChineseScore(chineseScore);
+			
+			//将学生对象存储在集合中
+			set.add(stu);
+		}
+		
+		System.out.println("姓名\t总分\t数学成绩\t英语成绩\t语文成绩");
+		//遍历输出
+		for(Student s : set) {
+			System.out.println(s.getName()+"\t"+s.sum()+"\t"+s.getMathScore()+"\t"+s.getEnglishScore()+"\t"+s.getChineseScore());
+		}
+	}
+
+}
+
+
+3、自定义对象存储并且遍历，要求元素唯一，并且按某种规则进行排序，按照姓名长度排序
+package dh17;
+
+public class Student implements  Comparable<Student>{
+	private String name;
+	private int age;
+	
+	public Student() {
+	}
+	
+	public Student(String name, int age) {
+		this.name = name;
+		this.age = age;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	@Override
+	public int compareTo(Student s) {
+		//根据姓名长度判断
+		int num1 = this.getName().length()-s.getName().length();
+		//根据名字是否一样
+		int num2 = num1==0 ? this.getName().compareTo(s.getName()) : num1;
+		//根据年龄是否一样
+		int num3 = num2==0 ? this.getAge()-s.getAge() : num2;
+		return num3;
+	}
+
+}
+
+package dh17;
+
+import java.util.TreeSet;
+
+//根据学生姓名长度进行排序(采用自然排序)
+public class TreeSetSortText2 {
+	public static void main(String[] args) {
+		// 创建集合对象
+		TreeSet<Student> set = new TreeSet<Student>();
+
+		// 创建学生对象
+		Student s1 = new Student("mike", 25);
+		Student s2 = new Student("jack", 21);
+		Student s3 = new Student("caddo", 21);
+		Student s4 = new Student("kkkkk", 25);
+		Student s5 = new Student("sss", 20);
+		Student s6 = new Student("mik", 25);
+		Student s7 = new Student("kkkkk", 25);
+
+		// 将学生对象添加到集合中
+		set.add(s1);
+		set.add(s2);
+		set.add(s3);
+		set.add(s4);
+		set.add(s5);
+		set.add(s6);
+		
+		for(Student s : set) {
+			System.out.println(s.getName()+"\t"+s.getAge());
+		}
+
+	}
+
+}
+

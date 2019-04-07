@@ -1,0 +1,387 @@
+StringBuffer---------------Arrays-----------Integer---------Character
+
+
+StringBuffer的
+	构造方法：
+		public StringBuffer(int i)
+		public StringBuffer(String s)
+
+	添加(拼接)方法：append()  //任意类型均可
+	插入	         insert()
+
+	删除方法：delete(int start, int end)
+		deleteCharAt(int index) //删除指定索引位置的字符
+
+	替换方法：replace(int start ,int end ,String s) //表明从哪个位置开始到那个位置结束，用字符串s替换
+
+	反转方法：reverse（）
+
+	截取方法：substring(int start,int end)
+		substring(int start) //默认到最后结束
+
+	转变成字符串类型： toString()
+
+题目：
+1、StringBuffer与String的转换 
+		//String  -----StringBuffer   (构造方法)
+		Stringbuffer buffer = new StringBuffer(String s);
+		
+		//StringBuffer----String  (构造方法)
+		String s = new String(new StringBuffer().append(str));   //str代表字符串的内容
+	     
+		/*****/ public String toString( )   将一个StringBuffer 类型用String类输出
+		StringBuffer buffer2 = new StringBuffer().append("java");
+		String ss = buffer2.toString();
+	
+2、把数组拼接(append)成指定格式的字符串   (用StringBuffer类写)
+	public class Int_StringDemo2 {
+	public static void main(String[] args) {
+		//定义一个数组
+		int[] arr = {60,20,16,20,83};
+		
+		//方法调用
+		String string = new String(intToChange(arr));
+		System.out.println("按格式输出的字符串为 ="+string);
+		
+	}
+	
+	public static StringBuffer intToChange(int[] arr) {
+		StringBuffer buffer = new StringBuffer();
+				
+		buffer.append("[");
+				
+		for(int i=0;i<arr.length;i++) {
+			if(i!=arr.length-1) {
+				buffer.append(arr[i]).append(",");
+			}else {
+				buffer.append(arr[i]).append("]");
+			}
+		}
+		
+		return buffer;
+	}
+
+}
+
+		
+3、判断一个字符串是否对称
+	分析思路：
+ * 		方法一；将字符串转换成字符数组，（分别前后遍历开始）
+ * 			   遍历判断前面的字符与后面字符是否相等
+ * 		方法二、将string类型变成stringBbuffer
+ *           用StringBuffer中的reverse方法进行翻转
+ *           在转换回string类型。在equals比较
+ * 			  
+ */
+public class DuiChenDemo3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入要进行判断的字符串：");
+		String string = sc.nextLine();
+		
+		boolean b = isSame(string);
+		System.out.println("字符串是否对称："+b);
+		
+		
+		//方法二
+		System.out.println("-----------------------");
+		boolean b2 = isTheSame(string);
+		System.out.println("字符串是否对称："+b2);
+	}
+	
+	//方法实现
+	public static boolean isSame(String string) {
+		char[] chs = string.toCharArray();
+		
+		boolean flag = true;
+		
+		for(int start=0,end=chs.length-1;start<=end;start++,end--) {
+			if(chs[start]!=chs[end]) {
+				return flag=false;
+			}
+		}
+		return flag;
+	}
+	
+	//方法实现二
+	public static boolean isTheSame(String s) {
+		//把S变成StringBuffer类型
+		boolean flag = new StringBuffer(s).reverse().toString().equals(s);
+		return flag;
+	}
+
+}
+
+	
+4、冒泡排序
+
+
+5、选择排序
+
+/*冒泡排序
+ *   （相邻数之间进行比较）
+ * 
+ *选择排序
+ *   一个索引值跟其他所有索引值进行比较
+ * 
+ */
+public class MaoPaoDemo4 {
+	public static void main(String[] args) {
+		//定义一个字符串
+		String string = "bsagxod";
+		
+		//定义一个新的字符串用于接收字符数组的内容   也可以用valueOf进行转换数据
+		String string2 = new String(bubbleSort(string));
+		System.out.println("排序后的字符串为："+string2);
+		
+		
+		//方法二
+		System.out.println("--------------------");
+	    String ss = String.valueOf(choiceSort(string));
+	    System.out.println("选择排序后的数组："+ss);
+	}
+	
+	//方法实现  冒泡排序   （相邻数之间进行比较）
+	public static char[] bubbleSort(String string) {
+		//将字符串变成字符数组
+		char[] ch = string.toCharArray();
+		//外层控制比较次数
+		for(int x=0;x<ch.length-1;x++) {
+			//内层控制比较的数据，，，，-1是为了防止溢出
+			for(int y=0;y<ch.length-1-x;y++) {
+				if(ch[y]>ch[y+1]) {
+					char c = ch[y];
+					ch[y] = ch[y+1];
+					ch[y+1] = c;
+				}
+			}
+		}
+		return ch;
+	}
+	
+	//选择排序
+	public static char[] choiceSort(String string) {
+		char[] ch = string.toCharArray();
+		for(int x=0;x<ch.length-1;x++) {
+			for(int y=x+1;y<ch.length;y++) {
+				if(ch[x]>ch[y]) {
+					char c = ch[x];
+					ch[x] = ch[y];
+					ch[y] = c;
+				}
+			}
+		}
+		return ch;
+		
+	}
+	
+
+}
+
+
+6、高级二分查找（条件是必须有序）
+* binaySearch二分查找
+ * 思路：
+ * 1、定义一个最小索引min=0，最大索引=arr.length-1;
+ * 2、对中间索引进行求解mid=(min+max)/2
+ * 3、判断要查找的数值与中间索引对应的数比较  (肯定要进行循环操作，并且次数未知，用while循环)
+ * 		A；如果相等，返回中间索引值
+ * 		B：如果不相等
+ * 			大了（中间索引值比要查找的索引值大），往左找
+ * 				min不变
+ * 				max=mid-1;
+ *				重新计算mid的值
+ * 			小了（中间索引值比要查找的索引值小）,往右找
+ * 				min=mid+1;
+ * 				max不变
+ * 				重新计算mid的值
+ *      C：如果在给定数据中找不到药查找的数
+ *        如何判断呢？
+ *        因为min始终做加一操作，max始终做减一操作
+ *        所以当min的值大于max的时候表示数据不存在，则返回-1
+ *      
+ */
+public class binaySearchDemo5 {
+	public static void main(String[] args) {
+		int[] arr = {12,23,36,48,57,69,80};
+		
+		int i =binaySearch(arr,69);
+		System.out.println("数据在数组中的索引位置为："+i);
+		
+	}
+
+	//方法实现
+	public static int binaySearch(int[] arr,int value) {
+		//定义最大，最小索引变量
+		int min = 0;
+		int max = arr.length-1;
+		int mid = (min+max)/2;
+		
+		while(arr[mid]!=value) {
+			if(arr[mid]>value) {
+				max = mid-1;
+				mid = (min+max)/2;
+			}else {
+				min = mid+1;
+				mid = (max+min)/2;
+			}
+			if(min>max) {
+				return -1;
+			}	
+		}
+		return mid;
+	}
+}
+
+
+
+
+Arrays工具类
+	类型转换方法：
+		public static String toString(  ) ;//将任意类型数据转换为String类型
+	数组排序：
+		public static void sort();  // 默认升序方式对数组进行排序
+	二分查找
+		public static int  binaySearch(int[] arr ,int value); //查找value在数组中的位置
+	 
+
+Integer包装类
+	构造方法：
+		//将int类型转换为Integer包装类
+		Integer ins = new Integer(int i);
+		
+		//将String类型转换为Integer包装类
+		Integer ins = new Integer(String s);
+	            （条件是原始的string类型的数据必须只能是数字字符组成，不能是英文字符组成）
+
+注意：如果要将int类型或者是string类型的数据转换成integer的话
+          必须用构造方法，创建对象进行转换
+
+
+Integer进制的转换
+	//十进制到其他进制的转换   radix只能是 0  到  26
+	public static String toString(int value,int raidx) ;radix表示几进制
+
+	//其他进制转换为十进制
+	public static int parseInt(String s ,int radix) ; 将一个其他进制换成是十进制必须要是可以转变的
+
+
+int  与String类型的转换
+               //int -------String 
+	最好用 String.valueOf();
+	
+	//String -----int (Integer包装类的功能)
+	最好用public static int parseInt(String s)
+
+
+public class Int_StringDemo6 {
+	public static void main(String[] args) {
+		//1、将int变成包装类，包装类变成string
+		int i = 100;
+		Integer integer = new Integer(i);
+		System.out.println(integer.toString());
+		
+		//拼接
+		String s = "";
+		s +=i;
+		System.out.println(s);
+		
+		//String。valueOf()
+		String string = String.valueOf(i);
+		System.out.println(string);
+		
+		//Integer的静态toString方法
+		String string2 = Integer.toString(i);
+		System.out.println(string2);
+		
+		//2、string转换成int
+		String string3 = "100";
+		//将string转换成Integer，在到int
+		Integer integer2 = new Integer(string3);
+		int j = integer2.intValue();
+		System.out.println(j);
+		
+		
+		//直接转换
+		int k = Integer.parseInt(string3);
+		System.out.println(k);
+				
+	}
+
+}
+
+
+
+character	
+	构造方法：public character(char value)；
+
+	成员方法：
+		public   static   boolean   isUpperCase (char ch);//判断字符是不是大写
+		public   static   boolean   isLowerCase (char ch );//判断字符是不是小写
+		public   static   boolean    isDigit(char ch) ; //判断指定字符是不是数字 
+		public   static   char   toUpperCase(char ch);//把指定的字符转成大写
+		public   static   char   toLowerCase(char ch);//把指定的字符转成小写
+
+
+
+题目：
+1、判断字符串中大写，小写，数字出现的次数
+
+* 判断字符串中大写，小写，数字出现的次数
+ */
+public class CountDemo7 {
+	public static void main(String[] args) {
+		//定义字符串
+		String string ="jacd32WC4WD0";
+		countNumber(string);
+	}
+	 
+	//方法实现
+	public static void countNumber(String string) {
+		//取出字符串中对应索引的字符比较
+		//定义统计大写，小写，数字的变量
+		int upper = 0;
+		int lower = 0;
+		int digit = 0;
+		
+		for(int i=0;i<string.length();i++) {
+			char c = string.charAt(i);
+			if(Character.isUpperCase(c)) {
+				upper++;
+			}else if(Character.isLowerCase(c)) {
+				lower++;
+			}else if(Character.isDigit(c)) {
+				digit++;
+			}
+		}
+		System.out.println("大写字母有："+upper+" "+"小写字母有："+lower+" "+"数字有："+digit);
+		
+	}
+
+}
+
+
+一、
+int----integer
+	1、构造方法
+        	  public Integer(int value)
+	
+Integer-----int
+	1、public int  intValue( ) //以一个int类型返回integer的值
+
+二、	
+String-----Integer
+	1、构造方法
+	public Integer(String s) 
+	
+	2、public static Integer valueOf(string s) ;//将一个字符串对象用integer输出
+
+Integer---String
+	1、public String toString( );//Integer包装类的方法
+
+
+
+
+ 
+	
+	

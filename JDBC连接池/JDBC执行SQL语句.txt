@@ -1,0 +1,57 @@
+一、插入数据INSERT
+基本形式
+	INSERT INTO 表名 （列名1，列名2 ，。。。） VALUES(值1 ，值2，值3 。。。) ；
+	
+注意；
+1、表名中的对应插的值，必须和列名一 一 对应
+2、插入的值的数据类型必须和对应类的数据类型一致
+3、若要输入记录时，插入全部数据，可以省略表名后的字段名（列名）
+4、括号里的值是输入的值，各项之间是用逗号分隔
+	A：字符串和日期必须用单引号括起来
+	B：数值型类型数据不用括起来
+	C：数据顺序必须和字段顺序一样
+	D：所有标点符号必须在英文半角的状态下输入
+
+
+
+二、删除记录
+基本形式
+	DELETE FROM 表名  WHERE 条件
+例如：
+	从数据库表中删除姓名为 caddo 的记录
+	delete  from 表名      where name = 'caddo' 
+	
+	删除表中所有数据
+	delete from stu
+注意：
+	如果没有给定条件，那么会删除整个表中的记录
+
+三、更新记录
+基本形式
+	UPDATE 表名 SET 字段1 = 值1 ，字段2 = 值2    where 条件
+例如：
+	将stu表中所有id 大于 900 的记录中socre 的值加上5
+	update stu set score = score + 5  where id > 900
+注意：
+	如果不加条件，那么将会是针对于表中的所有记录的修改
+
+
+四、查询记录
+基本形式
+	SELECT  字段名1 ， 字段名2 ，。。。 from 表名   where   条件
+
+例如：
+	查询stu表中score值大于60 的数据
+	select * from stu where score > 60
+	
+	查询stu表中score 大于60 并且性别为女的 数据
+	select * from stu where score >60 and sex ='女' 
+
+
+五、总结注意
+1、字符串或者日期类型数据必须用单引号括起来, 并且在Java代码中则要在单引号中加入双引号和+ 号
+例如：
+	insert into stu(name age,sex) values(' " +name+ " ' ,    ”+21+“ ,     ' " + sex + " '  )  
+
+2、插入数据在java代码中，必须加上加号和双引号
+“ + user.getId( ) + ”
